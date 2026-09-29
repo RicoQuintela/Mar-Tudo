@@ -11,7 +11,7 @@
   <title>Maré Tudo</title>
   <style>
     html, body { overflow: hidden; overscroll-behavior: none; }
-
+ 
     :root {
       --bg: #111315;
       --panel: #1c2022;
@@ -23,7 +23,7 @@
       --line: rgba(255,255,255,.1);
       --radius: 22px;
     }
-
+ 
     :root[data-theme-mode="dark"] { color-scheme: dark; }
     :root[data-theme-mode="light"] {
       color-scheme: light;
@@ -94,7 +94,7 @@
       :root[data-theme-mode="auto"] textarea,
       :root[data-theme-mode="auto"] select { background-color: #202426; color: #f8f1df; }
     }
-
+ 
     * { box-sizing: border-box; }
     html { background: var(--bg); }
     body {
@@ -106,7 +106,7 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-
+ 
     html, body { -webkit-touch-callout: none; }
     button { font: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
@@ -125,9 +125,9 @@
       position: relative;
       padding-bottom: calc(86px + env(safe-area-inset-bottom));
     }
-
+ 
     .app.home-screen { height: 100svh; min-height: 100svh; padding-bottom: 0; overflow: hidden; }
-
+ 
     .hero {
       height: 100svh;
       min-height: 560px;
@@ -157,7 +157,7 @@
         linear-gradient(to right, rgba(0,0,0,.15), transparent 55%);
       pointer-events: none;
     }
-
+ 
     .basequin-logo-overlay {
       display: none !important;
       position: absolute;
@@ -177,7 +177,7 @@
       -webkit-user-drag: none;
     }
     .basequin-logo-overlay img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-
+ 
     .ricardo-byline {
       position: absolute;
       z-index: 8;
@@ -204,8 +204,8 @@
       -webkit-user-drag: none;
       pointer-events: none;
     }
-
-
+ 
+ 
     .topbar {
       display: flex;
       align-items: center;
@@ -249,7 +249,7 @@
       backdrop-filter: blur(8px);
     }
     .icon-button svg { width: 20px; height: 20px; }
-
+ 
     .hero-copy {
       position: absolute;
       z-index: 1;
@@ -286,7 +286,7 @@
       line-height: 1.4;
       text-shadow: 0 2px 7px rgba(0,0,0,.55);
     }
-
+ 
     main { padding: 0 16px; margin-top: -2px; position: relative; }
     .section-heading {
       display: flex;
@@ -297,7 +297,7 @@
     }
     .section-heading h2 { margin: 0; font-size: 20px; letter-spacing: -.5px; }
     .section-heading span { color: var(--muted); font-size: 12px; }
-
+ 
     .quick-tools-overlay {
       position: absolute;
       z-index: 2;
@@ -370,7 +370,7 @@
     .action-icon svg { width: 16px; height: 16px; }
     .action-digital-clock { color: #4c9bff; font-family: "Courier New", monospace; font-size: 8px; font-weight: 900; letter-spacing: -1px; }
     .action-card strong { position: relative; display: block; color: #fff; font-size: 13px; line-height: 1.08; text-transform: uppercase; }
-
+ 
     .action-card { padding-left: 12px; }
     .action-card strong { margin-left: 0; }
     .action-card small { position: relative; display: block; margin-top: 2px; color: #fff; font-size: 8px; line-height: 1.05; }
@@ -383,7 +383,7 @@
       .action-card strong { font-size: 11.5px; }
       .action-card small { font-size: 7.5px; }
     }
-
+ 
     .panel {
       margin-top: 20px;
       padding: 17px;
@@ -417,7 +417,7 @@
     .shift-info strong { display: block; font-size: 14px; }
     .shift-info small { display: block; margin-top: 3px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
     .status { padding: 5px 8px; border-radius: 99px; background: rgba(247,189,53,.14); color: var(--yellow); font-size: 10px; font-weight: 800; }
-
+ 
     .view[data-view="financeiro"] { padding-top: 0; }
     .screen-back { display: grid; width: 36px; height: 36px; place-items: center; margin: 0 0 10px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--yellow); font-size: 22px; font-weight: 900; line-height: 1; cursor: pointer; }
     .finance-page { height: 100dvh; padding-bottom: 90px; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -514,7 +514,7 @@
       .finance-days-count { min-height: 38px; font-size: 12px; }
       .finance-input { min-height: 38px; font-size: 14px; }
     }
-
+ 
     .notes-screen { position: fixed; z-index: 40; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: #181c1e; color: var(--cream); }
     .notes-screen.open { display: flex; }
     .notes-sheet { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)); }
@@ -550,7 +550,7 @@
     .notes-save { background: var(--yellow); color: #17191a; }
     .notes-delete { background: #f45b5b; color: #000; border: 1px solid #ff8585; box-shadow: 0 0 12px rgba(244,91,91,.28); }
     .notes-delete:disabled { opacity: .72; filter: none; background: rgba(244,91,91,.28); color: #808080; border-color: rgba(255,133,133,.7); box-shadow: 0 0 8px rgba(244,91,91,.12); cursor: not-allowed; }
-
+ 
     .reminders-screen { position: fixed; z-index: 40; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: radial-gradient(circle at 90% 0%, rgba(244,114,182,.18), transparent 32%), radial-gradient(circle at 0% 100%, rgba(67,199,122,.14), transparent 34%), #181c1e; color: var(--cream); }
     .reminders-screen.open { display: flex; }
     .reminders-sheet { width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 20px calc(22px + env(safe-area-inset-bottom)); }
@@ -594,7 +594,7 @@
     .reminder-item.done .reminder-main strong { text-decoration: line-through; }
     .reminder-remove { border: 1px solid rgba(244,91,91,.55); background: rgba(244,91,91,.14); color: #ffaaaa; font-size: 17px; }
     .reminders-empty { padding: 22px 12px; border: 1px dashed rgba(255,255,255,.2); border-radius: 14px; color: var(--muted); text-align: center; font-size: 12px; }
-
+ 
     .payments-screen { position: fixed; z-index: 45; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: #171d25; color: var(--cream); }
     .payments-screen.open { display: flex; }
     .payments-sheet { width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom)); }
@@ -664,7 +664,7 @@
     .payment-social-item strong { color: #8fc4ff; }
     .payment-social-item span { margin-top: 3px; color: var(--muted); }
     .payment-social-item a { margin-top: 5px; color: #b9d9ff; text-decoration: underline; }
-
+ 
     .calendar-screen { position: fixed; z-index: 40; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: #181c1e; color: var(--cream); }
     .calendar-screen.open { display: flex; }
     .calendar-screen-sheet { width: 100%; height: 100%; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; padding: calc(24px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)); }
@@ -679,7 +679,7 @@
     #screenMarkPrompt:not([hidden]) > p { color: #183A59; font-size: 14px; }
     .calendar-screen .calendar-legend { margin-top: 28px; }
     .calendar-screen .calendar-instruction { margin-top: 18px; }
-
+ 
     .service-planner {
       position: fixed;
       z-index: 20;
@@ -805,7 +805,7 @@
     #screenMarkPrompt #screenMarkYes { background: #43c77a; color: #102017; }
     #screenMarkPrompt #screenMarkNo { background: #f45b5b; color: #fff; }
     .calendar-day { touch-action: manipulation; }
-
+ 
     .questionnaire-date { padding-top: 2px; }
     .questionnaire-date[hidden] { display: none; }
     .service-planner.questionnaire-only .calendar-toolbar,
@@ -827,9 +827,9 @@
     .service-planner.calendar-only .questionnaire-date,
     .service-planner.calendar-only .service-form,
     .service-planner.calendar-only .delete-service-wrap { display: none !important; }
-
+ 
     .service-planner.questionnaire-only .selected-date { margin-top: 10px; }
-
+ 
     .selected-date { min-height: 23px; margin: 18px 0 13px; color: var(--yellow); font-size: 15px; font-weight: 850; }
     .service-form { padding-top: 13px; border-top: 1px solid var(--line); }
     .service-form[hidden] { display: none; }
@@ -841,7 +841,7 @@
     .service-date-button { display: flex; align-items: center; justify-content: flex-start; width: 100%; color: var(--cream); text-align: left; cursor: pointer; }
     .service-date-button.empty { color: var(--muted); }
     .service-date-input { position: absolute; width: 1px; height: 1px; margin: -1px; opacity: 0; pointer-events: none; }
-
+ 
     .hours-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 15px; }
     .hours-option { min-height: 45px; border: 1px solid rgba(255,255,255,.17); border-radius: 12px; background: #24292b; color: var(--muted); font-size: 13px; font-weight: 900; cursor: pointer; transition: .16s ease; }
     .hours-option:hover, .hours-option:focus-visible { border-color: var(--yellow); outline: none; }
@@ -865,7 +865,7 @@
     .service-payment-option.amount.selected .service-payment-money input::placeholder { color: #000000; opacity: 1; }
     .service-payment-money input:focus { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(247,189,53,.16); }
     .service-payment-money input:disabled { opacity: .5; cursor: not-allowed; }
-
+ 
     textarea.form-field { min-height: 86px; resize: none; }
     .save-service { width: 100%; min-height: 52px; margin-top: 3px; border: 0; border-radius: 14px; background: var(--yellow); color: #17191a; font-size: 15px; font-weight: 900; cursor: pointer; }
     .service-reminder-button { width: 100%; min-height: 44px; margin: 9px 0 10px; border: 1px solid #4c9bff; border-radius: 12px; background: #D6E8F7; color: #153E66; font-size: 12px; font-weight: 950; cursor: pointer; }
@@ -897,10 +897,10 @@
     .delete-confirm-actions button { min-height: 37px; border: 0; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; }
     .cancel-delete { background: #43c77a; color: #102017; }
     .confirm-delete { background: #f45b5b; color: #fff; }
-
+ 
     .planner-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
     .service-planner .planner-sheet { background: linear-gradient(145deg, #050607 0%, #181c1e 52%, #42484c 100%); }
-
+ 
     /* Aproveitamento da tela de marcação sem rolagem. */
     .service-planner.questionnaire-only .planner-sheet {
       overflow: hidden;
@@ -932,7 +932,7 @@
     .service-planner.questionnaire-only textarea.form-field { height: 70px; min-height: 70px; margin-bottom: 10px; }
     .service-planner.questionnaire-only .save-service { min-height: 49px; margin-top: 0; font-size: 15px; }
     .service-planner.questionnaire-only .planner-note { display: none; }
-
+ 
     @media (max-height: 700px) {
       .service-planner.questionnaire-only .planner-sheet { padding: calc(10px + env(safe-area-inset-top)) 14px calc(10px + env(safe-area-inset-bottom)); }
       .service-planner.questionnaire-only .planner-header { margin-bottom: 8px; }
@@ -957,7 +957,7 @@
       .service-planner.questionnaire-only textarea.form-field { height: 58px; min-height: 58px; margin-bottom: 8px; }
       .service-planner.questionnaire-only .save-service { min-height: 45px; font-size: 14px; }
     }
-
+ 
     @media (min-height: 760px) {
       .service-planner.questionnaire-only .planner-sheet { padding: calc(20px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom)); }
       .service-planner.questionnaire-only .planner-header { margin-bottom: 14px; }
@@ -984,7 +984,7 @@
       .service-planner.questionnaire-only textarea.form-field { height: 84px; min-height: 84px; margin-bottom: 11px; }
       .service-planner.questionnaire-only .save-service { min-height: 54px; font-size: 16px; }
     }
-
+ 
     @media (min-height: 820px) {
       .service-planner.questionnaire-only .planner-sheet { padding: calc(24px + env(safe-area-inset-top)) 22px calc(22px + env(safe-area-inset-bottom)); }
       .service-planner.questionnaire-only .planner-header { margin-bottom: 16px; }
@@ -1010,9 +1010,9 @@
       .service-planner.questionnaire-only textarea.form-field { height: 94px; min-height: 94px; margin-bottom: 12px; }
       .service-planner.questionnaire-only .save-service { min-height: 58px; font-size: 17px; }
     }
-
+ 
     body.planner-open { overflow: hidden; }
-
+ 
     .app.home-screen .tabbar { display: none; }
     .tabbar {
       position: fixed;
@@ -1053,7 +1053,7 @@
     }
     .tab svg { width: 20px; height: 20px; }
     .tab.active { background: var(--yellow); color: #181a1a; font-weight: 800; }
-
+ 
     .view { display: none; }
     .view.active { display: block; animation: viewIn .22s ease-out both; }
     @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -1092,7 +1092,7 @@
       transition: .25s ease;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
-
+ 
     .settings-screen { position: fixed; z-index: 80; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: rgba(0,0,0,.72); color: var(--cream); }
     .settings-screen.open { display: flex; }
     .settings-sheet { width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 20px calc(22px + env(safe-area-inset-bottom)); background: var(--bg); }
@@ -1137,7 +1137,7 @@
     .theme-choice { min-height: 42px; padding: 7px 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 11px; font-weight: 850; cursor: pointer; }
     .theme-choice.selected { border-color: var(--yellow-dark); background: var(--yellow); color: #17191a; box-shadow: 0 0 0 2px rgba(247,189,53,.18); }
     .action-card[data-open-settings] .action-icon { background: rgba(76,155,255,.22); border-color: rgba(76,155,255,.65); color: #8fc4ff; }
-
+ 
     .useful-links-screen { position: fixed; z-index: 90; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--cream); }
     .useful-links-screen.open { display: flex; }
     .useful-links-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
@@ -1157,7 +1157,7 @@
     .useful-link-url { display: block; margin-bottom: 10px; color: #4C9BFF; font-size: 12px; line-height: 1.35; text-decoration: underline; overflow-wrap: anywhere; }
     .useful-link-actions { display: flex; gap: 8px; }
     .useful-link-action { flex: 1; min-height: 38px; padding: 7px 8px; border: 1px solid #153E66; border-radius: 9px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 11px; font-weight: 850; cursor: pointer; }
-
+ 
     .padrinho-screen { position: fixed; z-index: 90; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--cream); }
     .padrinho-screen.open { display: flex; }
     .padrinho-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
@@ -1168,7 +1168,7 @@
     .padrinho-header.stacked-brand-header { width: calc(100% + 36px); margin: calc(-20px - env(safe-area-inset-top)) -18px 18px; padding: 0 !important; }
     .padrinho-header.stacked-brand-header .brand-toolbar { padding: calc(8px + env(safe-area-inset-top)) 18px 8px; }
     .padrinho-back, .padrinho-close { display: grid; width: 38px; height: 38px; place-items: center; padding: 0; border: 2px solid #153E66; border-radius: 50%; background: #000; color: #4C9BFF; font-size: 22px; font-weight: 950; cursor: pointer; }
-
+ 
     .important-app-screen { position: fixed; z-index: 10050; inset: 0; display: none; align-items: stretch; justify-content: center; padding: 0; background: var(--bg); color: #111; }
     .important-app-screen.open { display: flex; }
     .important-app-page { position: relative; width: 100%; max-width: 570px; height: 100dvh; overflow-y: auto; padding: calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom)); background: var(--bg); }
@@ -1182,13 +1182,13 @@
     .important-app-back svg { display: block; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
     .important-app-back:active { transform: scale(.94); }
     .useful-link-empty { padding: 18px 12px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); text-align: center; font-size: 13px; line-height: 1.4; }
-
+ 
     @media (min-width: 700px) {
       body { padding: 22px 0; background: #090a0b; }
       .app { min-height: calc(100dvh - 44px); border: 1px solid #292d2e; border-radius: 30px; box-shadow: 0 20px 70px rgba(0,0,0,.45); }
       .tabbar { position: absolute; }
     }
-
+ 
     :root[data-theme-mode="light"] .service-planner .planner-sheet,
     :root[data-theme-mode="light"] .notes-screen,
     :root[data-theme-mode="light"] .reminders-screen,
@@ -1248,7 +1248,7 @@
       :root[data-theme-mode="auto"] .tab.active { color: #1D2C38; }
       :root[data-theme-mode="auto"] .toast { background: #D6E8F7; color: #24384A; border-color: rgba(42,87,124,.2); }
     }
-
+ 
     body button { border: 1px solid #153E66 !important; }
     body button.finance-days-count { border: 1.5px solid #153E66 !important; background: #24282b !important; color: rgba(180,190,198,.52) !important; }
     :root[data-theme-mode="light"] .finance-row .finance-days-count,
@@ -1264,10 +1264,10 @@
     .finance-row .finance-input.received.finance-value-positive { color: var(--service-color) !important; }
     .finance-row .finance-input.receivable.finance-value-positive { color: #808080 !important; }
     #quickActions .action-card { border: 2px solid #008CFF !important; box-shadow: 0 0 14px rgba(0,140,255,.95), 0 4px 12px rgba(0,0,0,.10) !important; }
-
+ 
     #remindersScreen button { border: 1px solid #153E66 !important; }
     #remindersScreen #remindersClose { color: #153E66 !important; }
-
+ 
     .service-planner #serviceType:valid,
     .service-planner .hours-option.selected,
     .service-planner .service-payment-option.selected {
@@ -1281,7 +1281,7 @@
       background: #F7BD35;
       color: #17191A;
     }
-
+ 
     .service-time-title { margin: -9px 0 5px; color: var(--muted); font-size: 11px; font-weight: 750; }
     .service-time-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin: 0 0 12px; }
     .service-time-option { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; min-height: 48px; padding: 3px 6px; border: 1px solid #153E66; border-radius: 10px; background: #24292b; cursor: pointer; }
@@ -1291,7 +1291,7 @@
     .service-planner.questionnaire-only .service-time-title { margin-top: -6px; font-size: 10px; }
     .service-planner.questionnaire-only .service-time-options { margin-bottom: 9px; }
     .service-planner.questionnaire-only .service-time-option { min-height: 42px; padding: 2px 5px; }
-
+ 
     .service-time-option { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; gap: 3px; }
     .service-time-option > span { color: var(--muted); font-size: 9px; font-weight: 850; line-height: 1.1; text-align: center; }
     .service-time-trigger { display: grid; place-items: center; width: 100%; min-height: 38px; padding: 2px 6px; border: 1px solid #153E66 !important; border-radius: 10px; background: #D6E8F7; color: #153E66; cursor: pointer; }
@@ -1319,14 +1319,14 @@
     .notes-close, .reminders-close, .payments-close, .calendar-screen-close, .planner-close, .settings-close, .service-time-picker-close { border: 1px solid #153E66 !important; background: #D6E8F7 !important; color: #153E66 !important; }
     .notes-close:hover, .reminders-close:hover, .payments-close:hover, .calendar-screen-close:hover, .planner-close:hover, .settings-close:hover, .service-time-picker-close:hover,
     .notes-close:active, .reminders-close:active, .payments-close:active, .calendar-screen-close:active, .planner-close:active, .settings-close:active, .service-time-picker-close:active { border-color: #153E66 !important; background: #D6E8F7 !important; color: #153E66 !important; }
-
+ 
     #servicePlanner.questionnaire-only button,
     #servicePlanner.questionnaire-only .service-payment-option {
       border: 1px solid #153E66 !important;
     }
-
+ 
     #servicePlanner.questionnaire-only .service-time-option > span { color: #F7BD35 !important; }
-
+ 
     #servicePlanner.questionnaire-only .planner-sheet {
       overflow-x: hidden !important;
       overflow-y: auto !important;
@@ -1338,7 +1338,7 @@
     }
     #servicePlanner.questionnaire-only .planner-sheet::-webkit-scrollbar { width: 5px; }
     #servicePlanner.questionnaire-only .planner-sheet::-webkit-scrollbar-thumb { border-radius: 6px; background: #153E66; }
-
+ 
     .service-planner #serviceType:valid {
       background: #FFFFFF !important;
       border-color: #153E66 !important;
@@ -1348,13 +1348,13 @@
       background: #FFFFFF !important;
       color: #153E66 !important;
     }
-
+ 
     #servicePlanner.questionnaire-only .service-time-title {
       color: #43C77A !important;
       font-size: 14px !important;
       line-height: 1.2;
     }
-
+ 
     .service-time-picker-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .service-time-picker-clear { background: #D6E8F7; }
     .hours-option:disabled { opacity: .45 !important; filter: grayscale(1); cursor: not-allowed; transform: none !important; box-shadow: none !important; }
@@ -1363,24 +1363,24 @@
     .service-form.hours-mode-selected .service-time-options,
     .service-form.clock-mode-selected .hours-options,
     .service-form.clock-mode-selected .hours-label { opacity: .5; }
-
+ 
     #paymentValueOption:not(.selected) > span:first-of-type { color: #F7BD35 !important; }
     #paymentValueOption.selected > span:first-of-type { color: #17191A !important; }
-
-
+ 
+ 
     .service-payment-option.muted-choice { cursor: pointer; }
     .service-payment-option.muted-choice > span,
     .service-payment-option.muted-choice .service-payment-money,
     .service-payment-option.muted-choice .service-payment-money input { opacity: .3 !important; }
     .service-payment-option.muted-choice .service-payment-money input::placeholder { opacity: .3 !important; }
-
+ 
     #paymentValueOption:not(.selected) { background: #FFFFFF !important; }
     #paymentValueOption.selected { background: #F7BD35 !important; }
     #paymentValueOption > span:first-of-type,
     #paymentValueOption .service-payment-money > span:first-child { color: #000000 !important; }
-
+ 
     #paymentValueOption > span:first-of-type { color: #000000 !important; opacity: 1 !important; }
-
+ 
     /* Valor a receber: conteúdo tipográfico alinhado ao botão vizinho. */
     #paymentValueOption > span:first-of-type,
     #paymentValueOption .service-payment-money,
@@ -2033,7 +2033,7 @@
     .calendar-screen-header.stacked-brand-header .brand-title-row { padding-bottom: 4px !important; }
   
     #financeRows { background-color: #FFFFFF !important; }
-
+ 
     /* Os atalhos ficam fixos; toque e clique continuam acionando as funções. */
     #quickActions .action-card {
       border: 2px solid #008CFF !important;
@@ -2042,7 +2042,7 @@
       touch-action: manipulation;
     }
     #quickActions .action-card strong { color: #FFFFFF !important; }
-
+ 
     #plannerTitle,
     .finance-sheet-title h3,
     .view[data-view="extras"] .section-heading h2,
@@ -2082,7 +2082,7 @@
       .payment-table-fields label { padding: 4px; font-size: 10px; }
       .payment-table-input { width: 65px; }
     }
-
+ 
   </style>
 </head>
 <body>
@@ -2132,12 +2132,12 @@
           </button>
           </div>
         </div>
-
+ 
       </div>
-
-
+ 
+ 
     </section>
-
+ 
     <section class="view placeholder" data-view="escala">
       <main>
         <button class="screen-back" type="button" data-go="home" aria-label="Voltar">←</button>
@@ -2151,14 +2151,14 @@
         </section>
       </main>
     </section>
-
+ 
     <section class="view placeholder" data-view="extras">
       <main>
         <button class="screen-back" type="button" data-go="home" aria-label="Voltar">←</button>
         <div class="section-heading"><h2>Serviços extras</h2><span>Controle financeiro</span></div>
       </main>
     </section>
-
+ 
     <section class="view placeholder" data-view="perfil">
       <main>
         <button class="screen-back" type="button" data-go="home" aria-label="Voltar">←</button>
@@ -2168,7 +2168,7 @@
         </section>
       </main>
     </section>
-
+ 
     <section class="view placeholder" data-view="financeiro">
       <main class="finance-page">
         <div class="finance-header">
@@ -2199,7 +2199,7 @@
         </section>
       </main>
     </section>
-
+ 
     <div class="notes-screen" id="notesScreen" aria-hidden="true">
       <section class="notes-sheet" role="dialog" aria-modal="true" aria-labelledby="notesTitle">
         <header class="notes-header">
@@ -2217,7 +2217,7 @@
         <div class="notes-archive" id="notesArchive"></div>
       </section>
     </div>
-
+ 
     <div class="reminders-screen" id="remindersScreen" aria-hidden="true">
       <section class="reminders-sheet" role="dialog" aria-modal="true" aria-labelledby="remindersTitle">
         <header class="reminders-header">
@@ -2237,7 +2237,7 @@
         <div class="reminders-list" id="remindersList"></div>
       </section>
     </div>
-
+ 
     <div class="payments-screen" id="paymentsScreen" aria-hidden="true">
       <section class="payments-sheet" role="dialog" aria-modal="true" aria-labelledby="paymentsTitle">
         <header class="payments-header">
@@ -2268,7 +2268,7 @@
         </div>
       </section>
     </div>
-
+ 
     <div class="calendar-screen" id="calendarScreen" aria-hidden="true">
       <section class="calendar-screen-sheet" role="dialog" aria-modal="true" aria-labelledby="calendarScreenTitle">
         <header class="calendar-screen-header">
@@ -2307,7 +2307,7 @@
         </div>
       </section>
     </div>
-
+ 
     <div class="service-planner" id="servicePlanner" aria-hidden="true">
       <div class="planner-backdrop" data-close-planner></div>
       <section class="planner-sheet" role="dialog" aria-modal="true" aria-label="Marque seu serviço">
@@ -2358,7 +2358,7 @@
             </div>
           </div>
         </div>
-
+ 
         <div class="selected-date" id="selectedDate" aria-live="polite">Escolha uma data para preencher o serviço.</div>
         <div class="questionnaire-date" id="questionnaireDateWrap" hidden>
           <div class="form-label" id="serviceDateLabel">Data do serviço:</div>
@@ -2430,10 +2430,10 @@
         <p class="planner-note">Seus serviços ficam salvos automaticamente neste aparelho.</p>
       </section>
     </div>
-
+ 
     <div class="toast" role="status" aria-live="polite"></div>
   </div>
-
+ 
   <div class="service-time-picker" id="serviceTimePicker" hidden aria-hidden="true">
     <div class="service-time-picker-scrim" data-close-time-picker></div>
     <section class="service-time-picker-panel" role="dialog" aria-modal="true" aria-labelledby="serviceTimePickerTitle">
@@ -2454,7 +2454,7 @@
       </div>
     </section>
   </div>
-
+ 
   <div class="settings-screen" id="settingsScreen" aria-hidden="true">
     <section class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
       <header class="settings-header">
@@ -2494,7 +2494,7 @@
       </section>
     </section>
   </div>
-
+ 
   <div class="scale-digital-clock" id="scaleDigitalClock" hidden aria-hidden="true">
     <div class="scale-digital-clock-scrim" data-close-scale-digital-clock></div>
     <section class="scale-digital-clock-panel" role="dialog" aria-modal="true" aria-labelledby="scaleDigitalClockTitle">
@@ -2514,7 +2514,7 @@
       </div>
     </section>
   </div>
-
+ 
   <div class="useful-links-screen" id="usefulLinksScreen" aria-hidden="true">
     <section class="useful-links-sheet" role="dialog" aria-modal="true" aria-labelledby="usefulLinksTitle">
       <header class="useful-links-header">
@@ -2537,7 +2537,7 @@
       <div class="useful-links-list" id="usefulLinksList" aria-live="polite"></div>
     </section>
   </div>
-
+ 
   <div class="padrinho-screen" id="padrinhoScreen" aria-hidden="true">
     <section class="padrinho-sheet" role="dialog" aria-modal="true" aria-labelledby="padrinhoTitle">
       <header class="padrinho-header">
@@ -2549,7 +2549,7 @@
       <p id="padrinhoCaption">Seja encontrado por quem nem sabia que estava te procurando. Anuncie aqui por apenas R$ 10,00 ao ano</p>
     </section>
   </div>
-
+ 
   <div class="important-app-screen" id="importantAppScreen" aria-modal="true" role="dialog" aria-hidden="true" aria-labelledby="importantAppTitle">
     <section class="important-app-page">
       <div class="important-app-card">
@@ -2566,7 +2566,7 @@
       </div>
     </section>
   </div>
-
+ 
   <script>
     const app = document.querySelector('.app');
     const configureScaleSelect = document.querySelector('#configureScaleSelect');
@@ -2671,7 +2671,7 @@
     const toast = document.querySelector('.toast');
     let toastTimer;
     const importantAppScreen = document.querySelector('#importantAppScreen');
-
+ 
     function openImportantAppScreen() {
       importantAppScreen.classList.add('open');
       importantAppScreen.setAttribute('aria-hidden', 'false');
@@ -2689,7 +2689,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && importantAppScreen.classList.contains('open')) closeImportantAppScreen();
     });
-
+ 
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add('show');
@@ -2709,7 +2709,7 @@
         } catch (_) { showToast('Não foi possível salvar a escala neste aparelho.'); }
       });
     }
-
+ 
     const padrinhoScreen = document.querySelector('#padrinhoScreen');
     function openPadrinhoScreen() {
       padrinhoScreen.classList.add('open');
@@ -2727,7 +2727,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && padrinhoScreen.classList.contains('open')) closePadrinhoScreen();
     });
-
+ 
     const usefulLinksScreen = document.querySelector('#usefulLinksScreen');
     const usefulLinksForm = document.querySelector('#usefulLinksForm');
     const usefulLinkName = document.querySelector('#usefulLinkName');
@@ -2739,7 +2739,7 @@
     const usefulLinksStorageKey = 'mareTudo.usefulLinks.v1';
     let usefulLinks = [];
     let editingUsefulLinkId = null;
-
+ 
     function loadUsefulLinks() {
       try {
         const savedValue = localStorage.getItem(usefulLinksStorageKey);
@@ -2752,7 +2752,7 @@
         usefulLinks = Array.isArray(stored) ? stored.filter(item => item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.url === 'string') : [];
       } catch (_) { usefulLinks = []; }
     }
-
+ 
     function saveUsefulLinks() {
       try {
         localStorage.setItem(usefulLinksStorageKey, JSON.stringify(usefulLinks));
@@ -2762,14 +2762,14 @@
         return false;
       }
     }
-
+ 
     function resetUsefulLinkForm() {
       usefulLinksForm.reset();
       editingUsefulLinkId = null;
       usefulLinkSave.textContent = 'ADICIONAR LINK';
       usefulLinkCancel.hidden = true;
     }
-
+ 
     function renderUsefulLinks() {
       usefulLinksList.replaceChildren();
       usefulLinksEmpty.hidden = usefulLinks.length > 0;
@@ -2802,7 +2802,7 @@
         usefulLinksList.appendChild(card);
       });
     }
-
+ 
     function openUsefulLinksScreen() {
       loadUsefulLinks();
       resetUsefulLinkForm();
@@ -2810,13 +2810,13 @@
       usefulLinksScreen.classList.add('open');
       usefulLinksScreen.setAttribute('aria-hidden', 'false');
     }
-
+ 
     function closeUsefulLinksScreen() {
       usefulLinksScreen.classList.remove('open');
       usefulLinksScreen.setAttribute('aria-hidden', 'true');
       resetUsefulLinkForm();
     }
-
+ 
     document.querySelector('#usefulLinksBack').addEventListener('click', closeUsefulLinksScreen);
     document.querySelector('#usefulLinksClose').addEventListener('click', closeUsefulLinksScreen);
     usefulLinksScreen.addEventListener('click', event => {
@@ -2826,7 +2826,7 @@
       if (event.key === 'Escape' && usefulLinksScreen.classList.contains('open')) closeUsefulLinksScreen();
     });
     usefulLinkCancel.addEventListener('click', resetUsefulLinkForm);
-
+ 
     usefulLinksForm.addEventListener('submit', event => {
       event.preventDefault();
       const name = usefulLinkName.value.trim();
@@ -2854,7 +2854,7 @@
       resetUsefulLinkForm();
       showToast(wasEditing ? 'Link atualizado.' : 'Link adicionado.');
     });
-
+ 
     usefulLinksList.addEventListener('click', event => {
       const editButton = event.target.closest('[data-link-edit]');
       if (editButton) {
@@ -2877,18 +2877,18 @@
         if (saveUsefulLinks()) renderUsefulLinks();
       }
     });
-
+ 
     const settingsScreen = document.querySelector('#settingsScreen');
     const themeChoiceButtons = [...document.querySelectorAll('[data-theme-choice]')];
     const themeModeKey = 'mareTudo.themeMode.v2';
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-
+ 
     function updateThemeMeta(mode) {
       if (!themeColorMeta) return;
       const light = mode === 'light' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme: light)').matches);
       themeColorMeta.content = light ? '#E5F1FC' : '#111315';
     }
-
+ 
     function applyThemeMode(mode, persist = true) {
       const validMode = ['light', 'dark', 'auto'].includes(mode) ? mode : 'dark';
       document.documentElement.dataset.themeMode = validMode;
@@ -2902,11 +2902,11 @@
         try { localStorage.setItem(themeModeKey, validMode); } catch (_) {}
       }
     }
-
+ 
     let initialTheme = 'light';
     try { initialTheme = localStorage.getItem(themeModeKey) || 'light'; } catch (_) {}
     applyThemeMode(initialTheme, false);
-
+ 
     function openSettingsScreen() {
       settingsScreen.classList.add('open');
       settingsScreen.setAttribute('aria-hidden', 'false');
@@ -2915,7 +2915,7 @@
       settingsScreen.classList.remove('open');
       settingsScreen.setAttribute('aria-hidden', 'true');
     }
-
+ 
     settingsScreen.addEventListener('click', event => {
       if (event.target === settingsScreen || event.target.closest('[data-close-settings]')) {
         closeSettingsScreen();
@@ -2935,12 +2935,12 @@
         if (document.documentElement.dataset.themeMode === 'auto') updateThemeMeta('auto');
       });
     }
-
+ 
     // Impede o menu/aviso nativo ao manter qualquer botão pressionado.
     document.addEventListener('contextmenu', event => {
       if (event.target.closest('button, [role="button"]')) event.preventDefault();
     }, { capture: true });
-
+ 
     const servicePlanner = document.querySelector('#servicePlanner');
     // Mantém o calendário fora do contêiner da tela inicial para ocupar o viewport inteiro.
     document.body.appendChild(servicePlanner);
@@ -3064,7 +3064,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !serviceTimePicker.hidden) { event.preventDefault(); event.stopImmediatePropagation(); closeServiceTimePicker(); }
     });
-
+ 
     const serviceLocation = document.querySelector('#serviceLocation');
     const serviceNotes = document.querySelector('#serviceNotes');
     const deleteServiceWrap = document.querySelector('#deleteServiceWrap');
@@ -3088,7 +3088,7 @@
     let lastCalendarClickDate = '';
     let lastCalendarClickAt = 0;
     let services = loadServices();
-
+ 
     const financeCategories = ['ORDINÁRIO', 'RAS', 'PROEIS', 'SEGURANÇA PRESENTE', 'PADRINHO', 'DEIXA "KETO"', 'CAVALINHO', 'OUTROS'];
     const financeKey = 'mareTudo.finance';
     const financeMonthYearStorageKey = 'mareTudo.finance.selectedMonthYear';
@@ -3147,16 +3147,16 @@
     const rankLevelByName = { 'Sd': 'D', 'Cb': 'D', '3⁰ Sgt': 'C', '2⁰ Sgt': 'C', '1⁰ Sgt': 'C', 'Sten': 'C', '2⁰ Ten': 'B', '1⁰ Ten': 'B', 'Cap': 'B', 'Maj': 'A', 'Ten Cel': 'A', 'Cel': 'A' };
     const rankSelect = document.querySelector('#financeRankButton');
     const automaticallyPaidServiceTypes = new Set(['RAS', 'PROEIS', 'SEGURANÇA PRESENTE']);
-
+ 
     function selectedRank() { return rankSelect?.value || localStorage.getItem('mareTudo.rank') || 'Sten'; }
     function selectedRankLevel() { return rankLevelByName[selectedRank()] || 'C'; }
-
+ 
     function loadFinanceData() {
       try { return JSON.parse(localStorage.getItem(financeKey) || '{}') || {}; } catch (_) { return {}; }
     }
-
+ 
     function saveFinanceData(data) { localStorage.setItem(financeKey, JSON.stringify(data)); }
-
+ 
     function parseMoney(value) {
       if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
       let text = String(value || '').replace(/R\$\s?/g, '').trim();
@@ -3165,21 +3165,21 @@
       const number = Number(text);
       return Number.isFinite(number) ? number : 0;
     }
-
+ 
     function formatMoney(value) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', useGrouping: true }).format(value || 0); }
-
+ 
     function syncFinanceRow(row) { row.classList.toggle('selected', row.querySelector('.finance-check').checked); }
-
+ 
     function currentDateKey() {
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     }
-
+ 
     function servicesInSelectedFinancePeriod() {
       const selectedPeriod = financeMonthYearInput?.value || currentDateKey().slice(0, 7);
       return services.filter(service => typeof service.date === 'string' && service.date.slice(0, 7) === selectedPeriod);
     }
-
+ 
     function serviceTimeToMinutes(value) {
       const match = /^(\d{1,2}):([0-5]\d)$/.exec(String(value || '').trim());
       if (!match) return null;
@@ -3187,7 +3187,7 @@
       if (hour > 23) return null;
       return hour * 60 + Number(match[2]);
     }
-
+ 
     function workedServiceDurationMinutes(service) {
       const start = serviceTimeToMinutes(service.startTime);
       const end = serviceTimeToMinutes(service.endTime);
@@ -3200,29 +3200,29 @@
       const hours = Number(durationMatch[1].replace(',', '.'));
       return Number.isFinite(hours) && hours > 0 ? Math.round(hours * 60) : 0;
     }
-
+ 
     function formatWorkedDuration(totalMinutes) {
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
       return minutes ? `${hours}H ${String(minutes).padStart(2, '0')}MIN` : `${hours}H`;
     }
-
+ 
     function serviceHasFinished(service, now = new Date()) {
       if (!service.date || !/^\d{4}-\d{2}-\d{2}$/.test(service.date)) return false;
       const [year, month, day] = service.date.split('-').map(Number);
       const start = serviceTimeToMinutes(service.startTime);
       const end = serviceTimeToMinutes(service.endTime);
-
+ 
       if (end !== null) {
         const endDate = new Date(year, month - 1, day, Math.floor(end / 60), end % 60, 0, 0);
         if (start !== null && end <= start) endDate.setDate(endDate.getDate() + 1);
         return endDate.getTime() <= now.getTime();
       }
-
+ 
       // Sem horário final informado, só considera concluído após o dia do serviço.
       return service.date < currentDateKey();
     }
-
+ 
     function updateWorkedHoursBanner() {
       const totalMinutes = servicesInSelectedFinancePeriod().reduce((sum, service) => {
         if (!automaticallyPaidServiceTypes.has(service.type) || !serviceHasFinished(service)) return sum;
@@ -3239,9 +3239,9 @@
         else financeHoursRemaining.textContent = formatWorkedDuration(goalMinutes - totalMinutes);
       }
     }
-
+ 
     window.setInterval(() => { updateWorkedHoursBanner(); refreshFinanceCompletionStatus(); }, 30000);
-
+ 
     financeHoursGoalInput?.addEventListener('input', () => {
       const goalHours = Number(String(financeHoursGoalInput.value || '').replace(',', '.'));
       const goalMinutes = Number.isFinite(goalHours) && goalHours > 0 ? Math.round(goalHours * 60) : 0;
@@ -3251,7 +3251,7 @@
       } catch (_) {}
       updateWorkedHoursBanner();
     });
-
+ 
     function calculateAutomaticFinance() {
       const totals = {};
       financeCategories.forEach(category => { totals[category] = { received: 0, receivable: 0, workedServices: 0, scheduledServices: 0, count: 0 }; });
@@ -3269,12 +3269,12 @@
       return totals;
     }
     function serviceCountLabel(count) { return `${count} ${count === 1 ? 'serviço' : 'serviços'}`; }
-
+ 
     function moneyInputValue(value) {
       const amount = Number(value ?? 0);
       return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true }).format(Number.isFinite(amount) ? amount : 0);
     }
-
+ 
     function renderFinanceRows() { 
       if (!financeRows) return;
       updateWorkedHoursBanner();
@@ -3306,7 +3306,7 @@
       updateFinanceCount();
       calculateFinance();
     }
-
+ 
     /* Mantido como função única para compatibilidade com versões anteriores do arquivo. */
     function renderFinanceRowsLegacy() {
       if (!financeRows) return;
@@ -3331,13 +3331,13 @@
       });
       updateFinanceCount();
     }
-
+ 
     function persistFinanceRow(row) {
       const data = loadFinanceData();
       data[row.dataset.category] = { selected: row.querySelector('.finance-check').checked, received: row.querySelector('.received').value, receivable: row.querySelector('.receivable').value };
       saveFinanceData(data);
     }
-
+ 
     function updateFinanceCount() {
       const selected = document.querySelectorAll('.finance-check:checked').length;
       const visibleCategoryCount = document.querySelectorAll('.finance-row').length;
@@ -3347,7 +3347,7 @@
       }
       if (financeCount) financeCount.textContent = `${selected} selecionado${selected === 1 ? '' : 's'} · ${selectedRank()} (faixa ${selectedRankLevel()})`;
     }
-
+ 
     function calculateFinance() {
       let received = 0;
       let receivable = 0;
@@ -3394,12 +3394,12 @@
       updateFinanceCount();
       calculateFinance();
     }
-
+ 
     if (financeForecastButton) financeForecastButton.addEventListener('click', calculateFinance);
     if (financeWorkedServicesButton) financeWorkedServicesButton.addEventListener('click', calculateFinance);
     if (financeScheduledServicesButton) financeScheduledServicesButton.addEventListener('click', calculateFinance);
     if (financeServicesGrandTotalButton) financeServicesGrandTotalButton.addEventListener('click', calculateFinance);
-
+ 
     if (financeSelectAll) financeSelectAll.addEventListener('change', () => {
       document.querySelectorAll('.finance-row').forEach(row => { row.querySelector('.finance-check').checked = financeSelectAll.checked; syncFinanceRow(row); persistFinanceRow(row); });
       updateFinanceCount();
@@ -3416,7 +3416,7 @@
     }
     renderFinanceRows();
     scheduleFinanceDateRollover();
-
+ 
     function loadServices() {
       try {
         const value = JSON.parse(localStorage.getItem(servicesKey) || '[]');
@@ -3427,7 +3427,7 @@
         }));
       } catch (_) { return []; }
     }
-
+ 
     function syncServiceTimingControls() {
       const hasHours = Boolean(serviceHours.value);
       const hasSpecificTime = Boolean(serviceStartTime.value || serviceEndTime.value);
@@ -3444,7 +3444,7 @@
       serviceForm.classList.toggle('hours-mode-selected', hasHours);
       serviceForm.classList.toggle('clock-mode-selected', hasSpecificTime);
     }
-
+ 
     function setServiceHours(value, allowToggle = false) {
       const nextValue = allowToggle && serviceHours.value === value ? '' : (value || '');
       serviceHours.value = nextValue;
@@ -3462,7 +3462,7 @@
       syncServiceTimingControls();
       autoFillConfiguredPayment();
     }
-
+ 
     function lockQuestionnaireView() {
       servicePlanner.classList.add('open', 'questionnaire-only');
       servicePlanner.classList.remove('calendar-only');
@@ -3512,7 +3512,7 @@
       if (servicePaymentMode === 'free') serviceReceivable.value = '';
       syncServicePaymentControls();
     }
-
+ 
     const paymentTableScreen = document.querySelector('#paymentTableScreen');
     const paymentTableGroups = document.querySelector('#paymentTableGroups');
     const openPaymentTableButton = document.querySelector('#openPaymentTable');
@@ -3652,7 +3652,7 @@
       showToast('Tabela de pagamentos salva neste aparelho.');
       closePaymentTable();
     });
-
+ 
     document.querySelectorAll('.hours-option').forEach(option => {
       option.addEventListener('click', () => setServiceHours(option.dataset.hours, true));
     });
@@ -3695,16 +3695,16 @@
       syncServicePaymentControls();
     });
     syncServicePaymentControls();
-
+ 
     function dateKey(year, month, day) {
       return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
-
+ 
     function readableDate(key) {
       const [year, month, day] = key.split('-').map(Number);
       return new Date(year, month - 1, day).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
     }
-
+ 
     function updateServiceDateButton() {
       if (!serviceDate.value) {
         selectServiceDateButton.textContent = 'SELECIONAR DATA';
@@ -3715,7 +3715,7 @@
       selectServiceDateButton.textContent = label.charAt(0).toUpperCase() + label.slice(1);
       selectServiceDateButton.classList.remove('empty');
     }
-
+ 
     function serviceColorClass(type) {
       const normalized = String(type || '').trim().toUpperCase();
       if (normalized === 'ORDINÁRIO') return 'ordinario';
@@ -3727,23 +3727,23 @@
       if (normalized === 'CAVALINHO') return 'cavalinho';
       return 'outros';
     }
-
+ 
     function serviceAbbreviation(type) {
       const normalized = String(type || '').replace(/[“”\"]/g, '').trim().toUpperCase();
       if (normalized === 'DEIXA KETO') return 'DK';
       return normalized.slice(0, 3);
     }
-
+ 
     function deletionConfirmationMessage(type) {
       return type === 'ORDINÁRIO'
         ? 'Saiu da escala é ? Se deu bem ! Quer mesmo excluir esse serviço ?'
         : 'Vai mesmo dispensar essa pratinha ?';
     }
-
+ 
     function updateDeleteConfirmationMessage() {
       deleteConfirmMessage.textContent = deletionConfirmationMessage(serviceType.value);
     }
-
+ 
     function hideDayActionSheet() {
       dayActionSheet.hidden = true;
       calendarDeleteConfirm.hidden = true;
@@ -3751,7 +3751,7 @@
       dayActionActions.hidden = false;
       actionDate = '';
     }
-
+ 
     function openDayActionSheet(key) {
       const existing = services.find(service => service.date === key);
       if (!existing) {
@@ -3766,7 +3766,7 @@
       dayActionActions.hidden = false;
       dayActionSheet.hidden = false;
     }
-
+ 
     function removeService(serviceId, dateKey) {
       services = services.filter(service => service.id !== serviceId);
       localStorage.setItem(servicesKey, JSON.stringify(services));
@@ -3787,7 +3787,7 @@
       renderFinanceRows();
       showToast('Serviço excluído do calendário.');
     }
-
+ 
     function renderCalendar() {
       const year = calendarCursor.getFullYear();
       const month = calendarCursor.getMonth();
@@ -3835,7 +3835,7 @@
         calendarGrid.appendChild(button);
       }
     }
-
+ 
     function selectServiceDate(key) {
       selectedServiceDate = key;
       const existing = services.find(service => service.date === key);
@@ -3867,7 +3867,7 @@
       updateDeleteConfirmationMessage();
       if (!servicePlanner.classList.contains('questionnaire-only')) renderCalendar();
     }
-
+ 
     const notesScreen = document.querySelector('#notesScreen');
     document.body.appendChild(notesScreen);
     const notesTitleInput = document.querySelector('#notesTitleInput');
@@ -3884,7 +3884,7 @@
     const notesDelete = document.querySelector('#notesDelete');
     const notesStorageKey = 'mareTudo.notes.archive';
     let activeNoteId = null;
-
+ 
     function loadNotesArchive() {
       try {
         const saved = JSON.parse(localStorage.getItem(notesStorageKey) || '[]');
@@ -3894,13 +3894,13 @@
       const oldTitle = localStorage.getItem('mareTudo.notes.title') || '';
       return oldBody || oldTitle ? [{ id: `${Date.now()}`, title: oldTitle, body: oldBody, updatedAt: Date.now() }] : [];
     }
-
+ 
     function saveNotesArchive(notes) { localStorage.setItem(notesStorageKey, JSON.stringify(notes)); }
-
+ 
     function formatNoteDate(timestamp) {
       return new Date(timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
     }
-
+ 
     function renderNotesArchive() {
       const notes = loadNotesArchive();
       const query = notesSearch.value.trim().toLowerCase();
@@ -3912,7 +3912,7 @@
       notesArchive.innerHTML = filtered.map(note => `<button class="note-item ${note.id === activeNoteId ? 'active' : ''}" type="button" data-note-id="${note.id}"><strong>${note.title || 'Sem título'}</strong><small>${formatNoteDate(note.updatedAt)} · ${(note.body || 'Sem conteúdo').slice(0, 34)}</small></button>`).join('');
       notesArchive.querySelectorAll('.note-item').forEach(item => item.addEventListener('click', () => openNote(item.dataset.noteId)));
     }
-
+ 
     function openNote(id) {
       const note = loadNotesArchive().find(item => item.id === id);
       if (!note) return;
@@ -3922,7 +3922,7 @@
       notesTextarea.value = note.body || '';
       renderNotesArchive();
     }
-
+ 
     function newNote() {
       activeNoteId = null;
       notesDelete.disabled = true;
@@ -3931,7 +3931,7 @@
       renderNotesArchive();
       notesTitleInput.focus();
     }
-
+ 
     function openNotesScreen() {
       app.classList.remove('home-screen');
       activeNoteId = null;
@@ -3945,14 +3945,14 @@
       document.body.classList.add('planner-open');
       setTimeout(() => notesTitleInput.focus(), 0);
     }
-
+ 
     function closeNotesScreen() {
       notesScreen.classList.remove('open');
       notesScreen.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('planner-open');
       if (document.querySelector('.view.active')?.dataset.view === 'home') app.classList.add('home-screen');
     }
-
+ 
     document.querySelector('#notesBack').addEventListener('click', closeNotesScreen);
     document.querySelector('#notesClose').addEventListener('click', closeNotesScreen);
     notesSearch.addEventListener('input', renderNotesArchive);
@@ -4021,7 +4021,7 @@
       newNote();
       showToast('Anotação excluída.');
     });
-
+ 
     const remindersScreen = document.querySelector('#remindersScreen');
     const remindersForm = document.querySelector('#remindersForm');
     const reminderTitle = document.querySelector('#reminderTitle');
@@ -4200,7 +4200,7 @@
         remindersForm.hidden = true;
       }
     });
-
+ 
     const paymentsScreen = document.querySelector('#paymentsScreen');
     function openPaymentsScreen() {
       app.classList.remove('home-screen');
@@ -4229,7 +4229,7 @@
       document.querySelector('#paymentsOfficialPanel').hidden = !isOfficial;
       document.querySelector('#paymentsUpdatesPanel').hidden = isOfficial;
     }));
-
+ 
     const calendarScreen = document.querySelector('#calendarScreen');
     document.body.appendChild(calendarScreen);
     const screenGrid = document.querySelector('#screenCalendarGrid');
@@ -4252,7 +4252,7 @@
     let screenActionIsScaleGenerated = false;
     let returnToCalendarAfterQuestionnaire = false;
     let returnCalendarDate = '';
-
+ 
     function getConfiguredScale() {
       try {
         const scale = localStorage.getItem(configuredScaleStorageKey) || '';
@@ -4269,7 +4269,7 @@
         return { scale, startDate, startTime, anchor, serviceHours, restHours, cycleHours: serviceHours + restHours };
       } catch (_) { return null; }
     }
-
+ 
     function getScheduledScaleServices(firstKey, lastKey, actualServices = services) {
       const config = getConfiguredScale();
       if (!config || !firstKey || !lastKey) return [];
@@ -4304,7 +4304,7 @@
       }
       return generated;
     }
-
+ 
     function renderStandaloneCalendar() {
       services = loadServices();
       const year = screenCursor.getFullYear();
@@ -4340,7 +4340,7 @@
         screenGrid.appendChild(button);
       }
     }
-
+ 
     function renderStandaloneServiceList() {
       services = loadServices();
       screenServiceList.replaceChildren();
@@ -4381,7 +4381,7 @@
         screenServiceList.appendChild(card);
       });
     }
-
+ 
     function setStandaloneListView(showList) {
       calendarScreen.classList.toggle('list-view', showList);
       screenServiceList.hidden = !showList;
@@ -4389,7 +4389,7 @@
       screenListToggle.setAttribute('aria-pressed', showList ? 'true' : 'false');
       if (showList) renderStandaloneServiceList();
     }
-
+ 
     function openStandaloneCalendar() {
       services = loadServices();
       servicePlanner.classList.remove('open', 'calendar-only', 'questionnaire-only');
@@ -4416,7 +4416,7 @@
       setStandaloneListView(false);
       renderStandaloneCalendar();
     }
-
+ 
     function closeStandaloneCalendar() {
       calendarScreen.classList.remove('open');
       screenMarkPrompt.hidden = true;
@@ -4431,7 +4431,7 @@
       document.body.classList.remove('planner-open');
       if (document.querySelector('.view.active')?.dataset.view === 'home') app.classList.add('home-screen');
     }
-
+ 
     function openScreenActions(key) {
       const existing = services.find(service => service.date === key);
       const generated = existing ? null : getScheduledScaleServices(key, key, services)[0];
@@ -4444,7 +4444,7 @@
       screenDeleteConfirm.hidden = true;
       screenActionSheet.hidden = false;
     }
-
+ 
     document.querySelector('#screenPreviousMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() - 1); renderStandaloneCalendar(); });
     document.querySelector('#screenNextMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() + 1); renderStandaloneCalendar(); });
     screenListToggle.addEventListener('click', () => setStandaloneListView(!calendarScreen.classList.contains('list-view')));
@@ -4457,7 +4457,7 @@
       screenDeleteConfirm.hidden = true;
       screenMarkPrompt.hidden = false;
     }
-
+ 
     function dismissCalendarMessage(event) {
       const calendarIsOpen = calendarScreen.classList.contains('open');
       const messageIsOpen = !screenMarkPrompt.hidden || !screenActionSheet.hidden;
@@ -4475,9 +4475,9 @@
         event.stopPropagation();
       }
     }
-
+ 
     document.addEventListener('click', dismissCalendarMessage, true);
-
+ 
     function handleScreenDoubleClick(key) {
       const hasSavedService = services.some(service => service.date === key);
       const hasGeneratedOrdinary = !hasSavedService && getScheduledScaleServices(key, key, services).length > 0;
@@ -4487,7 +4487,7 @@
         openScreenMarkPrompt(key);
       }
     }
-
+ 
     screenGrid.addEventListener('click', event => {
       const day = event.target.closest('.calendar-day[data-date]');
       if (!day) return;
@@ -4559,7 +4559,7 @@
       screenActionIsScaleGenerated = false;
       renderStandaloneCalendar(); showToast('Serviço excluído do calendário.');
     });
-
+ 
     function openPlanner() {
       services = loadServices();
       app.classList.remove('home-screen');
@@ -4572,7 +4572,7 @@
       calendarGrid.style.removeProperty('display');
       renderCalendar();
     }
-
+ 
     function openCalendarOnly() {
       services = loadServices();
       app.classList.remove('home-screen');
@@ -4593,7 +4593,7 @@
         if (servicePlanner.classList.contains('open') && servicePlanner.classList.contains('calendar-only')) renderCalendar();
       });
     }
-
+ 
     function openQuestionnaireOnly(dateToEdit = '') {
       services = loadServices();
       if (dateToEdit) {
@@ -4653,7 +4653,7 @@
         updateDeleteConfirmationMessage();
       }
     }
-
+ 
     function closePlanner() {
       const returnToCalendar = returnToCalendarAfterQuestionnaire;
       const dateToReturn = returnCalendarDate;
@@ -4678,7 +4678,7 @@
         app.classList.add('home-screen');
       }
     }
-
+ 
     function returnToCalendarFromQuestionnaire() {
       const dateToReturn = returnCalendarDate || (returnToCalendarAfterQuestionnaire ? serviceDate.value : '');
       if (!dateToReturn) {
@@ -4698,7 +4698,7 @@
       screenSelectedDate = dateToReturn;
       renderStandaloneCalendar();
     }
-
+ 
     document.querySelector('.planner-back').addEventListener('click', event => {
       event.preventDefault();
       event.stopPropagation();
@@ -4826,7 +4826,7 @@
       }
       removeService(targetId, selectedServiceDate);
     });
-
+ 
     serviceForm.addEventListener('submit', event => {
       event.preventDefault();
       if (!selectedServiceDate) return;
@@ -4883,7 +4883,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && servicePlanner.classList.contains('open')) closePlanner();
     });
-
+ 
     function navigate(viewName) {
       const valid = views.some(view => view.dataset.view === viewName) ? viewName : 'home';
       views.forEach(view => view.classList.toggle('active', view.dataset.view === valid));
@@ -4901,7 +4901,7 @@
         renderFinanceRows();
       }
     }
-
+ 
     document.addEventListener('click', event => {
       const settingsButton = event.target.closest('[data-open-settings]');
       if (settingsButton) {
@@ -4959,24 +4959,24 @@
       }
       const navigation = event.target.closest('[data-go]');
       if (navigation) navigate(navigation.dataset.go);
-
+ 
       const action = event.target.closest('[data-toast]');
       if (action) showToast(action.dataset.toast);
-
+ 
       const tool = event.target.closest('.action-card');
       if (tool && tool.dataset.tool) {
         if (tool.dataset.go) showToast(tool.dataset.message);
         else showToast(tool.dataset.message);
       }
     });
-
-
+ 
+ 
     // O logo Base Quin pode ser movido por arraste, sem redimensionamento.
     const baseQuinHero = document.querySelector('.hero');
     const baseQuinLogo = document.querySelector('#baseQuinLogo');
     const baseQuinLogoKey = 'mareTudo.baseQuinLogo.position.v2';
     const baseQuinLogoLegacyKey = 'mareTudo.baseQuinLogo.position.v1';
-
+ 
     function baseQuinLogoClamp() {
       const area = baseQuinHero.getBoundingClientRect();
       const maxLeft = Math.max(0, area.width - baseQuinLogo.offsetWidth);
@@ -4986,7 +4986,7 @@
       baseQuinLogo.style.left = `${left}px`;
       baseQuinLogo.style.top = `${top}px`;
     }
-
+ 
     function restoreBaseQuinLogoPosition() {
       const area = baseQuinHero.getBoundingClientRect();
       if (!area.width || !area.height) return;
@@ -5011,12 +5011,12 @@
       baseQuinLogo.style.top = `${top}px`;
       baseQuinLogoClamp();
     }
-
+ 
     window.addEventListener('resize', () => requestAnimationFrame(restoreBaseQuinLogoPosition));
     restoreBaseQuinLogoPosition();
-
+ 
     // O logotipo Base Quin permanece fixo na posição salva.
-
+ 
     const ricardoByline = document.querySelector('#ricardoByline');
     const ricardoBylineKey = 'mareTudo.ricardoByline.position.v1';
     function clampRicardoByline() {
@@ -5028,7 +5028,7 @@
       ricardoByline.style.left = `${left}px`;
       ricardoByline.style.top = `${top}px`;
     }
-
+ 
     function restoreRicardoByline() {
       const area = baseQuinHero.getBoundingClientRect();
       if (!area.width || !area.height) return;
@@ -5043,11 +5043,11 @@
       ricardoByline.style.top = `${top}px`;
       clampRicardoByline();
     }
-
+ 
     window.addEventListener('resize', () => requestAnimationFrame(restoreRicardoByline));
     restoreRicardoByline();
-
-
+ 
+ 
     // Os atalhos da capa permanecem fixos nas posições salvas.
     const quickActions = document.querySelector('#quickActions');
     const originalCards = [...quickActions.querySelectorAll('.action-card')];
@@ -5077,9 +5077,18 @@
     remindersCoverCard.dataset.tool = 'Lembretes Agendados';
     remindersCoverCard.dataset.message = 'Abrindo lembretes agendados.';
     quickActions.replaceChildren(markCard, calendarCard, financeCard, otherServicesCard, remindersCoverCard);
-    const cards = [...quickActions.querySelectorAll('.action-card')];
-
+    const oldCoverCards = [...quickActions.querySelectorAll('.action-card')];
+    const keptCards = oldCoverCards.map(sourceCard => sourceCard.cloneNode(true));
+    oldCoverCards.forEach(card => card.remove());
+    keptCards.forEach(card => quickActions.appendChild(card));
+    const primaryCards = keptCards;
+    const duplicateCards = [];
+    const cards = [...primaryCards];
+ 
     const extrasView = document.querySelector('.view[data-view="extras"]');
+    // Remove qualquer conjunto antigo desta tela antes de montar as cópias novas.
+    extrasView?.querySelectorAll('.other-services-panel').forEach(oldPanel => oldPanel.remove());
+    extrasView?.querySelectorAll('.other-service-button, .most-important-app-button').forEach(oldButton => oldButton.remove());
     const extrasHeading = extrasView?.querySelector('.section-heading');
     if (extrasHeading) {
       const heading = extrasHeading.querySelector('h2');
@@ -5125,6 +5134,17 @@
       importantButton.addEventListener('click', openImportantAppScreen);
       panel.append(grid, importantButton);
       extrasHeading.after(panel);
+ 
+      // Recria cada botão a partir do original, substituindo-o no mesmo lugar.
+      // Assim preserva aparência, atributos e a posição individual já salva.
+      panel.querySelectorAll('.other-service-button, .most-important-app-button').forEach(originalButton => {
+        const copiedButton = originalButton.cloneNode(true);
+        copiedButton.style.cssText = originalButton.style.cssText;
+        originalButton.replaceWith(copiedButton);
+        if (copiedButton.matches('.most-important-app-button')) {
+          copiedButton.addEventListener('click', openImportantAppScreen);
+        }
+      });
     }
     const positionKey = 'mareTudo.quickActions.positions.left-v3';
     function cardBounds(card) {
@@ -5135,7 +5155,7 @@
         maxY: Math.max(0, area.height - card.offsetHeight)
       };
     }
-
+ 
     function setCardPosition(card, x, y) {
       const bounds = cardBounds(card);
       const left = Math.min(Math.max(0, x), bounds.maxX);
@@ -5143,48 +5163,68 @@
       card.style.left = `${left}px`;
       card.style.top = `${top}px`;
     }
-
+ 
+    function storeQuickActionPositions() {
+      const saved = {};
+      primaryCards.forEach(card => {
+        const bounds = cardBounds(card);
+        saved[card.dataset.id] = {
+          x: bounds.maxX ? (parseFloat(card.style.left) || 0) / bounds.maxX : 0,
+          y: bounds.maxY ? (parseFloat(card.style.top) || 0) / bounds.maxY : 0
+        };
+      });
+      try { localStorage.setItem(positionKey, JSON.stringify(saved)); } catch (_) {}
+    }
+ 
     function placeDefaultCards() {
       const gap = 32;
-      const cardHeights = cards.map(card => card.offsetHeight);
       const area = quickActions.getBoundingClientRect();
-      const totalHeight = cardHeights.reduce((sum, height) => sum + height, 0) + (cards.length - 1) * gap;
+      const cardHeights = primaryCards.map(card => card.offsetHeight);
+      const totalHeight = cardHeights.reduce((sum, height) => sum + height, 0) + (primaryCards.length - 1) * gap;
       const startY = Math.max(92, area.height - totalHeight - 195);
       let nextY = startY;
-      cards.forEach((card, index) => {
+      primaryCards.forEach((card, index) => {
         setCardPosition(card, 0, nextY);
         nextY += cardHeights[index] + gap;
       });
+      duplicateCards.forEach((card, index) => {
+        const sourceTop = Number.parseFloat(primaryCards[index].style.top) || 0;
+        setCardPosition(card, cardBounds(card).maxX, sourceTop);
+      });
+      storeQuickActionPositions();
     }
-
+ 
     function restorePositions() {
       let saved = {};
       try { saved = JSON.parse(localStorage.getItem(positionKey) || '{}'); } catch (_) { saved = {}; }
-      const hasSaved = cards.some(card => saved[card.dataset.id]);
+      const hasSaved = primaryCards.some(card => saved[card.dataset.id]);
       if (!hasSaved) {
         placeDefaultCards();
         return;
       }
-      cards.forEach(card => {
-        const position = saved[card.dataset.id];
-        if (!position) return;
-        const bounds = cardBounds(card);
-        setCardPosition(card, bounds.maxX * position.x, bounds.maxY * position.y);
-      });
-      cards.forEach(card => { if (!saved[card.dataset.id]) card.style.visibility = 'hidden'; });
-      cards.forEach(card => {
-        if (!saved[card.dataset.id]) {
-          card.style.visibility = 'visible';
+      primaryCards.forEach(card => {
+        const legacyPosition = card.dataset.id === 'lembretes-agendados' ? saved.lembretes : null;
+        const position = saved[card.dataset.id] || legacyPosition;
+        if (position) {
+          const bounds = cardBounds(card);
+          setCardPosition(card, bounds.maxX * position.x, bounds.maxY * position.y);
+        } else {
           setCardPosition(card, 0, Math.max(0, quickActions.clientHeight - card.offsetHeight - 82));
         }
       });
+      duplicateCards.forEach((card, index) => {
+        const source = primaryCards[index];
+        setCardPosition(card, cardBounds(card).maxX, Number.parseFloat(source.style.top) || 0);
+      });
+      storeQuickActionPositions();
     }
-
-    const markedServicesCard = document.querySelector('[data-id="calendario"]');
-    markedServicesCard?.addEventListener('click', event => {
-      event.preventDefault();
-      event.stopPropagation();
-      openStandaloneCalendar();
+ 
+    quickActions.querySelectorAll('[data-open-calendar]').forEach(markedServicesCard => {
+      markedServicesCard.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openStandaloneCalendar();
+      });
     });
     quickActions.addEventListener('contextmenu', event => {
       if (event.target.closest('.action-card')) event.preventDefault();
@@ -5192,14 +5232,14 @@
     document.addEventListener('contextmenu', event => {
       event.preventDefault();
     }, { capture: true });
-
+ 
     window.addEventListener('resize', () => {
       const saved = localStorage.getItem(positionKey);
       if (saved) restorePositions(); else placeDefaultCards();
     });
-
-
-
+ 
+ 
+ 
     // Organiza cada faixa: seta à esquerda, logo centralizado e fechar à direita.
     const brandLogoSource = document.querySelector('#baseQuinLogoImage')?.getAttribute('src');
     function makeBannerLogo() {
@@ -5292,7 +5332,7 @@
     document.querySelectorAll('.reminders-header .reminders-back').forEach(button => {
       button.style.setProperty('border', '2px solid #4C9BFF', 'important');
     });
-
+ 
     document.querySelectorAll('.section-heading').forEach(titleRow => {
       const back = titleRow.previousElementSibling?.matches('.screen-back') ? titleRow.previousElementSibling : null;
       const close = makeHomeClose();
@@ -5302,7 +5342,7 @@
       titleRow.parentElement.insertBefore(banner, titleRow);
       titleRow.classList.add('page-title-row');
     });
-
+ 
     const financeHeader = document.querySelector('.finance-header');
     const financePage = document.querySelector('.finance-page');
     const financeTitle = document.querySelector('.finance-sheet-title');
@@ -5317,7 +5357,7 @@
       financeTitle.classList.add('page-title-row', 'finance-title-row');
       financeHeader.after(financeTitle);
     }
-
+ 
     // Usa uma seta vetorial para centralização precisa e traço mais grosso.
     document.querySelectorAll('.brand-toolbar-back').forEach(button => {
       const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -5334,7 +5374,7 @@
       arrow.appendChild(path);
       button.replaceChildren(arrow);
     });
-
+ 
     // Roteia todas as setas e X para a tela correspondente, inclusive cabeçalhos reorganizados.
     const backCloseSelector = [
       'button.screen-back', 'button.finance-back', 'button.notes-back', 'button.notes-close',
@@ -5361,7 +5401,7 @@
       if (control.closest('.view')) return navigate('home');
       navigate('home');
     }, true);
-
+ 
     // Barra fixa com os mesmos cinco destinos da capa.
     const footerMenu = document.createElement('nav');
     footerMenu.className = 'app-footer-menu';
@@ -5390,7 +5430,7 @@
       });
     }, true);
     document.body.appendChild(footerMenu);
-
+ 
     // Botões de Outros Serviços: posições atuais mantidas, sem arraste.
     const extrasButtonsPositionKey = 'mareTudo.otherServices.buttons.positions.v1';
     function getExtrasButtons() {
@@ -5439,6 +5479,7 @@
             position && Number.isFinite(position.y) ? position.y * limits.maxY : (parseFloat(button.style.top) || 0)
           );
         });
+        storeExtrasButtonPositions();
         return;
       }
       if (grid && !grid.dataset.dragReady) {
@@ -5484,9 +5525,14 @@
     }
     const footerVisibilityObserver = new MutationObserver(updateFooterMenuVisibility);
     footerVisibilityObserver.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-hidden'] });
+    const extrasButtonsObserver = new MutationObserver(() => {
+      if (document.querySelector('.view[data-view="extras"].active')) requestAnimationFrame(prepareExtrasButtons);
+    });
+    const extrasButtonsContainer = document.querySelector('.view[data-view="extras"]');
+    if (extrasButtonsContainer) extrasButtonsObserver.observe(extrasButtonsContainer, { childList: true, subtree: true });
     window.addEventListener('resize', () => requestAnimationFrame(prepareExtrasButtons));
     updateFooterMenuVisibility();
-
+ 
     // Posiciona os atalhos imediatamente, sem esperar outro ciclo de renderização.
     restorePositions();
     updateServiceDateButton();
