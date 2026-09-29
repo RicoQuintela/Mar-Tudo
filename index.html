@@ -2083,7 +2083,62 @@
       .payment-table-input { width: 65px; }
     }
 
-  </style>
+  /* Outros Serviços: posições fixas no próprio arquivo */
+.view[data-view="extras"] .other-services-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-areas:
+    "ferias ferias"
+    "anotacoes links"
+    "padrinho padrinho" !important;
+  gap: 18px 12px !important;
+  margin: 10px 0 0 !important;
+  min-height: 0 !important;
+}
+
+.view[data-view="extras"] .other-service-button {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.view[data-view="extras"] .other-service-button[data-movable-id="other-ferias"] {
+  grid-area: ferias;
+  justify-self: center;
+  width: calc(50% - 6px) !important;
+}
+
+.view[data-view="extras"] .other-service-button[data-movable-id="other-anotacoes"] {
+  grid-area: anotacoes;
+}
+
+.view[data-view="extras"] .other-service-button[data-movable-id="other-links-uteis"] {
+  grid-area: links;
+}
+
+.view[data-view="extras"] .other-service-button[data-movable-id="other-lembretes"] {
+  grid-area: padrinho;
+  justify-self: center;
+  width: calc(50% - 6px) !important;
+}
+
+.view[data-view="extras"] .other-service-button[data-movable-id="other-configuracoes"] {
+  position: static !important;
+  display: block;
+  width: min(82vw, 380px) !important;
+  margin: 40px auto 0 !important;
+}
+
+.view[data-view="extras"] .most-important-app-button {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  display: block !important;
+  width: min(63vw, 320px) !important;
+  margin: 58px auto 18px !important;
+}</style>
 </head>
 <body>
   <div class="app">
