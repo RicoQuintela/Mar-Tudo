@@ -529,15 +529,11 @@
     .notes-close { color: #fff; font-size: 23px; }
     .notes-intro { margin: 0 0 8px; color: var(--muted); font-size: 11px; }
     .notes-toolbar { display: block; margin-bottom: 8px; }
-    .notes-audio-row { display: flex; justify-content: flex-end; margin: 8px 0 0; }
-    .notes-audio, .notes-search { min-height: 38px; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 11px; }
-    .notes-audio { background: #F6DE9A; color: #26220f; font-weight: 950; cursor: pointer; }
-    .notes-audio.listening { background: #f45b5b; color: #fff; animation: audioPulse 1s infinite; }
+    .notes-search { min-height: 38px; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 11px; }
     .notes-audio-preview { display: block; width: 100%; min-height: 40px; margin: 8px 0 4px; }
     .notes-audio-preview[hidden] { display: none; }
     .notes-audio-status { margin: 4px 0 8px; }
     .note-item-play { background: #43c77a; color: #000 !important; }
-    @keyframes audioPulse { 50% { opacity: .58; } }
     .notes-search { width: 100%; padding: 8px 10px; outline: none; }
     .notes-search:focus { border-color: var(--yellow); }
     .notes-archive-open { display: block; width: 100%; min-height: 40px; margin: 8px 0 0; padding: 8px 11px; border: 1px solid #4c9bff !important; border-radius: 10px; background: rgba(76,155,255,.15); color: #000000 !important; font: inherit; font-size: 11px; font-weight: 950; letter-spacing: .06em; text-align: center; cursor: pointer; }
@@ -2159,8 +2155,13 @@
     .service-planner.payment-config-only .planner-sheet { width: 100%; max-width: none; height: 100dvh; max-height: none; overflow: hidden; padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom)); border: 0; border-radius: 0; background: #E5F1FC; color: #153E66; }
     .service-planner.payment-config-only .planner-sheet > :not(#paymentTableScreen) { display: none !important; }
     .payment-table-screen { display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
+    .service-planner.payment-config-only .payment-table-screen { overflow: visible; }
     .payment-table-header { display: grid; grid-template-columns: 40px minmax(0,1fr) 40px; align-items: center; gap: 8px; margin: 0 0 10px; }
     .payment-table-header h2 { margin: 0; color: #008CFF; font-size: 20px; font-weight: 950; line-height: 1.1; text-align: center; }
+    .payment-table-header.stacked-brand-header { width: calc(100% + 36px); margin: calc(-18px - env(safe-area-inset-top)) -18px 10px; padding: 0 !important; }
+    .payment-table-header.stacked-brand-header .brand-toolbar { padding: calc(8px + env(safe-area-inset-top)) 18px 8px; }
+    .payment-table-header.stacked-brand-header .brand-title-row { padding-right: 18px; padding-left: 18px; }
+    .payment-table-header.stacked-brand-header .brand-title-row h2 { text-align: center; }
     .payment-table-back, .payment-table-close { display: grid; place-items: center; width: 38px; height: 38px; min-height: 38px; padding: 0; border: 2px solid #4C9BFF; border-radius: 50%; background: #000; color: #4C9BFF; font-size: 24px; font-weight: 950; line-height: 1; text-align: center; cursor: pointer; }
     .payment-table-close { font-size: 25px; font-weight: 900; }
     .payment-table-intro { flex: 0 0 auto; margin: 0 0 10px; color: #294D69; font-size: 12px; line-height: 1.35; text-align: center; }
@@ -2345,7 +2346,6 @@
         <label class="notes-title-label" for="notesTitleInput">TÍTULO:</label>
         <input class="notes-title-input" id="notesTitleInput" type="text" maxlength="100" placeholder="Opcional" aria-label="Título opcional da anotação" />
         <textarea class="notes-textarea" id="notesTextarea" placeholder="Digite sua anotação..."></textarea>
-        <div class="notes-audio-row"><button class="notes-audio" type="button" id="notesAudio">🎙 GRAVAR ÁUDIO</button></div>
         <audio class="notes-audio-preview" id="notesAudioPreview" controls hidden></audio>
         <p class="notes-audio-status notes-intro" id="notesAudioStatus" aria-live="polite" hidden></p>
         <div class="notes-actions"><button class="notes-save" type="button" id="notesSave">SALVAR ANOTAÇÃO</button><button class="notes-delete" type="button" id="notesDelete">CANCELAR ANOTAÇÃO</button></div>
@@ -2466,12 +2466,12 @@
           <button class="planner-close" type="button" aria-label="Fechar calendário" data-close-planner>×</button>
         </header>
         <section class="payment-table-screen" id="paymentTableScreen" aria-label="Configurar tabela de pagamentos" hidden>
-          <div class="payment-table-header">
+          <header class="payment-table-header">
             <button class="planner-back payment-table-back" id="paymentTableBack" type="button" aria-label="Voltar para Marque seu serviço">←</button>
             <h2>Configurar tabela de pagamentos</h2>
             <button class="planner-close payment-table-close" type="button" data-close-planner aria-label="Fechar">×</button>
-          </div>
-          <p class="payment-table-intro">Informe quanto você recebe por categoria. Os valores ficam salvos neste aparelho e preenchem automaticamente “Valor a receber” ao marcar um serviço. Mantenha sempre atualizada esta tabela de acordo com o valor pago por cada projeto.</p>
+          </header>
+          <p class="payment-table-intro">Informe quanto você recebe por categoria. Os valores ficam salvos neste aparelho e preenchem automaticamente o campo “Valor a receber” ao marcar um serviço. Mantenha esta tabela atualizada de acordo com o valor pago em cada projeto.</p>
           <div class="payment-table-groups" id="paymentTableGroups"></div>
           <button class="payment-table-save" id="savePaymentTable" type="button">Salvar tabela e voltar</button>
         </section>
@@ -4431,7 +4431,6 @@
     const notesTextarea = document.querySelector('#notesTextarea');
     const notesArchive = document.querySelector('#notesArchive');
     const notesSearch = document.querySelector('#notesSearch');
-    const notesAudio = document.querySelector('#notesAudio');
     const notesAudioPreview = document.querySelector('#notesAudioPreview');
     const notesAudioStatus = document.querySelector('#notesAudioStatus');
     const notesArchiveAudioPlayer = document.querySelector('#notesArchiveAudioPlayer');
@@ -4439,13 +4438,6 @@
     const notesStorageKey = 'mareTudo.notes.archive';
     let activeNoteId = null;
     let activeNoteAudioData = '';
-    let notesMediaRecorder = null;
-    let notesMediaStream = null;
-    let notesAudioChunks = [];
-    let discardRecordingOnStop = false;
-    let notesAudioProcessing = false;
-    let notesAudioStarting = false;
-    let notesAudioGeneration = 0;
 
     function loadNotesArchive() {
       try {
@@ -4462,7 +4454,7 @@
         localStorage.setItem(notesStorageKey, JSON.stringify(notes));
         return true;
       } catch (_) {
-        showToast('Não foi possível salvar. O armazenamento deste aparelho pode estar cheio; tente um áudio mais curto.');
+        showToast('Não foi possível salvar. O armazenamento deste aparelho pode estar cheio.');
         return false;
       }
     }
@@ -4490,106 +4482,8 @@
       notesAudioStatus.hidden = !status;
     }
 
-    function stopNotesRecording(discard = false) {
-      if (!notesMediaRecorder) return;
-      discardRecordingOnStop = discard;
-      if (notesMediaRecorder.state !== 'inactive') notesMediaRecorder.stop();
-    }
-
     function resetNotesAudio() {
-      notesAudioGeneration++;
-      notesAudioStarting = false;
-      stopNotesRecording(true);
-      notesAudioProcessing = false;
       setNotesAudioPreview('', '');
-      notesAudio.classList.remove('listening');
-      notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
-    }
-
-    async function toggleNotesAudioRecording() {
-      if (notesMediaRecorder) {
-        if (notesMediaRecorder.state === 'recording') stopNotesRecording(false);
-        return;
-      }
-      if (notesAudioStarting) return;
-      if (notesAudioProcessing) {
-        showToast('Aguarde o processamento do áudio.');
-        return;
-      }
-      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-        showToast('A gravação de áudio precisa de uma página segura e compatível com gravação.');
-        return;
-      }
-      const generation = ++notesAudioGeneration;
-      notesAudioStarting = true;
-      try {
-        notesMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        if (generation !== notesAudioGeneration) {
-          notesMediaStream.getTracks().forEach(track => track.stop());
-          notesMediaStream = null;
-          return;
-        }
-        notesAudioStarting = false;
-        const supportedTypes = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'];
-        const mimeType = supportedTypes.find(type => window.MediaRecorder.isTypeSupported?.(type));
-        const options = mimeType ? { mimeType, audioBitsPerSecond: 48000 } : { audioBitsPerSecond: 48000 };
-        try { notesMediaRecorder = new window.MediaRecorder(notesMediaStream, options); }
-        catch (_) { notesMediaRecorder = new window.MediaRecorder(notesMediaStream); }
-        notesAudioChunks = [];
-        discardRecordingOnStop = false;
-        notesMediaRecorder.ondataavailable = event => { if (event.data?.size) notesAudioChunks.push(event.data); };
-        notesMediaRecorder.onstop = () => {
-          const recorder = notesMediaRecorder;
-          const blob = new Blob(notesAudioChunks, { type: recorder?.mimeType || notesAudioChunks[0]?.type || 'audio/webm' });
-          notesAudioChunks = [];
-          notesMediaStream?.getTracks().forEach(track => track.stop());
-          notesMediaStream = null;
-          notesMediaRecorder = null;
-          notesAudio.classList.remove('listening');
-          notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
-          if (discardRecordingOnStop) {
-            discardRecordingOnStop = false;
-            notesAudioProcessing = false;
-            return;
-          }
-          if (!blob.size) {
-            notesAudioStatus.textContent = 'Nenhum áudio foi gravado.';
-            notesAudioStatus.hidden = false;
-            showToast('Nenhum áudio foi gravado. Tente novamente.');
-            return;
-          }
-          notesAudioProcessing = true;
-          notesAudioStatus.textContent = 'Preparando o áudio…';
-          notesAudioStatus.hidden = false;
-          const reader = new FileReader();
-          reader.onload = () => {
-            if (generation !== notesAudioGeneration) return;
-            notesAudioProcessing = false;
-            setNotesAudioPreview(String(reader.result || ''), 'Áudio pronto. Toque em Salvar Anotação para guardar.');
-          };
-          reader.onerror = () => {
-            if (generation !== notesAudioGeneration) return;
-            notesAudioProcessing = false;
-            notesAudioStatus.textContent = 'Não foi possível preparar o áudio.';
-            notesAudioStatus.hidden = false;
-            showToast('Não foi possível preparar o áudio gravado.');
-          };
-          reader.readAsDataURL(blob);
-        };
-        notesMediaRecorder.start();
-        notesAudio.classList.add('listening');
-        notesAudio.textContent = '⏹ PARAR GRAVAÇÃO';
-        notesAudioStatus.textContent = 'Gravando… toque em PARAR GRAVAÇÃO quando terminar.';
-        notesAudioStatus.hidden = false;
-      } catch (_) {
-        notesAudioStarting = false;
-        notesMediaStream?.getTracks().forEach(track => track.stop());
-        notesMediaStream = null;
-        notesMediaRecorder = null;
-        notesAudio.classList.remove('listening');
-        notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
-        showToast('Não foi possível acessar o microfone. Verifique a permissão do navegador.');
-      }
     }
 
     function renderNotesArchive() {
@@ -4681,10 +4575,6 @@
     }
 
     function openNotesArchiveScreen() {
-      if (notesMediaRecorder || notesAudioProcessing) {
-        showToast('Pare a gravação e aguarde o áudio ficar pronto antes de abrir o arquivo.');
-        return;
-      }
       notesSearch.value = '';
       notesArchiveAudioPlayer.pause();
       notesArchiveAudioPlayer.removeAttribute('src');
@@ -4709,11 +4599,6 @@
     }
 
     function closeNotesScreen() {
-      if (notesMediaRecorder || notesAudioProcessing) {
-        if (notesMediaRecorder?.state === 'recording') stopNotesRecording(false);
-        showToast('Gravação parada. Aguarde o áudio ficar pronto e salve antes de sair.');
-        return;
-      }
       notesScreen.classList.remove('open');
       notesScreen.setAttribute('aria-hidden', 'true');
       notesArchiveScreen.classList.remove('open');
@@ -4733,12 +4618,7 @@
       else if (notesScreen.classList.contains('open')) closeNotesScreen();
     });
     notesSearch.addEventListener('input', renderNotesArchive);
-    notesAudio?.addEventListener('click', toggleNotesAudioRecording);
     document.querySelector('#notesSave').addEventListener('click', () => {
-      if (notesMediaRecorder || notesAudioProcessing) {
-        showToast('Pare a gravação e aguarde o áudio ficar pronto antes de salvar.');
-        return;
-      }
       const notes = loadNotesArchive();
       const note = { id: activeNoteId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: notesTitleInput.value.trim(), body: notesTextarea.value, audioData: activeNoteAudioData, updatedAt: Date.now() };
       const index = notes.findIndex(item => item.id === note.id);
