@@ -5133,7 +5133,18 @@
       importantButton.title = 'O botão mais importante do app';
       importantButton.addEventListener('click', openImportantAppScreen);
       panel.append(grid, importantButton);
-      extrasHeading.after(panel);
+      const configButton = grid.querySelector('[data-movable-id="other-configuracoes"]');
+if (configButton) configButton.remove();
+importantButton.remove();
+
+extrasHeading.after(panel);
+
+if (configButton) {
+  panel.after(configButton);
+  configButton.after(importantButton);
+} else {
+  panel.after(importantButton);
+}
 
       // Recria cada botão a partir do original, substituindo-o no mesmo lugar.
       // Assim preserva aparência, atributos e a posição individual já salva.
