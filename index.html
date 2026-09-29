@@ -5076,7 +5076,7 @@
     remindersCoverCard.querySelector('strong').textContent = 'LEMBRETES AGENDADOS';
     remindersCoverCard.dataset.tool = 'Lembretes Agendados';
     remindersCoverCard.dataset.message = 'Abrindo lembretes agendados.';
-    quickActions.replaceChildren(markCard, calendarCard, financeCard, otherServicesCard, remindersCoverCard);
+    quickActions.replaceChildren(markCard, calendarCard, remindersCoverCard, financeCard, otherServicesCard);
     const oldCoverCards = [...quickActions.querySelectorAll('.action-card')];
     const keptCards = oldCoverCards.map(sourceCard => sourceCard.cloneNode(true));
     oldCoverCards.forEach(card => card.remove());
