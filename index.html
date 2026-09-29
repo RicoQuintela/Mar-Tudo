@@ -182,12 +182,14 @@
       position: absolute;
       z-index: 8;
       display: inline-block;
-      left: 0;
-      top: 0;
+      left: auto;
+      right: 8px;
+      top: auto;
+      bottom: 5px;
       padding: 2px 4px;
       color: #bdbdbd;
       font-family: Arial, "Helvetica Neue", sans-serif;
-      font-size: 17px;
+      font-size: 15px;
       font-style: italic;
       font-weight: 600;
       line-height: 1.2;
@@ -198,11 +200,14 @@
       text-shadow: none;
       -webkit-text-stroke: 0;
       cursor: default;
-      touch-action: auto;
+      touch-action: none;
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
       pointer-events: none;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
     }
 
 
@@ -515,39 +520,47 @@
       .finance-input { min-height: 38px; font-size: 14px; }
     }
 
-    .notes-screen { position: fixed; z-index: 40; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: #181c1e; color: var(--cream); }
+    .notes-screen { position: fixed; z-index: 10010; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: #181c1e; color: var(--cream); }
     .notes-screen.open { display: flex; }
     .notes-sheet { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)); }
     .notes-header { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
-    .notes-header h2 { flex: 1; margin: 0; font-size: 22px; letter-spacing: -.6px; }
+    .notes-header h2 { flex: 1; margin: 0; color: #008CFF; font-size: 22px; letter-spacing: -.6px; }
     .notes-back, .notes-close { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--yellow); font-size: 22px; font-weight: 900; cursor: pointer; }
     .notes-close { color: #fff; font-size: 23px; }
     .notes-intro { margin: 0 0 8px; color: var(--muted); font-size: 11px; }
     .notes-toolbar { display: block; margin-bottom: 8px; }
     .notes-audio-row { display: flex; justify-content: flex-end; margin: 8px 0 0; }
     .notes-audio, .notes-search { min-height: 38px; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 11px; }
-    .notes-audio { background: #f472b6; color: #24121c; font-weight: 950; cursor: pointer; }
+    .notes-audio { background: #F6DE9A; color: #26220f; font-weight: 950; cursor: pointer; }
     .notes-audio.listening { background: #f45b5b; color: #fff; animation: audioPulse 1s infinite; }
+    .notes-audio-preview { display: block; width: 100%; min-height: 40px; margin: 8px 0 4px; }
+    .notes-audio-preview[hidden] { display: none; }
+    .notes-audio-status { margin: 4px 0 8px; }
+    .note-item-play { background: #43c77a; color: #000 !important; }
     @keyframes audioPulse { 50% { opacity: .58; } }
     .notes-search { width: 100%; padding: 8px 10px; outline: none; }
     .notes-search:focus { border-color: var(--yellow); }
-    .notes-archive-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 40px; margin: 7px 0 5px; padding: 8px 11px; border: 1px solid #4c9bff !important; border-radius: 10px; background: rgba(76,155,255,.15); color: #8fc4ff; font: inherit; font-size: 11px; font-weight: 950; letter-spacing: .06em; text-align: left; cursor: pointer; }
-    .notes-archive-toggle::after { content: "⌄"; font-size: 16px; transition: transform .18s ease; }
-    .notes-archive-toggle[aria-expanded="false"]::after { transform: rotate(-90deg); }
+    .notes-archive-open { display: block; width: 100%; min-height: 40px; margin: 8px 0 0; padding: 8px 11px; border: 1px solid #4c9bff !important; border-radius: 10px; background: rgba(76,155,255,.15); color: #000000 !important; font: inherit; font-size: 11px; font-weight: 950; letter-spacing: .06em; text-align: center; cursor: pointer; }
     .notes-archive { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; min-height: 92px; overflow: visible; }
+    .notes-archive-screen .notes-archive { grid-template-columns: 1fr; }
+    .note-item-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .note-item-actions button { flex: 1; min-height: 34px; border: 0; border-radius: 8px; color: #fff; font-size: 10px; font-weight: 900; cursor: pointer; }
+    .note-item-edit { background: #008CFF; }
+    .note-item-delete { background: #f45b5b; color: #000 !important; }
     .notes-archive[hidden] { display: none !important; }
     .note-item { min-width: 0; padding: 8px; border: 1px solid rgba(255,255,255,.13); border-radius: 10px; background: rgba(255,255,255,.045); color: var(--cream); text-align: left; cursor: pointer; }
     .note-item.active { border-color: var(--yellow); background: rgba(247,189,53,.12); }
     .note-item strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
     .note-item small { display: block; margin-top: 4px; overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
     .notes-empty { grid-column: 1 / -1; padding: 10px; border: 1px dashed #42484a; border-radius: 10px; color: var(--muted); font-size: 10px; text-align: center; }
-    .notes-title-input { width: 100%; min-height: 43px; margin: 9px 0 8px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.16); border-radius: 12px; outline: none; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 15px; }
+    .notes-title-label { display: block; margin: 10px 0 4px; color: var(--cream); font-size: 12px; font-weight: 900; }
+    .notes-title-input { width: 100%; min-height: 43px; margin: 0 0 8px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.16); border-radius: 12px; outline: none; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 15px; }
     .notes-title-input:focus { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(247,189,53,.15); }
-    .notes-textarea { width: 100%; height: calc(100dvh - 365px); min-height: 125px; padding: 13px; border: 1px solid rgba(255,255,255,.16); border-radius: 15px; outline: none; resize: none; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 15px; line-height: 1.4; }
+    .notes-textarea { width: 100%; height: calc(100dvh - 395px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); min-height: 125px; padding: 13px; border: 1px solid rgba(255,255,255,.16); border-radius: 15px; outline: none; resize: none; background: rgba(255,255,255,.05); color: var(--cream); font: inherit; font-size: 15px; line-height: 1.4; }
     .notes-textarea:focus { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(247,189,53,.15); }
     .notes-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
     .notes-save, .notes-delete { width: 100%; min-height: 43px; border: 0; border-radius: 12px; font-size: 12px; font-weight: 950; cursor: pointer; }
-    .notes-save { background: var(--yellow); color: #17191a; }
+    .notes-save { background: #43c77a; color: #111111; }
     .notes-delete { background: #f45b5b; color: #000; border: 1px solid #ff8585; box-shadow: 0 0 12px rgba(244,91,91,.28); }
     .notes-delete:disabled { opacity: .72; filter: none; background: rgba(244,91,91,.28); color: #808080; border-color: rgba(255,133,133,.7); box-shadow: 0 0 8px rgba(244,91,91,.12); cursor: not-allowed; }
 
@@ -1097,7 +1110,7 @@
     .settings-screen.open { display: flex; }
     .settings-sheet { width: 100%; height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 20px calc(22px + env(safe-area-inset-bottom)); background: var(--bg); }
     .settings-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .settings-header h2 { flex: 1; margin: 0; font-size: 22px; }
+    .settings-header h2 { flex: 1; margin: 0; color: #008CFF; font-size: 22px; }
     .settings-back, .settings-close { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--yellow); font-size: 22px; font-weight: 900; cursor: pointer; }
     .settings-close { color: var(--cream); }
     .settings-section { margin: 0 0 16px; padding: 15px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
@@ -1142,29 +1155,83 @@
     .useful-links-screen.open { display: flex; }
     .useful-links-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
     .useful-links-header { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; margin-bottom: 18px; }
-    .useful-links-header h2 { margin: 0; text-align: center; font-size: 19px; font-weight: 950; letter-spacing: .3px; }
+    .useful-links-header h2 { margin: 0; color: #008CFF; text-align: center; font-size: 19px; font-weight: 950; letter-spacing: .3px; }
     .useful-links-back, .useful-links-close { display: grid; width: 38px; height: 38px; place-items: center; padding: 0; border: 2px solid #153E66; border-radius: 50%; background: #000; color: #4C9BFF; font-size: 22px; font-weight: 950; cursor: pointer; }
     .useful-links-card { margin: 0 0 14px; padding: 14px; border: 1px solid var(--line); border-radius: 17px; background: var(--panel); }
     .useful-links-form label { display: block; margin: 0 0 6px; color: var(--cream); font-size: 12px; font-weight: 850; }
     .useful-links-input { display: block; width: 100%; min-height: 44px; margin: 0 0 13px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 14px; }
+    .useful-link-paste-hint { display: block; margin: -8px 2px 13px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+    .useful-link-paste-hint[hidden] { display: none; }
     .useful-links-save, .useful-links-cancel { width: 100%; min-height: 43px; margin-top: 4px; padding: 9px 12px; border: 1px solid #153E66; border-radius: 11px; font: inherit; font-size: 12px; font-weight: 950; cursor: pointer; }
     .useful-links-save { background: #4C9BFF; color: #071625; }
     .useful-links-cancel { background: var(--panel-soft); color: var(--cream); }
     .useful-links-list-title { margin: 18px 4px 10px; font-size: 15px; font-weight: 900; }
     .useful-links-list { display: grid; gap: 10px; }
-    .useful-link-item { padding: 12px; border: 1px solid #4C9BFF; border-radius: 14px; background: var(--panel); }
-    .useful-link-name { display: block; margin-bottom: 5px; color: var(--cream); font-size: 14px; font-weight: 900; overflow-wrap: anywhere; }
-    .useful-link-url { display: block; margin-bottom: 10px; color: #4C9BFF; font-size: 12px; line-height: 1.35; text-decoration: underline; overflow-wrap: anywhere; }
-    .useful-link-actions { display: flex; gap: 8px; }
-    .useful-link-action { flex: 1; min-height: 38px; padding: 7px 8px; border: 1px solid #153E66; border-radius: 9px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 11px; font-weight: 850; cursor: pointer; }
+    .useful-link-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: 1px solid #4C9BFF; border-radius: 14px; background: var(--panel); }
+    .useful-link-main { flex: 1 1 auto; min-width: 0; }
+    .useful-link-name { display: block; margin-bottom: 3px; color: var(--cream); font-size: 14px; font-weight: 900; overflow-wrap: anywhere; }
+    .useful-link-url { display: block; margin: 0; color: #4C9BFF; font-size: 12px; line-height: 1.35; text-decoration: underline; overflow-wrap: anywhere; }
+    .useful-link-actions { display: flex; flex: 0 0 auto; gap: 4px; }
+    .useful-link-action { min-height: 30px; padding: 5px 7px; border: 1px solid rgba(128, 128, 128, .28); border-radius: 7px; background: transparent; color: var(--muted); font: inherit; font-size: 9px; font-weight: 750; cursor: pointer; }
+    .useful-link-action:hover, .useful-link-action:focus-visible { border-color: #4C9BFF; color: #4C9BFF; outline: none; }
 
-    .padrinho-screen { position: fixed; z-index: 90; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--cream); }
-    .padrinho-screen.open { display: flex; }
-    .padrinho-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
+    .vacation-screen { position: fixed; z-index: 10010; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--cream); }
+    .vacation-screen.open { display: flex; }
+    .vacation-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
+    .vacation-header.stacked-brand-header { width: calc(100% + 36px); margin: calc(-20px - env(safe-area-inset-top)) -18px 18px; padding: 0 !important; }
+    .vacation-header.stacked-brand-header .brand-toolbar { padding: calc(8px + env(safe-area-inset-top)) 18px 8px; }
+    .vacation-header.stacked-brand-header .brand-title-row { padding-right: 18px; padding-left: 18px; }
+    .vacation-title { margin: 0; color: #008CFF; text-align: center; font-size: 20px; font-weight: 950; line-height: 1.2; }
+    .vacation-info-caption { max-width: 460px; margin: 0 auto 18px; padding: 0 2px; color: #9299A2; font-size: 12px; font-weight: 500; line-height: 1.4; text-align: left; }
+    .vacation-type-card { width: min(100%, 460px); margin: 0 auto 18px; padding: 16px; border: 1px solid #E8EDF3; border-radius: 16px; background: #FFFFFF; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
+    .vacation-type-label { display: block; margin: 0 0 8px; color: #172431; font-size: 14px; font-weight: 900; }
+    .vacation-type-select { display: block; width: 100%; min-height: 58px; padding: 12px 14px; border: 1px solid #4C9BFF; border-radius: 14px; background: #B9DCFF !important; color: #142A3B !important; color-scheme: light; font: inherit; font-size: 16px; }
+    .vacation-type-select option { background: #B9DCFF; color: #142A3B; }
+    .vacation-details-card { margin: 14px 0 0; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+    .vacation-details-card[hidden], .vacation-archive[hidden] { display: none !important; }
+    .vacation-date-heading { margin: 0 0 10px; color: var(--cream); font-size: 13px; font-weight: 900; text-align: center; }
+    .vacation-date-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+    .vacation-date-button { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 7px; min-width: 0; min-height: 64px; padding: 9px 10px; border: 1px solid #4C9BFF; border-radius: 11px; background: var(--panel-soft); color: var(--cream); text-align: left; cursor: pointer; }
+    .vacation-date-button span { font-size: 10px; font-weight: 850; line-height: 1.15; }
+    .vacation-date-button strong { font-size: 12px; font-weight: 900; }
+    .vacation-date-input { position: fixed; top: 50%; left: 50%; width: 1px; height: 1px; padding: 0; opacity: 0; pointer-events: none; }
+    .vacation-observations-label { display: block; margin: 0 0 6px; color: var(--cream); font-size: 12px; font-weight: 850; }
+    .vacation-observations { display: block; width: 100%; min-height: 90px; margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 14px; resize: vertical; }
+    .vacation-save-button, .vacation-archive-toggle { display: block; width: 100%; min-height: 43px; margin-top: 8px; padding: 10px 12px; border: 1px solid #153E66; border-radius: 11px; font: inherit; font-size: 12px; font-weight: 900; cursor: pointer; }
+    .vacation-save-button { background: #4C9BFF; color: #071625; }
+    .vacation-archive-toggle { background: var(--panel-soft); color: var(--cream); }
+    .vacation-cancel-edit { display: block; width: 100%; min-height: 39px; margin-top: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 11px; background: transparent; color: var(--muted); font: inherit; font-size: 11px; font-weight: 850; cursor: pointer; }
+    .vacation-cancel-edit[hidden] { display: none !important; }
+    .vacation-archive { margin-top: 12px; }
+    .vacation-archive-empty { padding: 12px; color: var(--muted); font-size: 12px; text-align: center; }
+    .vacation-records-list { display: grid; gap: 8px; }
+    .vacation-record-card { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: 1px solid #4C9BFF; border-radius: 14px; background: var(--panel); }
+    .vacation-record-main { flex: 1 1 auto; min-width: 0; }
+    .vacation-record-title { display: block; margin-bottom: 3px; color: var(--cream); font-size: 14px; font-weight: 900; overflow-wrap: anywhere; }
+    .vacation-record-period { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .vacation-record-observations { margin: 7px 0 0; color: var(--cream); font-size: 12px; line-height: 1.4; white-space: pre-wrap; }
+    @media (max-width: 370px) { .vacation-date-grid { grid-template-columns: 1fr; } }
+
+    .padrinho-screen { position: fixed; z-index: 90; inset: 0; display: none; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; background: var(--bg); color: var(--cream); }
+    .padrinho-screen.open { display: block; }
+    .padrinho-sheet { box-sizing: border-box; width: 100%; max-width: 520px; min-height: 100%; margin: 0 auto; overflow: visible; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
     .padrinho-header { display: grid; grid-template-columns: 38px 1fr 38px; align-items: start; gap: 10px; margin-bottom: 18px; }
     #padrinhoTitle { position: relative; top: 20px; margin: 32px 0 0; color: #008CFF; text-align: center; font-size: 20px; font-weight: 950; line-height: 1.2; }
     
     #padrinhoCaption { display: block !important; visibility: visible !important; opacity: 1 !important; margin: 38px 0 0; padding: 0 10px; color: #808080 !important; font-size: 13px; font-style: italic !important; font-weight: 700; line-height: 1.4; text-align: justify; }
+    .padrinho-caption-highlight { color: #FF3030 !important; font-size: 15px; font-style: italic !important; }
+    .padrinho-panel { box-sizing: border-box; display: flex; align-items: flex-start; justify-content: flex-start; width: calc(100% + 20px); min-height: 136px; margin: 38px -10px 0; padding: 6px; border: 2px solid #008CFF; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 8px rgba(0,140,255,.9), 0 0 16px rgba(0,140,255,.58); }
+    .padrinho-panel-empty { align-items: center; justify-content: center; margin-top: 22px; }
+    .padrinho-panel-empty-text { color: #153E66; font-size: 24px; font-weight: 950; line-height: 1.15; text-align: center; }
+    .padrinho-panel-logo { display: block; flex: 0 0 auto; width: min(52%, 170px); max-height: 124px; object-fit: contain; object-position: left center; border-radius: 8px; }
+    .padrinho-panel-copy { display: flex; flex: 1 1 auto; flex-direction: column; align-self: stretch; justify-content: space-between; min-width: 0; margin-left: 9px; }
+    .padrinho-panel-copy-info { min-width: 0; }
+    .padrinho-panel-copy-title { display: block; margin: 0 0 4px; color: #153E66; font-size: 12px; font-weight: 900; line-height: 1.15; }
+    .padrinho-panel-copy-text { margin: 0 0 3px; color: #34495E; font-size: 10px; font-weight: 650; line-height: 1.2; overflow-wrap: anywhere; }
+    .padrinho-panel-phone { display: inline-flex; align-items: center; gap: 3px; color: #153E66; font-size: 12px; font-weight: 950; white-space: nowrap; text-decoration: none; cursor: pointer; }
+    .padrinho-phone-number { color: #008CFF; text-decoration: underline; }
+    .padrinho-phone-icon { display: block; flex: 0 0 12px; width: 12px; height: 12px; }
+    .padrinho-panel-instagram { display: block; align-self: flex-end; min-width: 0; margin: 4px 0 0; color: #008CFF; font-size: 11px; font-weight: 800; line-height: 1.2; text-align: right; text-decoration: underline; overflow-wrap: anywhere; }
     .padrinho-header.stacked-brand-header { width: calc(100% + 36px); margin: calc(-20px - env(safe-area-inset-top)) -18px 18px; padding: 0 !important; }
     .padrinho-header.stacked-brand-header .brand-toolbar { padding: calc(8px + env(safe-area-inset-top)) 18px 8px; }
     .padrinho-back, .padrinho-close { display: grid; width: 38px; height: 38px; place-items: center; padding: 0; border: 2px solid #153E66; border-radius: 50%; background: #000; color: #4C9BFF; font-size: 22px; font-weight: 950; cursor: pointer; }
@@ -1930,32 +1997,53 @@
       -webkit-text-stroke: 0 !important;
     }
   
-    /* Atalhos da capa menores, mantendo posicionamento e ações existentes. */
+    /* Atalhos da capa em lista vertical, alinhados à esquerda. */
+    .quick-actions {
+      position: absolute !important;
+      inset: 0 !important;
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: none !important;
+    }
     .quick-actions .action-card {
-      width: calc(46% - 12px) !important;
-      min-height: 40px !important;
-      padding: 5px !important;
-      border: 1px solid #FFFFFF !important;
+      position: absolute !important;
+      left: 0 !important;
+      width: 44% !important;
+      min-height: 46px !important;
+      margin: 0 !important;
+      padding: 8px 7px !important;
+      border: 2px solid #008CFF !important;
       border-radius: 12px !important;
+      background: transparent !important;
       justify-content: center !important;
       text-align: center !important;
+      pointer-events: auto !important;
       cursor: pointer;
     }
+    .quick-actions .action-card:nth-child(1) { top: 31% !important; }
+    .quick-actions .action-card:nth-child(2) { top: 40% !important; }
+    .quick-actions .action-card:nth-child(3) { top: 51.5% !important; }
+    .quick-actions .action-card:nth-child(4) { top: 62.8% !important; }
+    .quick-actions .action-card:nth-child(5) { top: 74.5% !important; }
     .quick-actions .action-card strong {
       width: 100%;
       margin: 0 !important;
-      color: #4C9BFF !important;
-      font-size: 15px !important;
-      line-height: 1.05 !important;
+      color: #FFFFFF !important;
+      font-size: 14px !important;
+      font-style: italic !important;
+      line-height: 1.1 !important;
       text-align: center !important;
     }
+    .quick-actions .action-card:nth-child(2) strong,
+    .quick-actions .action-card:nth-child(3) strong { max-width: 145px; margin-inline: auto !important; }
     @media (max-width: 480px) {
       .quick-actions .action-card {
-        width: calc(46% - 8px) !important;
-        min-height: 38px !important;
-        padding: 4px !important;
+        width: 44% !important;
+        min-height: 46px !important;
+        padding: 8px 6px !important;
       }
-      .quick-actions .action-card strong { font-size: 15px !important; }
+      .quick-actions .action-card strong { font-size: 14px !important; font-style: italic !important; }
     }
   
     .app-footer-menu {
@@ -1999,6 +2087,7 @@
     .planner-sheet, .settings-sheet, .useful-links-sheet { padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
     .view:not([data-view="home"]) main { padding-bottom: 82px !important; }
     .finance-page { padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important; }
+    .notes-screen .notes-sheet { padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important; }
   
     .view[data-view="extras"] main button:not(.screen-back):not(.brand-toolbar-back):not(.brand-toolbar-close):not(.most-important-app-button),
     .view[data-view="extras"] main button:not(.screen-back):not(.brand-toolbar-back):not(.brand-toolbar-close):not(.most-important-app-button):active,
@@ -2083,62 +2172,63 @@
       .payment-table-input { width: 65px; }
     }
 
-  /* Outros Serviços: posições fixas no próprio arquivo */
-.view[data-view="extras"] .other-services-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  grid-template-areas:
-    "ferias ferias"
-    "anotacoes links"
-    "padrinho padrinho" !important;
-  gap: 18px 12px !important;
-  margin: 10px 0 0 !important;
-  min-height: 0 !important;
-}
 
-.view[data-view="extras"] .other-service-button {
-  position: static !important;
-  inset: auto !important;
-  transform: none !important;
-  width: 100% !important;
-  margin: 0 !important;
-}
+    /* Espaçamento fixo de Outros Serviços, conforme a referência enviada. */
+    .view[data-view="extras"] .other-services-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      grid-template-areas:
+        "ferias ferias"
+        "anotacoes links"
+        "padrinho padrinho" !important;
+      gap: 18px 12px !important;
+      margin: 10px 0 0 !important;
+      min-height: 0 !important;
+    }
+    .view[data-view="extras"] .other-service-button {
+      position: static !important;
+      inset: auto !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    .view[data-view="extras"] .other-service-button[data-movable-id="other-ferias"] {
+      grid-area: ferias;
+      justify-self: center;
+      width: calc(50% - 6px) !important;
+    }
+    .view[data-view="extras"] .other-service-button[data-movable-id="other-anotacoes"] { grid-area: anotacoes; }
+    .view[data-view="extras"] .other-service-button[data-movable-id="other-links-uteis"] { grid-area: links; }
+    .view[data-view="extras"] .other-service-button[data-movable-id="other-lembretes"] {
+      grid-area: padrinho;
+      justify-self: center;
+      width: calc(50% - 6px) !important;
+    }
+    .view[data-view="extras"] .other-service-button[data-movable-id="other-configuracoes"] {
+      position: static !important;
+      inset: auto !important;
+      left: auto !important;
+      top: auto !important;
+      display: block !important;
+      width: min(82vw, 380px) !important;
+      margin: 40px auto 0 !important;
+    }
+    .view[data-view="extras"] .most-important-app-button {
+      position: static !important;
+      inset: auto !important;
+      left: auto !important;
+      top: auto !important;
+      bottom: auto !important;
+      transform: none !important;
+      display: block !important;
+      width: min(63vw, 320px) !important;
+      max-width: min(63vw, 320px) !important;
+      margin: 58px auto 18px !important;
+    }
 
-.view[data-view="extras"] .other-service-button[data-movable-id="other-ferias"] {
-  grid-area: ferias;
-  justify-self: center;
-  width: calc(50% - 6px) !important;
-}
-
-.view[data-view="extras"] .other-service-button[data-movable-id="other-anotacoes"] {
-  grid-area: anotacoes;
-}
-
-.view[data-view="extras"] .other-service-button[data-movable-id="other-links-uteis"] {
-  grid-area: links;
-}
-
-.view[data-view="extras"] .other-service-button[data-movable-id="other-lembretes"] {
-  grid-area: padrinho;
-  justify-self: center;
-  width: calc(50% - 6px) !important;
-}
-
-.view[data-view="extras"] .other-service-button[data-movable-id="other-configuracoes"] {
-  position: static !important;
-  display: block;
-  width: min(82vw, 380px) !important;
-  margin: 40px auto 0 !important;
-}
-
-.view[data-view="extras"] .most-important-app-button {
-  position: static !important;
-  inset: auto !important;
-  transform: none !important;
-  display: block !important;
-  width: min(63vw, 320px) !important;
-  margin: 58px auto 18px !important;
-}</style>
+  </style>
 </head>
 <body>
   <div class="app">
@@ -2153,38 +2243,18 @@
         </div>
         <div class="quick-tools-overlay">
           <div class="quick-actions" id="quickActions" aria-label="Atalhos fixos da capa">
-          <button class="action-card" type="button" draggable="false" data-id="adicionar-servico" data-open-service="true" data-tool="Marcar Serviço" data-message="Pronto para adicionar um novo serviço.">
-            
-            <strong>MARCAR SERVIÇO</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="calendario" data-open-calendar="true" data-tool="Visualizar Serviços no Calendário" data-message="Abrindo o calendário de serviços.">
-            
-            <strong>VISUALIZAR SERVIÇOS JÁ MARCADOS</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="resumo-financeiro" data-go="financeiro" data-tool="Resumo Financeiro" data-message="Abrindo seu resumo financeiro.">
-            
-            <strong>FAZMIRRÍ</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="ferias" data-tool="Férias / Afastamentos" data-message="Você poderá registrar férias e afastamentos nesta área.">
-            
-            <strong>Férias / Afastamentos</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="lembretes" data-open-reminders="true" data-tool="Lembretes de Serviço" data-message="Abrindo seus lembretes de serviço.">
-            
-            <strong>Lembretes de Serviço</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="anotacoes" data-open-notes="true" data-tool="Minhas Anotações" data-message="Abrindo suas anotações.">
-            
-            <strong>Minhas Anotações</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="links-uteis" data-open-links="true" data-tool="Links Úteis" data-message="Adicione aqui os sites e sistemas que você mais usa.">
-            
-            <strong>Links Úteis</strong>
-          </button>
-          <button class="action-card" type="button" draggable="false" data-id="configuracoes" data-open-settings="true" data-tool="Configurações" data-message="Abrindo configurações.">
-            
-            <strong>CONFIGURAÇÕES</strong>
-          </button>
+            <button class="action-card" type="button" draggable="false" data-id="adicionar-servico" data-open-service="true" data-tool="Marcar Serviço" data-message="Pronto para adicionar um novo serviço."><strong>MARCAR SERVIÇO</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="calendario" data-open-calendar="true" data-tool="Serviços já marcados" data-message="Abrindo o calendário de serviços."><strong>SERVIÇOS JÁ MARCADOS</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="lembretes-agendados" data-open-reminders="true" data-tool="Lembretes Agendados" data-message="Abrindo lembretes agendados."><strong>LEMBRETES AGENDADOS</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="resumo-financeiro" data-go="financeiro" data-tool="Faz-me rir" data-message="Abrindo seu resumo financeiro."><strong>FAZMIRRÍ</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="outros-servicos" data-go="extras" data-tool="Outros" data-message="Abrindo outros serviços."><strong>OUTROS</strong></button>
+          </div>
+          <div id="quickActionTemplates" hidden aria-hidden="true">
+            <button class="action-card" type="button" draggable="false" data-id="ferias" data-tool="Férias / Afastamentos" data-message="Você poderá registrar férias e afastamentos nesta área."><strong>Férias / Afastamentos</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="lembretes" data-open-reminders="true" data-tool="Lembretes de Serviço" data-message="Abrindo seus lembretes de serviço."><strong>Lembretes de Serviço</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="anotacoes" data-open-notes="true" data-tool="Minhas Anotações" data-message="Abrindo suas anotações."><strong>Minhas Anotações</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="links-uteis" data-open-links="true" data-tool="Links Úteis" data-message="Adicione aqui os sites e sistemas que você mais usa."><strong>Links Úteis</strong></button>
+            <button class="action-card" type="button" draggable="false" data-id="configuracoes" data-open-settings="true" data-tool="Configurações" data-message="Abrindo configurações."><strong>CONFIGURAÇÕES</strong></button>
           </div>
         </div>
 
@@ -2233,7 +2303,7 @@
         </div>
         <section class="finance-sheet">
           <div class="finance-sheet-title"><h3>Detalhamento Financeiro:</h3></div>
-          <p class="finance-sheet-hint">Os serviços marcados aparecerão aqui. Escolha a(s) categoria(s) que deseja detalhar e confira o resumo no final da listagem.</p>
+          <p class="finance-sheet-hint">Os serviços marcados aparecerão aqui. Escolha a(s) categoria(s) que deseja detalhar e confira o RESUMO no final da listagem.</p>
           <div class="finance-period-picker"><span class="finance-period-label">Selecione mês e ano:</span><button class="finance-period-button" id="financeMonthYearButton" type="button">ESCOLHER MÊS E ANO</button><input class="finance-period-input" id="financeMonthYearInput" type="month" aria-label="Escolher mês e ano" /></div>
           <label class="finance-select-all"><input id="financeSelectAll" type="checkbox" /> Selecionar todas as categorias</label>
           <div class="finance-table">
@@ -2262,13 +2332,27 @@
           <h2 id="notesTitle">MINHAS ANOTAÇÕES</h2>
           <button class="notes-close" type="button" id="notesClose" aria-label="Fechar anotações">×</button>
         </header>
-        <p class="notes-intro">Arquivo de anotações</p>
-        <div class="notes-toolbar"><input class="notes-search" id="notesSearch" type="search" placeholder="Pesquisar anotação" aria-label="Pesquisar anotação" /></div>
-        <input class="notes-title-input" id="notesTitleInput" type="text" maxlength="100" placeholder="Título (opcional)" aria-label="Título opcional da anotação" />
+        <label class="notes-title-label" for="notesTitleInput">TÍTULO:</label>
+        <input class="notes-title-input" id="notesTitleInput" type="text" maxlength="100" placeholder="Opcional" aria-label="Título opcional da anotação" />
         <textarea class="notes-textarea" id="notesTextarea" placeholder="Digite sua anotação..."></textarea>
-        <div class="notes-audio-row"><button class="notes-audio" type="button" id="notesAudio">🎙 ÁUDIO</button></div>
-        <div class="notes-actions"><button class="notes-save" type="button" id="notesSave">SALVAR ANOTAÇÃO</button><button class="notes-delete" type="button" id="notesDelete" disabled>EXCLUIR ANOTAÇÃO</button></div>
-        <button class="notes-archive-toggle" id="notesArchiveToggle" type="button" aria-expanded="true" aria-controls="notesArchive">ANOTAÇÕES ARQUIVADAS</button>
+        <div class="notes-audio-row"><button class="notes-audio" type="button" id="notesAudio">🎙 GRAVAR ÁUDIO</button></div>
+        <audio class="notes-audio-preview" id="notesAudioPreview" controls hidden></audio>
+        <p class="notes-audio-status notes-intro" id="notesAudioStatus" aria-live="polite" hidden></p>
+        <div class="notes-actions"><button class="notes-save" type="button" id="notesSave">SALVAR ANOTAÇÃO</button><button class="notes-delete" type="button" id="notesDelete">CANCELAR ANOTAÇÃO</button></div>
+        <button class="notes-archive-open" id="notesArchiveOpen" type="button">ANOTAÇÕES ARQUIVADAS</button>
+      </section>
+    </div>
+
+    <div class="notes-screen notes-archive-screen" id="notesArchiveScreen" aria-hidden="true">
+      <section class="notes-sheet" role="dialog" aria-modal="true" aria-labelledby="notesArchiveTitle">
+        <header class="notes-header">
+          <button class="notes-back" type="button" id="notesArchiveBack" aria-label="Voltar às minhas anotações">←</button>
+          <h2 id="notesArchiveTitle">ANOTAÇÕES ARQUIVADAS</h2>
+          <button class="notes-close" type="button" id="notesArchiveClose" aria-label="Fechar anotações">×</button>
+        </header>
+        <p class="notes-intro">Procure por:</p>
+        <div class="notes-toolbar"><input class="notes-search" id="notesSearch" type="search" placeholder="Pesquisar anotação" aria-label="Pesquisar anotação" /></div>
+        <audio class="notes-audio-preview archive-audio-player" id="notesArchiveAudioPlayer" controls hidden></audio>
         <div class="notes-archive" id="notesArchive"></div>
       </section>
     </div>
@@ -2521,14 +2605,20 @@
         <h3 class="settings-scale-heading">Configure sua escala <span>(serviço ordinário)</span></h3>
         <select class="settings-scale-select" id="configureScaleSelect" aria-label="Escolha sua escala de serviço" required>
           <option value="" selected disabled>informe sua escala</option>
-          <option value="12x24">12x24 — 12h de serviço / 24h de folga</option>
-          <option value="12x48">12x48 — 12h de serviço / 48h de folga</option>
-          <option value="12x36">12x36 — 12h de serviço / 36h de folga</option>
-          <option value="24x48">24x48 — 24h de serviço / 48h de folga</option>
-          <option value="24x72">24x72 — 24h de serviço / 72h de folga</option>
-          <option value="6x18">6x18 — 6h de serviço / 18h de folga</option>
-          <option value="12x72">12x72 — 12h de serviço / 72h de folga</option>
-          <option value="outra">Outra escala</option>
+          <option value="8x40">8 x 40</option>
+          <option value="12x24">12 x 24</option>
+          <option value="12x36">12 x 36</option>
+          <option value="12x48">12 x 48</option>
+          <option value="12x60">12 x 60</option>
+          <option value="24x48">24 x 48</option>
+          <option value="24x72">24 x 72</option>
+          <option value="48x96">48 x 96</option>
+          <option value="48x144">48 x 144</option>
+          <option value="12x24x12x48">12 x 24 x 12 x 48</option>
+          <option value="12x24x12x72">12 x 24 x 12 x 72</option>
+          <option value="12x36x12x60">12 x 36 x 12 x 60</option>
+          <option value="12x48x12x72">12 x 48 x 12 x 72</option>
+          <option value="nao-informar">Não informar</option>
         </select>
         <div class="settings-scale-start-controls">
           <button class="settings-scale-start-button" id="configureScaleStart" type="button">Quando o serviço deve ser iniciado</button>
@@ -2583,6 +2673,7 @@
           <input class="useful-links-input" id="usefulLinkName" type="text" maxlength="80" placeholder="Ex.: Portal PMERJ" required />
           <label for="usefulLinkUrl">Endereço do link</label>
           <input class="useful-links-input" id="usefulLinkUrl" type="text" maxlength="2048" inputmode="url" placeholder="https://..." required />
+          <small class="useful-link-paste-hint" id="usefulLinkPasteHint" hidden>Toque e segure no campo e escolha “Colar”.</small>
           <button class="useful-links-save" id="usefulLinkSave" type="submit">ADICIONAR LINK</button>
           <button class="useful-links-cancel" id="usefulLinkCancel" type="button" hidden>CANCELAR EDIÇÃO</button>
         </form>
@@ -2590,6 +2681,51 @@
       <h3 class="useful-links-list-title">Links salvos</h3>
       <div class="useful-links-empty" id="usefulLinksEmpty">Seus links adicionados aparecerão aqui.</div>
       <div class="useful-links-list" id="usefulLinksList" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div class="vacation-screen" id="vacationScreen" aria-hidden="true">
+    <section class="vacation-sheet" role="dialog" aria-modal="true" aria-labelledby="vacationTitle">
+      <header class="vacation-header">
+        <button class="vacation-back" id="vacationBack" type="button" aria-label="Voltar">←</button>
+        <h2 id="vacationTitle" class="vacation-title">FÉRIAS / AFASTAMENTOS</h2>
+        <button class="vacation-close" id="vacationClose" type="button" aria-label="Fechar">×</button>
+      </header>
+      <p class="vacation-info-caption">Mantenha sua agenda organizada registrando férias, licenças, dispensas e outros afastamentos. Os serviços ordinários serão removidos automaticamente neste período de afastamento.</p>
+      <section class="vacation-type-card">
+        <label class="vacation-type-label" id="vacationTypeLabel" for="vacationTypeSelect">TIPO:</label>
+        <select class="vacation-type-select" id="vacationTypeSelect" aria-label="Tipo de férias ou afastamento">
+          <option value="" selected disabled>Selecione uma opção</option>
+          <option value="ferias">Férias</option>
+          <option value="lts">LTS (Licença para Tratamento de Saúde)</option>
+          <option value="le-lp">LE / LP</option>
+          <option value="lip">LIP (Licença para Tratar de Interesses Particulares)</option>
+          <option value="licenca-maternidade">Licença Maternidade</option>
+          <option value="licenca-paternidade">Licença Paternidade</option>
+          <option value="licenca-nupcias">Licença-Núpcias</option>
+          <option value="licenca-luto">Licença-Luto</option>
+          <option value="dispensa-medica">Dispensa Médica</option>
+          <option value="afastamento">Afastamento</option>
+        </select>
+      </section>
+      <section class="vacation-details-card" id="vacationDetails" hidden>
+        <h3 class="vacation-date-heading">DATA DE AFASTAMENTO</h3>
+        <div class="vacation-date-grid">
+          <button class="vacation-date-button" id="vacationStartButton" type="button"><span>INÍCIO</span><strong id="vacationStartLabel">SELECIONE A DATA</strong></button>
+          <input class="vacation-date-input" id="vacationStartDate" type="date" aria-label="Data de início do afastamento" tabindex="-1" />
+          <button class="vacation-date-button" id="vacationEndButton" type="button"><span>TÉRMINO</span><strong id="vacationEndLabel">SELECIONE A DATA</strong></button>
+          <input class="vacation-date-input" id="vacationEndDate" type="date" aria-label="Data de término do afastamento" tabindex="-1" />
+        </div>
+        <label class="vacation-observations-label" for="vacationObservations">OBSERVAÇÕES (OPCIONAL):</label>
+        <textarea class="vacation-observations" id="vacationObservations" rows="4" maxlength="2000" placeholder="Escreva suas observações"></textarea>
+        <button class="vacation-save-button" id="vacationSaveButton" type="button">SALVAR REGISTRO</button>
+        <button class="vacation-cancel-edit" id="vacationCancelEdit" type="button" hidden>CANCELAR EDIÇÃO</button>
+      </section>
+      <button class="vacation-archive-toggle" id="vacationArchiveToggle" type="button" aria-expanded="false">REGISTROS ARQUIVADOS</button>
+      <section class="vacation-archive" id="vacationArchive" aria-label="Registros arquivados" hidden>
+        <p class="vacation-archive-empty" id="vacationArchiveEmpty">Nenhum registro arquivado.</p>
+        <div class="vacation-records-list" id="vacationRecordsList"></div>
+      </section>
     </section>
   </div>
 
@@ -2601,7 +2737,9 @@
         <button class="padrinho-close" type="button" id="padrinhoClose" aria-label="Fechar">×</button>
       </header>
       <h2 id="padrinhoTitle">Quem não é visto não é lembrado</h2>
-      <p id="padrinhoCaption">Seja encontrado por quem nem sabia que estava te procurando. Anuncie aqui por apenas R$ 10,00 ao ano</p>
+      <p id="padrinhoCaption"><span class="padrinho-caption-highlight">Seja encontrado por quem nem sabia que estava te procurando.</span><br>Contato: basequintela@gmail.com<br>(Taxa anual: R$ 20,00)</p>
+      <div class="padrinho-panel"><img class="padrinho-panel-logo" src="data:image/jpeg;base64,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" alt="Logotipo Estrela Saúde Clínica Popular" /><div class="padrinho-panel-copy"><div class="padrinho-panel-copy-info"><strong class="padrinho-panel-copy-title">Clínica médica popular.</strong><p class="padrinho-panel-copy-text">Diversas especialidades e atendimento personalizado.</p><p class="padrinho-panel-copy-text">Conheça nosso clube de vantagens. <a class="padrinho-panel-phone" href="https://wa.me/5521993882646" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp pelo número (21) 99388-2646"><svg class="padrinho-phone-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#25D366"></circle><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.56 3.58.56a1 1 0 0 1 1 1v3.49a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.19 2.46.56 3.58a1 1 0 0 1-.25 1.01l-2.19 2.2z" fill="#FFFFFF"></path></svg><span class="padrinho-phone-number">(21) 99388-2646.</span></a></p><p class="padrinho-panel-copy-text">Rua Conde de Agrolongo 1215, Penha/RJ.</p></div><a class="padrinho-panel-instagram" href="https://www.instagram.com/estrelasaude.clinicapop?stkn=bTd6eG9xaDZnY3N0" target="_blank" rel="noopener noreferrer">@estrelasaude.clinicapop</a></div></div>
+      <div class="padrinho-panel padrinho-panel-empty"><span class="padrinho-panel-empty-text">Anuncie aqui</span></div>
     </section>
   </div>
 
@@ -2615,7 +2753,7 @@
           <span class="important-app-pix">basequintela@gmail.com</span>
           <span>E Deus continua sendo bom!</span>
           <span>Grato...!</span>
-          <img class="important-app-logo" alt="Logotipo Base Quin" src="data:image/webp;base64,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" alt="Logotipo BASE QUIN">
+          <img class="important-app-logo" alt="Logotipo Base Quin" src="data:image/webp;base64,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">
           <button class="important-app-back" id="closeImportantAppScreen" type="button" aria-label="Voltar" title="Voltar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></button>
         </div>
       </div>
@@ -2784,27 +2922,115 @@
     });
 
     const usefulLinksScreen = document.querySelector('#usefulLinksScreen');
+    const vacationScreen = document.querySelector('#vacationScreen');
+    const vacationBack = document.querySelector('#vacationBack');
+    const vacationClose = document.querySelector('#vacationClose');
+    const vacationTypeSelect = document.querySelector('#vacationTypeSelect');
+    const vacationDetails = document.querySelector('#vacationDetails');
+    const vacationStartButton = document.querySelector('#vacationStartButton');
+    const vacationStartDate = document.querySelector('#vacationStartDate');
+    const vacationStartLabel = document.querySelector('#vacationStartLabel');
+    const vacationEndButton = document.querySelector('#vacationEndButton');
+    const vacationEndDate = document.querySelector('#vacationEndDate');
+    const vacationEndLabel = document.querySelector('#vacationEndLabel');
+    const vacationObservations = document.querySelector('#vacationObservations');
+    const vacationSaveButton = document.querySelector('#vacationSaveButton');
+    const vacationCancelEditButton = document.querySelector('#vacationCancelEdit');
+    const vacationArchiveToggle = document.querySelector('#vacationArchiveToggle');
+    const vacationArchive = document.querySelector('#vacationArchive');
+    const vacationArchiveEmpty = document.querySelector('#vacationArchiveEmpty');
+    const vacationRecordsList = document.querySelector('#vacationRecordsList');
+    const vacationRecordsStorageKey = 'mareTudo.vacationRecords.v1';
+    let editingVacationRecordId = null;
     const usefulLinksForm = document.querySelector('#usefulLinksForm');
     const usefulLinkName = document.querySelector('#usefulLinkName');
     const usefulLinkUrl = document.querySelector('#usefulLinkUrl');
     const usefulLinkSave = document.querySelector('#usefulLinkSave');
+    const usefulLinkPasteHint = document.querySelector('#usefulLinkPasteHint');
     const usefulLinkCancel = document.querySelector('#usefulLinkCancel');
     const usefulLinksList = document.querySelector('#usefulLinksList');
     const usefulLinksEmpty = document.querySelector('#usefulLinksEmpty');
     const usefulLinksStorageKey = 'mareTudo.usefulLinks.v1';
+    const usefulLinksDefaultsVersionKey = 'mareTudo.usefulLinksDefaults.v1';
+    const defaultUsefulLinks = [
+      { id: 'system-portal-pmerj', name: 'Portal PMERJ', url: 'https://portal.pmerj.rj.gov.br/login' },
+      { id: 'system-cproeis', name: 'CPROEIS', url: 'https://proeis.rj.gov.br/' },
+      { id: 'system-sei-rj', name: 'SEI RJ', url: 'https://portal.sei.rj.gov.br/' },
+      { id: 'system-portal-servidor', name: 'Portal do Servidor', url: 'https://www.rj.gov.br/sgu/#/' },
+      { id: 'system-sepm', name: 'SEPM', url: 'https://sepm.rj.gov.br/' }
+    ];
     let usefulLinks = [];
     let editingUsefulLinkId = null;
+
+    function normalizeUsefulLinkUrl(value) {
+      try {
+        const url = new URL(value.trim());
+        const path = url.pathname.replace(/\/+$/, '');
+        return `${url.protocol}//${url.host}${path}${url.search}${url.hash}`;
+      } catch (_) {
+        return value.trim().replace(/\/+$/, '').toLowerCase();
+      }
+    }
+
+    function normalizeUsefulLinkName(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
+    function normalizeUsefulLinkHost(value) {
+      try { return new URL(value.trim()).hostname.toLowerCase().replace(/^www\./, ''); }
+      catch (_) { return ''; }
+    }
+
+    function removeDuplicateUsefulLinks(items) {
+      const seenUrls = new Set();
+      const seenSystemLinks = new Set();
+      return items.filter(item => {
+        const urlIdentity = normalizeUsefulLinkUrl(item.url);
+        const nameIdentity = normalizeUsefulLinkName(item.name);
+        const hostIdentity = normalizeUsefulLinkHost(item.url);
+        const systemMatch = defaultUsefulLinks.find(link => normalizeUsefulLinkName(link.name) === nameIdentity || normalizeUsefulLinkHost(link.url) === hostIdentity);
+        const systemIdentity = systemMatch?.id || '';
+        if (seenUrls.has(urlIdentity) || (systemIdentity && seenSystemLinks.has(systemIdentity))) return false;
+        seenUrls.add(urlIdentity);
+        if (systemIdentity) seenSystemLinks.add(systemIdentity);
+        return true;
+      });
+    }
 
     function loadUsefulLinks() {
       try {
         const savedValue = localStorage.getItem(usefulLinksStorageKey);
         if (savedValue === null) {
-          usefulLinks = [{ id: 'example-portal-pmerj', name: 'Portal PMERJ', url: 'https://portal.pmerj.rj.gov.br/login' }];
-          try { localStorage.setItem(usefulLinksStorageKey, JSON.stringify(usefulLinks)); } catch (_) {}
+          usefulLinks = defaultUsefulLinks.map(item => ({ ...item }));
+          try {
+            localStorage.setItem(usefulLinksStorageKey, JSON.stringify(usefulLinks));
+            localStorage.setItem(usefulLinksDefaultsVersionKey, 'v1');
+          } catch (_) {}
           return;
         }
         const stored = JSON.parse(savedValue || '[]');
-        usefulLinks = Array.isArray(stored) ? stored.filter(item => item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.url === 'string') : [];
+        const validLinks = Array.isArray(stored) ? stored.filter(item => item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.url === 'string') : [];
+        usefulLinks = removeDuplicateUsefulLinks(validLinks);
+        let shouldSave = usefulLinks.length !== validLinks.length;
+        if (localStorage.getItem(usefulLinksDefaultsVersionKey) !== 'v1') {
+          const existingDefaultIds = new Set();
+          usefulLinks.forEach(item => {
+            const nameIdentity = normalizeUsefulLinkName(item.name);
+            const urlIdentity = normalizeUsefulLinkUrl(item.url);
+            const hostIdentity = normalizeUsefulLinkHost(item.url);
+            const matchedDefault = defaultUsefulLinks.find(link => normalizeUsefulLinkName(link.name) === nameIdentity || normalizeUsefulLinkUrl(link.url) === urlIdentity || normalizeUsefulLinkHost(link.url) === hostIdentity);
+            if (matchedDefault) existingDefaultIds.add(matchedDefault.id);
+          });
+          const missingDefaults = defaultUsefulLinks.filter(item => !existingDefaultIds.has(item.id));
+          usefulLinks.push(...missingDefaults.map(item => ({ ...item })));
+          shouldSave = true;
+        }
+        if (shouldSave) {
+          try {
+            localStorage.setItem(usefulLinksStorageKey, JSON.stringify(usefulLinks));
+            localStorage.setItem(usefulLinksDefaultsVersionKey, 'v1');
+          } catch (_) {}
+        }
       } catch (_) { usefulLinks = []; }
     }
 
@@ -2823,6 +3049,7 @@
       editingUsefulLinkId = null;
       usefulLinkSave.textContent = 'ADICIONAR LINK';
       usefulLinkCancel.hidden = true;
+      usefulLinkPasteHint.hidden = true;
     }
 
     function renderUsefulLinks() {
@@ -2840,6 +3067,9 @@
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
         anchor.textContent = item.url;
+        const main = document.createElement('div');
+        main.className = 'useful-link-main';
+        main.append(name, anchor);
         const actions = document.createElement('div');
         actions.className = 'useful-link-actions';
         const edit = document.createElement('button');
@@ -2847,16 +3077,238 @@
         edit.className = 'useful-link-action';
         edit.dataset.linkEdit = item.id;
         edit.textContent = 'EDITAR';
+        edit.setAttribute('aria-label', `Editar link ${item.name}`);
         const remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'useful-link-action';
         remove.dataset.linkDelete = item.id;
         remove.textContent = 'EXCLUIR';
-        card.append(name, anchor, actions);
+        remove.setAttribute('aria-label', `Excluir link ${item.name}`);
+        card.append(main, actions);
         actions.append(edit, remove);
         usefulLinksList.appendChild(card);
       });
     }
+
+    function loadVacationRecords() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(vacationRecordsStorageKey) || '[]');
+        return Array.isArray(stored) ? stored.filter(item => item && typeof item.id === 'string' && typeof item.typeLabel === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.startDate) && /^\d{4}-\d{2}-\d{2}$/.test(item.endDate)) : [];
+      } catch (_) { return []; }
+    }
+
+    function saveVacationRecords(records) {
+      try {
+        localStorage.setItem(vacationRecordsStorageKey, JSON.stringify(records));
+        return true;
+      } catch (_) {
+        showToast('Não foi possível salvar o registro neste aparelho.');
+        return false;
+      }
+    }
+
+    function formatVacationDate(value) {
+      if (!value) return 'SELECIONE A DATA';
+      const [year, month, day] = value.split('-');
+      return `${day}/${month}/${year}`;
+    }
+
+    function isOrdinaryVacationService(service) {
+      const type = String(service?.type || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase();
+      return type === 'ORD' || type === 'ORDINARIO';
+    }
+
+    function isVacationDate(key, records = loadVacationRecords()) {
+      return records.some(record => record.startDate <= key && key <= record.endDate);
+    }
+
+    function isHiddenByVacation(service, records = loadVacationRecords()) {
+      return isOrdinaryVacationService(service) && isVacationDate(service?.date || '', records);
+    }
+
+    function removeOrdinaryServicesForVacation(startDate, endDate) {
+      try {
+        const currentServices = Array.isArray(services) ? services : loadServices();
+        const remainingServices = currentServices.filter(service => !(service?.date && startDate <= service.date && service.date <= endDate && isOrdinaryVacationService(service)));
+        const removedCount = currentServices.length - remainingServices.length;
+        if (removedCount > 0) localStorage.setItem(servicesKey, JSON.stringify(remainingServices));
+        services = remainingServices;
+        return removedCount;
+      } catch (_) { return null; }
+    }
+
+    function updateVacationDateLabels() {
+      vacationStartLabel.textContent = formatVacationDate(vacationStartDate.value);
+      vacationEndLabel.textContent = formatVacationDate(vacationEndDate.value);
+    }
+
+    function openNativeVacationDatePicker(input) {
+      try {
+        if (typeof input.showPicker === 'function') input.showPicker();
+        else { input.focus(); input.click(); }
+      } catch (_) { input.focus(); input.click(); }
+    }
+
+    vacationTypeSelect.addEventListener('change', () => {
+      vacationDetails.hidden = !vacationTypeSelect.value;
+    });
+    vacationStartButton.addEventListener('click', () => openNativeVacationDatePicker(vacationStartDate));
+    vacationEndButton.addEventListener('click', () => openNativeVacationDatePicker(vacationEndDate));
+    vacationStartDate.addEventListener('change', updateVacationDateLabels);
+    vacationEndDate.addEventListener('change', updateVacationDateLabels);
+
+    function renderVacationRecords() {
+      const records = loadVacationRecords().sort((a, b) => b.startDate.localeCompare(a.startDate) || b.savedAt - a.savedAt);
+      vacationArchiveEmpty.hidden = records.length > 0;
+      vacationRecordsList.replaceChildren();
+      records.forEach(record => {
+        const card = document.createElement('article');
+        card.className = 'vacation-record-card';
+        const main = document.createElement('div');
+        main.className = 'vacation-record-main';
+        const title = document.createElement('strong');
+        title.className = 'vacation-record-title';
+        title.textContent = record.typeLabel;
+        const period = document.createElement('span');
+        period.className = 'vacation-record-period';
+        period.textContent = `De ${formatVacationDate(record.startDate)} a ${formatVacationDate(record.endDate)}`;
+        main.append(title, period);
+        if (record.observations) {
+          const observations = document.createElement('p');
+          observations.className = 'vacation-record-observations';
+          observations.textContent = record.observations;
+          main.appendChild(observations);
+        }
+        const actions = document.createElement('div');
+        actions.className = 'useful-link-actions';
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'useful-link-action';
+        edit.textContent = 'EDITAR';
+        edit.dataset.vacationEdit = record.id;
+        edit.setAttribute('aria-label', `Editar registro ${record.typeLabel}`);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'useful-link-action';
+        remove.textContent = 'EXCLUIR';
+        remove.dataset.vacationDelete = record.id;
+        remove.setAttribute('aria-label', `Excluir registro ${record.typeLabel}`);
+        actions.append(edit, remove);
+        card.append(main, actions);
+        vacationRecordsList.appendChild(card);
+      });
+    }
+
+    function resetVacationForm() {
+      editingVacationRecordId = null;
+      vacationTypeSelect.value = '';
+      vacationStartDate.value = '';
+      vacationEndDate.value = '';
+      vacationObservations.value = '';
+      vacationDetails.hidden = true;
+      vacationSaveButton.textContent = 'SALVAR REGISTRO';
+      vacationCancelEditButton.hidden = true;
+      updateVacationDateLabels();
+    }
+
+    function beginVacationRecordEdit(id) {
+      const record = loadVacationRecords().find(item => item.id === id);
+      if (!record) return;
+      editingVacationRecordId = record.id;
+      vacationTypeSelect.value = record.type;
+      vacationStartDate.value = record.startDate;
+      vacationEndDate.value = record.endDate;
+      vacationObservations.value = record.observations || '';
+      vacationDetails.hidden = false;
+      vacationSaveButton.textContent = 'SALVAR ALTERAÇÕES';
+      vacationCancelEditButton.hidden = false;
+      updateVacationDateLabels();
+      vacationDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    vacationSaveButton.addEventListener('click', () => {
+      const type = vacationTypeSelect.value;
+      const startDate = vacationStartDate.value;
+      const endDate = vacationEndDate.value;
+      if (!type) return showToast('Selecione o tipo de afastamento.');
+      if (!startDate || !endDate) return showToast('Informe o início e o término do afastamento.');
+      if (endDate < startDate) return showToast('O término não pode ser anterior ao início.');
+      const records = loadVacationRecords();
+      const existing = editingVacationRecordId ? records.find(item => item.id === editingVacationRecordId) : null;
+      if (editingVacationRecordId && !existing) return showToast('Este registro não foi encontrado.');
+      const record = {
+        id: existing?.id || globalThis.crypto?.randomUUID?.() || `vacation-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        type,
+        typeLabel: vacationTypeSelect.selectedOptions[0]?.textContent?.trim() || type,
+        startDate,
+        endDate,
+        observations: vacationObservations.value.trim(),
+        savedAt: existing?.savedAt || Date.now(),
+        updatedAt: existing ? Date.now() : undefined
+      };
+      const updatedRecords = existing ? records.map(item => item.id === existing.id ? record : item) : [record, ...records];
+      if (!saveVacationRecords(updatedRecords)) return;
+      const removedOrdinaryCount = removeOrdinaryServicesForVacation(startDate, endDate);
+      const wasEditing = Boolean(existing);
+      resetVacationForm();
+      renderVacationRecords();
+      if (removedOrdinaryCount === null) {
+        showToast('Registro salvo, mas não foi possível atualizar a lista de serviços.');
+      } else if (removedOrdinaryCount > 0) {
+        const countMessage = removedOrdinaryCount === 1 ? '1 serviço ordinário removido da lista.' : `${removedOrdinaryCount} serviços ordinários removidos da lista.`;
+        showToast(countMessage);
+      } else {
+        showToast(wasEditing ? 'Registro atualizado.' : 'Registro salvo.');
+      }
+    });
+
+    vacationCancelEditButton.addEventListener('click', () => {
+      resetVacationForm();
+      showToast('Edição cancelada.');
+    });
+
+    vacationRecordsList.addEventListener('click', event => {
+      const editButton = event.target.closest('[data-vacation-edit]');
+      if (editButton) {
+        beginVacationRecordEdit(editButton.dataset.vacationEdit);
+        return;
+      }
+      const deleteButton = event.target.closest('[data-vacation-delete]');
+      if (!deleteButton) return;
+      const records = loadVacationRecords();
+      const record = records.find(item => item.id === deleteButton.dataset.vacationDelete);
+      if (!record || !window.confirm(`Excluir o registro de ${record.typeLabel}, de ${formatVacationDate(record.startDate)} a ${formatVacationDate(record.endDate)}?`)) return;
+      if (!saveVacationRecords(records.filter(item => item.id !== record.id))) return;
+      if (editingVacationRecordId === record.id) resetVacationForm();
+      renderVacationRecords();
+      showToast('Registro excluído.');
+    });
+
+    vacationArchiveToggle.addEventListener('click', () => {
+      const open = vacationArchive.hidden;
+      vacationArchive.hidden = !open;
+      vacationArchiveToggle.setAttribute('aria-expanded', String(open));
+      if (open) renderVacationRecords();
+    });
+
+    function openVacationScreen() {
+      vacationScreen.classList.add('open');
+      vacationScreen.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeVacationScreen() {
+      vacationScreen.classList.remove('open');
+      vacationScreen.setAttribute('aria-hidden', 'true');
+    }
+
+    vacationBack.addEventListener('click', closeVacationScreen);
+    vacationClose.addEventListener('click', closeVacationScreen);
+    vacationScreen.addEventListener('click', event => {
+      if (event.target === vacationScreen) closeVacationScreen();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && vacationScreen.classList.contains('open')) closeVacationScreen();
+    });
 
     function openUsefulLinksScreen() {
       loadUsefulLinks();
@@ -2881,6 +3333,15 @@
       if (event.key === 'Escape' && usefulLinksScreen.classList.contains('open')) closeUsefulLinksScreen();
     });
     usefulLinkCancel.addEventListener('click', resetUsefulLinkForm);
+    const showUsefulLinkPasteHint = () => { usefulLinkPasteHint.hidden = false; };
+    usefulLinkUrl.addEventListener('focus', showUsefulLinkPasteHint);
+    usefulLinkUrl.addEventListener('click', showUsefulLinkPasteHint);
+    usefulLinkUrl.addEventListener('paste', () => {
+      setTimeout(() => {
+        usefulLinkPasteHint.hidden = true;
+        showToast('Endereço colado. Confira e salve.');
+      }, 0);
+    });
 
     usefulLinksForm.addEventListener('submit', event => {
       event.preventDefault();
@@ -3924,21 +4385,31 @@
     }
 
     const notesScreen = document.querySelector('#notesScreen');
+    const notesArchiveScreen = document.querySelector('#notesArchiveScreen');
     document.body.appendChild(notesScreen);
+    document.body.appendChild(notesArchiveScreen);
+    const notesArchiveOpen = document.querySelector('#notesArchiveOpen');
+    const notesArchiveBack = document.querySelector('#notesArchiveBack');
+    const notesArchiveClose = document.querySelector('#notesArchiveClose');
     const notesTitleInput = document.querySelector('#notesTitleInput');
     const notesTextarea = document.querySelector('#notesTextarea');
     const notesArchive = document.querySelector('#notesArchive');
-    const notesArchiveToggle = document.querySelector('#notesArchiveToggle');
     const notesSearch = document.querySelector('#notesSearch');
-    notesArchiveToggle.addEventListener('click', () => {
-      const expanded = notesArchiveToggle.getAttribute('aria-expanded') === 'true';
-      notesArchiveToggle.setAttribute('aria-expanded', String(!expanded));
-      notesArchive.hidden = expanded;
-    });
     const notesAudio = document.querySelector('#notesAudio');
+    const notesAudioPreview = document.querySelector('#notesAudioPreview');
+    const notesAudioStatus = document.querySelector('#notesAudioStatus');
+    const notesArchiveAudioPlayer = document.querySelector('#notesArchiveAudioPlayer');
     const notesDelete = document.querySelector('#notesDelete');
     const notesStorageKey = 'mareTudo.notes.archive';
     let activeNoteId = null;
+    let activeNoteAudioData = '';
+    let notesMediaRecorder = null;
+    let notesMediaStream = null;
+    let notesAudioChunks = [];
+    let discardRecordingOnStop = false;
+    let notesAudioProcessing = false;
+    let notesAudioStarting = false;
+    let notesAudioGeneration = 0;
 
     function loadNotesArchive() {
       try {
@@ -3950,37 +4421,209 @@
       return oldBody || oldTitle ? [{ id: `${Date.now()}`, title: oldTitle, body: oldBody, updatedAt: Date.now() }] : [];
     }
 
-    function saveNotesArchive(notes) { localStorage.setItem(notesStorageKey, JSON.stringify(notes)); }
+    function saveNotesArchive(notes) {
+      try {
+        localStorage.setItem(notesStorageKey, JSON.stringify(notes));
+        return true;
+      } catch (_) {
+        showToast('Não foi possível salvar. O armazenamento deste aparelho pode estar cheio; tente um áudio mais curto.');
+        return false;
+      }
+    }
 
     function formatNoteDate(timestamp) {
       return new Date(timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
     }
 
+    function escapeNotesHTML(value) {
+      return String(value ?? '').replace(/[&<>\"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', "'": '&#39;' }[char]));
+    }
+
+    function setNotesAudioPreview(dataUrl, status = '') {
+      activeNoteAudioData = dataUrl || '';
+      if (activeNoteAudioData) {
+        notesAudioPreview.src = activeNoteAudioData;
+        notesAudioPreview.hidden = false;
+      } else {
+        notesAudioPreview.pause();
+        notesAudioPreview.removeAttribute('src');
+        notesAudioPreview.load();
+        notesAudioPreview.hidden = true;
+      }
+      notesAudioStatus.textContent = status;
+      notesAudioStatus.hidden = !status;
+    }
+
+    function stopNotesRecording(discard = false) {
+      if (!notesMediaRecorder) return;
+      discardRecordingOnStop = discard;
+      if (notesMediaRecorder.state !== 'inactive') notesMediaRecorder.stop();
+    }
+
+    function resetNotesAudio() {
+      notesAudioGeneration++;
+      notesAudioStarting = false;
+      stopNotesRecording(true);
+      notesAudioProcessing = false;
+      setNotesAudioPreview('', '');
+      notesAudio.classList.remove('listening');
+      notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
+    }
+
+    async function toggleNotesAudioRecording() {
+      if (notesMediaRecorder) {
+        if (notesMediaRecorder.state === 'recording') stopNotesRecording(false);
+        return;
+      }
+      if (notesAudioStarting) return;
+      if (notesAudioProcessing) {
+        showToast('Aguarde o processamento do áudio.');
+        return;
+      }
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+        showToast('A gravação de áudio precisa de uma página segura e compatível com gravação.');
+        return;
+      }
+      const generation = ++notesAudioGeneration;
+      notesAudioStarting = true;
+      try {
+        notesMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (generation !== notesAudioGeneration) {
+          notesMediaStream.getTracks().forEach(track => track.stop());
+          notesMediaStream = null;
+          return;
+        }
+        notesAudioStarting = false;
+        const supportedTypes = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'];
+        const mimeType = supportedTypes.find(type => window.MediaRecorder.isTypeSupported?.(type));
+        const options = mimeType ? { mimeType, audioBitsPerSecond: 48000 } : { audioBitsPerSecond: 48000 };
+        try { notesMediaRecorder = new window.MediaRecorder(notesMediaStream, options); }
+        catch (_) { notesMediaRecorder = new window.MediaRecorder(notesMediaStream); }
+        notesAudioChunks = [];
+        discardRecordingOnStop = false;
+        notesMediaRecorder.ondataavailable = event => { if (event.data?.size) notesAudioChunks.push(event.data); };
+        notesMediaRecorder.onstop = () => {
+          const recorder = notesMediaRecorder;
+          const blob = new Blob(notesAudioChunks, { type: recorder?.mimeType || notesAudioChunks[0]?.type || 'audio/webm' });
+          notesAudioChunks = [];
+          notesMediaStream?.getTracks().forEach(track => track.stop());
+          notesMediaStream = null;
+          notesMediaRecorder = null;
+          notesAudio.classList.remove('listening');
+          notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
+          if (discardRecordingOnStop) {
+            discardRecordingOnStop = false;
+            notesAudioProcessing = false;
+            return;
+          }
+          if (!blob.size) {
+            notesAudioStatus.textContent = 'Nenhum áudio foi gravado.';
+            notesAudioStatus.hidden = false;
+            showToast('Nenhum áudio foi gravado. Tente novamente.');
+            return;
+          }
+          notesAudioProcessing = true;
+          notesAudioStatus.textContent = 'Preparando o áudio…';
+          notesAudioStatus.hidden = false;
+          const reader = new FileReader();
+          reader.onload = () => {
+            if (generation !== notesAudioGeneration) return;
+            notesAudioProcessing = false;
+            setNotesAudioPreview(String(reader.result || ''), 'Áudio pronto. Toque em Salvar Anotação para guardar.');
+          };
+          reader.onerror = () => {
+            if (generation !== notesAudioGeneration) return;
+            notesAudioProcessing = false;
+            notesAudioStatus.textContent = 'Não foi possível preparar o áudio.';
+            notesAudioStatus.hidden = false;
+            showToast('Não foi possível preparar o áudio gravado.');
+          };
+          reader.readAsDataURL(blob);
+        };
+        notesMediaRecorder.start();
+        notesAudio.classList.add('listening');
+        notesAudio.textContent = '⏹ PARAR GRAVAÇÃO';
+        notesAudioStatus.textContent = 'Gravando… toque em PARAR GRAVAÇÃO quando terminar.';
+        notesAudioStatus.hidden = false;
+      } catch (_) {
+        notesAudioStarting = false;
+        notesMediaStream?.getTracks().forEach(track => track.stop());
+        notesMediaStream = null;
+        notesMediaRecorder = null;
+        notesAudio.classList.remove('listening');
+        notesAudio.textContent = '🎙 GRAVAR ÁUDIO';
+        showToast('Não foi possível acessar o microfone. Verifique a permissão do navegador.');
+      }
+    }
+
     function renderNotesArchive() {
       const notes = loadNotesArchive();
       const query = notesSearch.value.trim().toLowerCase();
-      const filtered = notes.filter(note => `${note.title} ${note.body}`.toLowerCase().includes(query)).sort((a, b) => b.updatedAt - a.updatedAt);
+      const filtered = notes.filter(note => `${note.title || ''} ${note.body || ''}`.toLowerCase().includes(query)).sort((a, b) => b.updatedAt - a.updatedAt);
       if (!filtered.length) {
         notesArchive.innerHTML = '<div class="notes-empty">Nenhuma anotação encontrada.</div>';
         return;
       }
-      notesArchive.innerHTML = filtered.map(note => `<button class="note-item ${note.id === activeNoteId ? 'active' : ''}" type="button" data-note-id="${note.id}"><strong>${note.title || 'Sem título'}</strong><small>${formatNoteDate(note.updatedAt)} · ${(note.body || 'Sem conteúdo').slice(0, 34)}</small></button>`).join('');
-      notesArchive.querySelectorAll('.note-item').forEach(item => item.addEventListener('click', () => openNote(item.dataset.noteId)));
+      notesArchive.innerHTML = filtered.map(note => {
+        const id = escapeNotesHTML(note.id);
+        const title = escapeNotesHTML(note.title || 'Sem título');
+        const preview = escapeNotesHTML((note.body || 'Sem conteúdo').slice(0, 34));
+        const playAction = note.audioData ? `<button class="note-item-play" type="button" data-note-play="${id}">OUVIR ÁUDIO</button>` : '';
+        return `<article class="note-item ${note.id === activeNoteId ? 'active' : ''}" data-note-id="${id}"><strong>${title}</strong><small>${formatNoteDate(note.updatedAt)} · ${preview}</small><div class="note-item-actions">${playAction}<button class="note-item-edit" type="button" data-note-edit="${id}">EDITAR</button><button class="note-item-delete" type="button" data-note-delete="${id}">EXCLUIR</button></div></article>`;
+      }).join('');
     }
+
+    notesArchive.addEventListener('click', event => {
+      const playButton = event.target.closest('[data-note-play]');
+      if (playButton) {
+        const note = loadNotesArchive().find(item => item.id === playButton.dataset.notePlay);
+        if (!note?.audioData) return;
+        notesArchiveAudioPlayer.src = note.audioData;
+        notesArchiveAudioPlayer.hidden = false;
+        notesArchiveAudioPlayer.play().catch(() => showToast('Não foi possível reproduzir este áudio.'));
+        return;
+      }
+      const editButton = event.target.closest('[data-note-edit]');
+      if (editButton) {
+        openNote(editButton.dataset.noteEdit);
+        return;
+      }
+      const deleteButton = event.target.closest('[data-note-delete]');
+      if (!deleteButton) return;
+      const noteId = deleteButton.dataset.noteDelete;
+      const notes = loadNotesArchive();
+      const note = notes.find(item => item.id === noteId);
+      if (!note || !window.confirm(`Excluir a anotação “${note.title || 'Sem título'}”?`)) return;
+      if (!saveNotesArchive(notes.filter(item => item.id !== noteId))) return;
+      if (activeNoteId === noteId) {
+        activeNoteId = null;
+        notesTitleInput.value = '';
+        notesTextarea.value = '';
+        resetNotesAudio();
+      }
+      renderNotesArchive();
+      showToast('Anotação excluída.');
+    });
 
     function openNote(id) {
       const note = loadNotesArchive().find(item => item.id === id);
       if (!note) return;
       activeNoteId = id;
-      notesDelete.disabled = false;
       notesTitleInput.value = note.title || '';
       notesTextarea.value = note.body || '';
+      setNotesAudioPreview(note.audioData || '', note.audioData ? 'Áudio salvo com esta anotação.' : '');
+      notesArchiveScreen.classList.remove('open');
+      notesArchiveScreen.setAttribute('aria-hidden', 'true');
+      notesScreen.classList.add('open');
+      notesScreen.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('planner-open');
       renderNotesArchive();
+      setTimeout(() => notesTitleInput.focus(), 0);
     }
 
     function newNote() {
       activeNoteId = null;
-      notesDelete.disabled = true;
+      resetNotesAudio();
       notesTitleInput.value = '';
       notesTextarea.value = '';
       renderNotesArchive();
@@ -3990,7 +4633,7 @@
     function openNotesScreen() {
       app.classList.remove('home-screen');
       activeNoteId = null;
-      notesDelete.disabled = true;
+      resetNotesAudio();
       notesTitleInput.value = '';
       notesTextarea.value = '';
       notesSearch.value = '';
@@ -4001,80 +4644,81 @@
       setTimeout(() => notesTitleInput.focus(), 0);
     }
 
-    function closeNotesScreen() {
+    function openNotesArchiveScreen() {
+      if (notesMediaRecorder || notesAudioProcessing) {
+        showToast('Pare a gravação e aguarde o áudio ficar pronto antes de abrir o arquivo.');
+        return;
+      }
+      notesSearch.value = '';
+      notesArchiveAudioPlayer.pause();
+      notesArchiveAudioPlayer.removeAttribute('src');
+      notesArchiveAudioPlayer.load();
+      notesArchiveAudioPlayer.hidden = true;
+      renderNotesArchive();
       notesScreen.classList.remove('open');
       notesScreen.setAttribute('aria-hidden', 'true');
+      notesArchiveScreen.classList.add('open');
+      notesArchiveScreen.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('planner-open');
+      setTimeout(() => notesSearch.focus(), 0);
+    }
+
+    function returnToNotesScreen() {
+      notesArchiveScreen.classList.remove('open');
+      notesArchiveScreen.setAttribute('aria-hidden', 'true');
+      notesScreen.classList.add('open');
+      notesScreen.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('planner-open');
+      setTimeout(() => notesTitleInput.focus(), 0);
+    }
+
+    function closeNotesScreen() {
+      if (notesMediaRecorder || notesAudioProcessing) {
+        if (notesMediaRecorder?.state === 'recording') stopNotesRecording(false);
+        showToast('Gravação parada. Aguarde o áudio ficar pronto e salve antes de sair.');
+        return;
+      }
+      notesScreen.classList.remove('open');
+      notesScreen.setAttribute('aria-hidden', 'true');
+      notesArchiveScreen.classList.remove('open');
+      notesArchiveScreen.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('planner-open');
       if (document.querySelector('.view.active')?.dataset.view === 'home') app.classList.add('home-screen');
     }
 
     document.querySelector('#notesBack').addEventListener('click', closeNotesScreen);
     document.querySelector('#notesClose').addEventListener('click', closeNotesScreen);
-    notesSearch.addEventListener('input', renderNotesArchive);
-    let speechRecognition = null;
-    notesAudio.addEventListener('click', () => {
-      if (!window.isSecureContext) {
-        showToast('O microfone foi bloqueado: abra o aplicativo em uma página HTTPS.');
-        return;
-      }
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        showToast('O microfone não foi ativado: este navegador não oferece reconhecimento de voz.');
-        return;
-      }
-      if (speechRecognition) {
-        speechRecognition.stop();
-        return;
-      }
-      speechRecognition = new SpeechRecognition();
-      speechRecognition.lang = 'pt-BR';
-      speechRecognition.interimResults = false;
-      speechRecognition.continuous = false;
-      speechRecognition.onstart = () => { notesAudio.classList.add('listening'); notesAudio.textContent = '🔴 OUVINDO...'; };
-      speechRecognition.onresult = event => {
-        const transcript = event.results[0][0].transcript;
-        notesTextarea.value = notesTextarea.value ? `${notesTextarea.value} ${transcript}` : transcript;
-        notesTextarea.focus();
-      };
-      speechRecognition.onerror = event => {
-        const messages = {
-          'not-allowed': 'O microfone foi bloqueado. Autorize o microfone nas permissões do navegador.',
-          'service-not-allowed': 'O reconhecimento de voz foi bloqueado pelo navegador.',
-          'audio-capture': 'Nenhum microfone disponível foi encontrado no aparelho.',
-          'no-speech': 'Nenhuma fala foi identificada. Toque novamente e fale perto do microfone.',
-          'network': 'Não foi possível conectar ao serviço de reconhecimento de voz.'
-        };
-        showToast(messages[event.error] || 'Não foi possível ativar o microfone.');
-      };
-      speechRecognition.onend = () => { notesAudio.classList.remove('listening'); notesAudio.textContent = '🎙 ÁUDIO'; speechRecognition = null; };
-      try {
-        speechRecognition.start();
-      } catch (_) {
-        speechRecognition = null;
-        notesAudio.classList.remove('listening');
-        notesAudio.textContent = '🎙 ÁUDIO';
-        showToast('Não foi possível iniciar o microfone. Verifique a permissão do navegador.');
-      }
+    notesArchiveOpen.addEventListener('click', openNotesArchiveScreen);
+    notesArchiveBack.addEventListener('click', returnToNotesScreen);
+    notesArchiveClose.addEventListener('click', closeNotesScreen);
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (notesArchiveScreen.classList.contains('open')) returnToNotesScreen();
+      else if (notesScreen.classList.contains('open')) closeNotesScreen();
     });
+    notesSearch.addEventListener('input', renderNotesArchive);
+    notesAudio?.addEventListener('click', toggleNotesAudioRecording);
     document.querySelector('#notesSave').addEventListener('click', () => {
+      if (notesMediaRecorder || notesAudioProcessing) {
+        showToast('Pare a gravação e aguarde o áudio ficar pronto antes de salvar.');
+        return;
+      }
       const notes = loadNotesArchive();
-      const note = { id: activeNoteId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: notesTitleInput.value.trim(), body: notesTextarea.value, updatedAt: Date.now() };
+      const note = { id: activeNoteId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: notesTitleInput.value.trim(), body: notesTextarea.value, audioData: activeNoteAudioData, updatedAt: Date.now() };
       const index = notes.findIndex(item => item.id === note.id);
       if (index >= 0) notes[index] = note; else notes.unshift(note);
-      saveNotesArchive(notes);
+      if (!saveNotesArchive(notes)) return;
       activeNoteId = null;
-      notesDelete.disabled = true;
       notesTitleInput.value = '';
       notesTextarea.value = '';
+      setNotesAudioPreview('', '');
       renderNotesArchive();
       notesTitleInput.focus();
       showToast('Anotação salva.');
     });
     document.querySelector('#notesDelete').addEventListener('click', () => {
-      if (!activeNoteId) return showToast('Nenhuma anotação selecionada.');
-      saveNotesArchive(loadNotesArchive().filter(note => note.id !== activeNoteId));
       newNote();
-      showToast('Anotação excluída.');
+      showToast('Edição da anotação cancelada.');
     });
 
     const remindersScreen = document.querySelector('#remindersScreen');
@@ -4313,15 +4957,20 @@
         const scale = localStorage.getItem(configuredScaleStorageKey) || '';
         const startDate = localStorage.getItem(configuredScaleStartStorageKey) || '';
         const startTime = localStorage.getItem(configuredScaleStartTimeStorageKey) || '00:00';
-        const match = scale.match(/^(\d+)x(\d+)$/);
+        if (!/^\d+(?:x\d+){1,3}$/.test(scale)) return null;
+        const values = scale.split('x').map(Number);
+        if ((values.length !== 2 && values.length !== 4) || values.some(value => !Number.isFinite(value) || value <= 0)) return null;
         const timeMatch = startTime.match(/^(\d{2}):(\d{2})$/);
-        if (!match || !/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !timeMatch) return null;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !timeMatch) return null;
         const [year, month, day] = startDate.split('-').map(Number);
         const anchor = new Date(year, month - 1, day, Number(timeMatch[1]), Number(timeMatch[2]));
-        const serviceHours = Number(match[1]);
-        const restHours = Number(match[2]);
-        if (!Number.isFinite(anchor.getTime()) || !serviceHours || !restHours) return null;
-        return { scale, startDate, startTime, anchor, serviceHours, restHours, cycleHours: serviceHours + restHours };
+        if (!Number.isFinite(anchor.getTime())) return null;
+        const segments = [];
+        for (let index = 0; index < values.length; index += 2) {
+          segments.push({ serviceHours: values[index], restHours: values[index + 1] });
+        }
+        const cycleHours = segments.reduce((total, segment) => total + segment.serviceHours + segment.restHours, 0);
+        return { scale, startDate, startTime, anchor, segments, cycleHours };
       } catch (_) { return null; }
     }
 
@@ -4331,30 +4980,36 @@
       const rangeStart = new Date(`${firstKey}T00:00:00`);
       const rangeEnd = new Date(`${lastKey}T00:00:00`);
       rangeEnd.setDate(rangeEnd.getDate() + 1);
-      const cycleMs = config.cycleHours * 60 * 60 * 1000;
+      const hourMs = 60 * 60 * 1000;
+      const cycleMs = config.cycleHours * hourMs;
       const anchorMs = config.anchor.getTime();
       if (rangeEnd.getTime() <= anchorMs) return [];
-      const firstIndex = Math.max(0, Math.floor((rangeStart.getTime() - anchorMs) / cycleMs) - 2);
-      const lastIndex = Math.ceil((rangeEnd.getTime() - anchorMs) / cycleMs) + 1;
+      const firstCycle = Math.max(0, Math.floor((rangeStart.getTime() - anchorMs) / cycleMs) - 2);
+      const lastCycle = Math.ceil((rangeEnd.getTime() - anchorMs) / cycleMs) + 1;
       const occupiedDates = new Set(actualServices.filter(service => service && service.date).map(service => service.date));
+      const vacationRecords = loadVacationRecords();
       let excludedDates = new Set();
       try {
         const savedExclusions = JSON.parse(localStorage.getItem(configuredScaleExcludedDatesStorageKey) || '[]');
         if (Array.isArray(savedExclusions)) excludedDates = new Set(savedExclusions);
       } catch (_) {}
       const generated = [];
-      for (let index = firstIndex; index <= lastIndex; index += 1) {
-        const shiftStart = new Date(anchorMs + index * cycleMs);
-        const key = dateKey(shiftStart.getFullYear(), shiftStart.getMonth(), shiftStart.getDate());
-        const exclusionKey = `${config.scale}|${config.startDate}|${key}`;
-        if (key < config.startDate || key < firstKey || key > lastKey || occupiedDates.has(key) || excludedDates.has(exclusionKey)) continue;
-        generated.push({
-          id: `scale-${config.scale}-${key}`,
-          date: key,
-          type: 'ORDINÁRIO',
-          hours: `${config.serviceHours}H`,
-          scaleGenerated: true,
-          scalePattern: config.scale
+      for (let cycleIndex = firstCycle; cycleIndex <= lastCycle; cycleIndex += 1) {
+        let segmentOffsetHours = 0;
+        config.segments.forEach((segment, segmentIndex) => {
+          const shiftStart = new Date(anchorMs + cycleIndex * cycleMs + segmentOffsetHours * hourMs);
+          segmentOffsetHours += segment.serviceHours + segment.restHours;
+          const key = dateKey(shiftStart.getFullYear(), shiftStart.getMonth(), shiftStart.getDate());
+          const exclusionKey = `${config.scale}|${config.startDate}|${key}`;
+          if (key < config.startDate || key < firstKey || key > lastKey || occupiedDates.has(key) || excludedDates.has(exclusionKey) || isVacationDate(key, vacationRecords)) return;
+          generated.push({
+            id: `scale-${config.scale}-${cycleIndex}-${segmentIndex}-${key}`,
+            date: key,
+            type: 'ORDINÁRIO',
+            hours: `${segment.serviceHours}H`,
+            scaleGenerated: true,
+            scalePattern: config.scale
+          });
         });
       }
       return generated;
@@ -4371,6 +5026,7 @@
       const total = new Date(year, month + 1, 0).getDate();
       const monthFirstKey = dateKey(year, month, 1);
       const monthLastKey = dateKey(year, month, total);
+      const vacationRecords = loadVacationRecords();
       const generatedByDate = new Map(getScheduledScaleServices(monthFirstKey, monthLastKey, services).map(service => [service.date, service]));
       const today = new Date();
       const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
@@ -4382,7 +5038,7 @@
         const number = document.createElement('span'); number.className = 'day-number'; number.textContent = day; button.appendChild(number);
         if (key === todayKey) button.classList.add('today');
         if (key === screenSelectedDate) button.classList.add('selected');
-        const matches = services.filter(service => service.date === key);
+        const matches = services.filter(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
         const generatedService = generatedByDate.get(key);
         if (!matches.length && generatedService) matches.push(generatedService);
         const colors = [...new Set(matches.map(service => serviceColorClass(service.type)))];
@@ -4407,7 +5063,9 @@
       listEndDate.setFullYear(listEndDate.getFullYear() + 1);
       const listEndKey = dateKey(listEndDate.getFullYear(), listEndDate.getMonth(), listEndDate.getDate());
       const generated = getScheduledScaleServices(listStartKey, listEndKey, services);
-      const items = [...services, ...generated].filter(service => service && service.date).slice().sort((a, b) => a.date.localeCompare(b.date));
+      const vacationRecords = loadVacationRecords();
+      const visibleServices = services.filter(service => !isHiddenByVacation(service, vacationRecords));
+      const items = [...visibleServices, ...generated].filter(service => service && service.date).slice().sort((a, b) => a.date.localeCompare(b.date));
       if (!items.length) {
         const empty = document.createElement('p');
         empty.className = 'calendar-list-empty';
@@ -4488,7 +5146,8 @@
     }
 
     function openScreenActions(key) {
-      const existing = services.find(service => service.date === key);
+      const vacationRecords = loadVacationRecords();
+      const existing = services.find(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
       const generated = existing ? null : getScheduledScaleServices(key, key, services)[0];
       const selectedService = existing || generated;
       if (!selectedService) return;
@@ -4534,7 +5193,8 @@
     document.addEventListener('click', dismissCalendarMessage, true);
 
     function handleScreenDoubleClick(key) {
-      const hasSavedService = services.some(service => service.date === key);
+      const vacationRecords = loadVacationRecords();
+      const hasSavedService = services.some(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
       const hasGeneratedOrdinary = !hasSavedService && getScheduledScaleServices(key, key, services).length > 0;
       if (hasSavedService || hasGeneratedOrdinary) {
         openScreenActions(key);
@@ -4958,6 +5618,12 @@
     }
 
     document.addEventListener('click', event => {
+      const vacationButton = event.target.closest('[data-open-vacation]');
+      if (vacationButton) {
+        event.preventDefault();
+        openVacationScreen();
+        return;
+      }
       const settingsButton = event.target.closest('[data-open-settings]');
       if (settingsButton) {
         event.preventDefault();
@@ -5072,48 +5738,23 @@
 
     // O logotipo Base Quin permanece fixo na posição salva.
 
-    const ricardoByline = document.querySelector('#ricardoByline');
-    const ricardoBylineKey = 'mareTudo.ricardoByline.position.v1';
-    function clampRicardoByline() {
-      const area = baseQuinHero.getBoundingClientRect();
-      const maxLeft = Math.max(0, area.width - ricardoByline.offsetWidth);
-      const maxTop = Math.max(0, area.height - ricardoByline.offsetHeight);
-      const left = Math.min(maxLeft, Math.max(0, parseFloat(ricardoByline.style.left) || 0));
-      const top = Math.min(maxTop, Math.max(0, parseFloat(ricardoByline.style.top) || 0));
-      ricardoByline.style.left = `${left}px`;
-      ricardoByline.style.top = `${top}px`;
-    }
+    // Assinatura da capa fixa pelo CSS, sem posição móvel ou salva.
 
-    function restoreRicardoByline() {
-      const area = baseQuinHero.getBoundingClientRect();
-      if (!area.width || !area.height) return;
-      let saved = null;
-      try { saved = JSON.parse(localStorage.getItem(ricardoBylineKey) || 'null'); } catch (_) {}
-      ricardoByline.style.fontSize = saved && Number.isFinite(saved.size)
-        ? `${Math.max(11, Math.min(36, saved.size))}px` : '17px';
-      const maxLeft = Math.max(0, area.width - ricardoByline.offsetWidth);
-      const left = saved && Number.isFinite(saved.x) ? saved.x * area.width : Math.min(maxLeft, area.width * .52);
-      const top = saved && Number.isFinite(saved.y) ? saved.y * area.height : Math.max(0, area.height - 155);
-      ricardoByline.style.left = `${left}px`;
-      ricardoByline.style.top = `${top}px`;
-      clampRicardoByline();
-    }
-
-    window.addEventListener('resize', () => requestAnimationFrame(restoreRicardoByline));
-    restoreRicardoByline();
-
-
-    // Os atalhos da capa permanecem fixos nas posições salvas.
+    // Os atalhos da capa ficam fixos pelo CSS, sem posições salvas ou arraste.
     const quickActions = document.querySelector('#quickActions');
-    const originalCards = [...quickActions.querySelectorAll('.action-card')];
+    const quickActionTemplates = document.querySelector('#quickActionTemplates');
+    const originalCards = [
+      ...quickActions.querySelectorAll('.action-card'),
+      ...quickActionTemplates.querySelectorAll('.action-card')
+    ];
     const cardById = new Map(originalCards.map(card => [card.dataset.id, card]));
     const secondaryIds = ['ferias', 'lembretes', 'anotacoes', 'links-uteis', 'configuracoes'];
     const secondaryCardCopies = new Map(secondaryIds.map(id => [id, cardById.get(id)?.cloneNode(true)]));
     const markCard = cardById.get('adicionar-servico');
     const calendarCard = cardById.get('calendario');
     const financeCard = cardById.get('resumo-financeiro');
-    const otherServicesCard = cardById.get('ferias');
-    const remindersCoverCard = secondaryCardCopies.get('lembretes')?.cloneNode(true);
+    const otherServicesCard = cardById.get('outros-servicos');
+    const remindersCoverCard = cardById.get('lembretes-agendados');
     if (![markCard, calendarCard, financeCard, otherServicesCard, remindersCoverCard].every(Boolean)) {
       throw new Error('Não foi possível preparar os atalhos da capa.');
     }
@@ -5137,7 +5778,6 @@
     oldCoverCards.forEach(card => card.remove());
     keptCards.forEach(card => quickActions.appendChild(card));
     const primaryCards = keptCards;
-    const duplicateCards = [];
     const cards = [...primaryCards];
 
     const extrasView = document.querySelector('.view[data-view="extras"]');
@@ -5155,7 +5795,7 @@
       const grid = document.createElement('div');
       grid.className = 'other-services-grid';
       const secondaryLabels = {
-        ferias: 'Férias / Afastamentos',
+        ferias: 'Chinelinho',
         lembretes: 'Padrinho',
         anotacoes: 'Minhas Anotações',
         'links-uteis': 'Links Úteis',
@@ -5170,7 +5810,9 @@
         button.dataset.movableId = `other-${id}`;
         button.textContent = secondaryLabels[id];
         button.setAttribute('aria-label', secondaryLabels[id]);
-        if (id === 'lembretes') {
+        if (id === 'ferias') {
+          button.dataset.openVacation = 'true';
+        } else if (id === 'lembretes') {
           button.dataset.openPadrinho = 'true';
         } else {
           const actionAttr = ['data-open-notes','data-open-settings','data-open-links'].find(name => sourceCard.hasAttribute(name));
@@ -5187,23 +5829,20 @@
       importantButton.setAttribute('aria-label', 'O botão mais importante do app');
       importantButton.title = 'O botão mais importante do app';
       importantButton.addEventListener('click', openImportantAppScreen);
-      panel.append(grid, importantButton);
+      // Configurações e o botão mais importante ficam abaixo do painel principal.
       const configButton = grid.querySelector('[data-movable-id="other-configuracoes"]');
-if (configButton) configButton.remove();
-importantButton.remove();
+      if (configButton) configButton.remove();
+      panel.append(grid);
+      extrasHeading.after(panel);
+      if (configButton) {
+        panel.after(configButton);
+        configButton.after(importantButton);
+      } else {
+        panel.after(importantButton);
+      }
 
-extrasHeading.after(panel);
-
-if (configButton) {
-  panel.after(configButton);
-  configButton.after(importantButton);
-} else {
-  panel.after(importantButton);
-}
-
-      // Recria cada botão a partir do original, substituindo-o no mesmo lugar.
-      // Assim preserva aparência, atributos e a posição individual já salva.
-      panel.querySelectorAll('.other-service-button, .most-important-app-button').forEach(originalButton => {
+      // Recria os botões do painel sem perder atributos e aparência.
+      panel.querySelectorAll('.other-service-button').forEach(originalButton => {
         const copiedButton = originalButton.cloneNode(true);
         copiedButton.style.cssText = originalButton.style.cssText;
         originalButton.replaceWith(copiedButton);
@@ -5212,85 +5851,22 @@ if (configButton) {
         }
       });
     }
-    const positionKey = 'mareTudo.quickActions.positions.left-v3';
-    function cardBounds(card) {
-      const area = quickActions.getBoundingClientRect();
-      return {
-        area,
-        maxX: Math.max(0, area.width - card.offsetWidth),
-        maxY: Math.max(0, area.height - card.offsetHeight)
-      };
-    }
-
-    function setCardPosition(card, x, y) {
-      const bounds = cardBounds(card);
-      const left = Math.min(Math.max(0, x), bounds.maxX);
-      const top = Math.min(Math.max(0, y), bounds.maxY);
-      card.style.left = `${left}px`;
-      card.style.top = `${top}px`;
-    }
-
-    function storeQuickActionPositions() {
-      const saved = {};
-      primaryCards.forEach(card => {
-        const bounds = cardBounds(card);
-        saved[card.dataset.id] = {
-          x: bounds.maxX ? (parseFloat(card.style.left) || 0) / bounds.maxX : 0,
-          y: bounds.maxY ? (parseFloat(card.style.top) || 0) / bounds.maxY : 0
-        };
-      });
-      try { localStorage.setItem(positionKey, JSON.stringify(saved)); } catch (_) {}
-    }
-
-    function placeDefaultCards() {
-      const gap = 32;
-      const area = quickActions.getBoundingClientRect();
-      const cardHeights = primaryCards.map(card => card.offsetHeight);
-      const totalHeight = cardHeights.reduce((sum, height) => sum + height, 0) + (primaryCards.length - 1) * gap;
-      const startY = Math.max(92, area.height - totalHeight - 195);
-      let nextY = startY;
-      primaryCards.forEach((card, index) => {
-        setCardPosition(card, 0, nextY);
-        nextY += cardHeights[index] + gap;
-      });
-      duplicateCards.forEach((card, index) => {
-        const sourceTop = Number.parseFloat(primaryCards[index].style.top) || 0;
-        setCardPosition(card, cardBounds(card).maxX, sourceTop);
-      });
-      storeQuickActionPositions();
-    }
-
-    function restorePositions() {
-      let saved = {};
-      try { saved = JSON.parse(localStorage.getItem(positionKey) || '{}'); } catch (_) { saved = {}; }
-      const hasSaved = primaryCards.some(card => saved[card.dataset.id]);
-      if (!hasSaved) {
-        placeDefaultCards();
-        return;
-      }
-      primaryCards.forEach(card => {
-        const legacyPosition = card.dataset.id === 'lembretes-agendados' ? saved.lembretes : null;
-        const position = saved[card.dataset.id] || legacyPosition;
-        if (position) {
-          const bounds = cardBounds(card);
-          setCardPosition(card, bounds.maxX * position.x, bounds.maxY * position.y);
-        } else {
-          setCardPosition(card, 0, Math.max(0, quickActions.clientHeight - card.offsetHeight - 82));
-        }
-      });
-      duplicateCards.forEach((card, index) => {
-        const source = primaryCards[index];
-        setCardPosition(card, cardBounds(card).maxX, Number.parseFloat(source.style.top) || 0);
-      });
-      storeQuickActionPositions();
-    }
-
-    quickActions.querySelectorAll('[data-open-calendar]').forEach(markedServicesCard => {
-      markedServicesCard.addEventListener('click', event => {
-        event.preventDefault();
-        event.stopPropagation();
+    // Cada atalho da capa recebe uma ação explícita após a montagem dos botões.
+    quickActions.addEventListener('click', event => {
+      const button = event.target.closest('.action-card');
+      if (!button || !quickActions.contains(button)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (button.hasAttribute('data-open-service')) {
+        openQuestionnaireOnly();
+      } else if (button.hasAttribute('data-open-calendar')) {
         openStandaloneCalendar();
-      });
+      } else if (button.hasAttribute('data-open-reminders')) {
+        openRemindersScreen();
+      } else if (button.dataset.go) {
+        navigate(button.dataset.go);
+        if (button.dataset.message) showToast(button.dataset.message);
+      }
     });
     quickActions.addEventListener('contextmenu', event => {
       if (event.target.closest('.action-card')) event.preventDefault();
@@ -5298,13 +5874,6 @@ if (configButton) {
     document.addEventListener('contextmenu', event => {
       event.preventDefault();
     }, { capture: true });
-
-    window.addEventListener('resize', () => {
-      const saved = localStorage.getItem(positionKey);
-      if (saved) restorePositions(); else placeDefaultCards();
-    });
-
-
 
     // Organiza cada faixa: seta à esquerda, logo centralizado e fechar à direita.
     const brandLogoSource = document.querySelector('#baseQuinLogoImage')?.getAttribute('src');
@@ -5347,8 +5916,8 @@ if (configButton) {
       padrinhoBrandHeader.classList.add('stacked-brand-header');
     }
     function arrangeScreenHeader(header) {
-      const back = header.querySelector('.notes-back, .reminders-back, .payments-back, .calendar-screen-back, .planner-back, .settings-back');
-      const close = header.querySelector('.notes-close, .reminders-close, .payments-close, .calendar-screen-close, .planner-close, .settings-close, .service-time-picker-close');
+      const back = header.querySelector('.notes-back, .reminders-back, .payments-back, .calendar-screen-back, .planner-back, .settings-back, .vacation-back');
+      const close = header.querySelector('.notes-close, .reminders-close, .payments-close, .calendar-screen-close, .planner-close, .settings-close, .service-time-picker-close, .vacation-close');
       const title = header.querySelector('#plannerTitleBlock, h1, h2, h3');
       if (!title) return;
       let backControl = back;
@@ -5456,6 +6025,7 @@ if (configButton) {
       event.stopImmediatePropagation();
       if (control.closest('.service-time-picker')) return closeServiceTimePicker();
       if (control.closest('.important-app-screen')) return closeImportantAppScreen();
+      if (control.closest('.vacation-screen')) return closeVacationScreen();
       if (control.closest('.useful-links-screen')) return closeUsefulLinksScreen();
       if (control.closest('.padrinho-screen')) return closePadrinhoScreen();
       if (control.closest('.settings-screen')) return closeSettingsScreen();
@@ -5599,8 +6169,7 @@ if (configButton) {
     window.addEventListener('resize', () => requestAnimationFrame(prepareExtrasButtons));
     updateFooterMenuVisibility();
 
-    // Posiciona os atalhos imediatamente, sem esperar outro ciclo de renderização.
-    restorePositions();
+    // Botões da capa posicionados exclusivamente pelo CSS fixo.
     updateServiceDateButton();
     app.classList.add('home-screen');
     const initial = location.hash.replace('#', '');
