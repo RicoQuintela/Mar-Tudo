@@ -727,6 +727,8 @@
     .planner-header > div { flex: 1; }
     .planner-kicker { display: block; margin-bottom: 5px; color: var(--yellow); font-size: 10px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
     .planner-header h2 { margin: 0; font-size: 22px; letter-spacing: -.7px; }
+    .planner-payment-table-reminder { display: none; margin: 5px 0 0; color: #888888; font-size: 11px; font-style: italic; font-weight: 500; line-height: 1.25; text-align: center; }
+    .service-planner.questionnaire-only .planner-payment-table-reminder { display: block; }
     .planner-close { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: var(--panel-soft); color: #fff; font-size: 23px; line-height: 1; cursor: pointer; }
     .calendar-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
     .calendar-toolbar strong { font-size: 21px; text-transform: none; }
@@ -751,6 +753,8 @@
     }
     .day-number { line-height: 1; }
     .service-abbrev { color: var(--service-color); font-size: 11px; font-weight: 950; letter-spacing: .03em; line-height: 1; }
+    .service-abbrev-pair { display: flex; width: 100%; min-width: 0; align-items: center; justify-content: stretch; line-height: 1; }
+    .service-abbrev-half { flex: 1 1 50%; min-width: 0; text-align: center; font-size: 8px; font-weight: 950; letter-spacing: -.03em; line-height: 1; white-space: nowrap; }
     .calendar-day.selected.has-service .service-abbrev { color: #17191a; }
     .calendar-day:hover, .calendar-day:focus-visible { border-color: var(--yellow); outline: none; }
     .calendar-day.today { border-color: rgba(247,189,53,.65); }
@@ -779,7 +783,7 @@
     .calendar-day.service-cavalinho.has-service::after { background: #fff; }
     .calendar-day.today { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(247,189,53,.35); }
     .calendar-day.today:not(.has-service):not(.selected) { background: rgba(247,189,53,.18); border-color: var(--yellow); color: #fff; font-weight: 900; }
-    .calendar-day.multiple-services { background-image: linear-gradient(135deg, rgba(247,189,53,.16), rgba(76,155,255,.16), rgba(67,199,122,.16)); }
+    .calendar-day.multiple-services { background-image: none; }
     .calendar-footer {
       display: flex;
       justify-content: center;
@@ -803,11 +807,14 @@
     }
     .day-action-sheet[hidden] { display: none; }
     .day-action-sheet p { margin: 0 0 10px; color: var(--cream); font-size: 12px; font-weight: 750; text-align: center; }
+    .day-action-service-select { display: block; width: 100%; min-height: 38px; margin: 0 0 9px; padding: 6px 8px; border: 1px solid #4C9BFF; border-radius: 8px; background: #FFFFFF; color: #153E66; font: inherit; font-size: 12px; font-weight: 850; }
+    .day-action-service-select[hidden] { display: none !important; }
     .day-action-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .day-action-actions button { min-height: 42px; padding: 4px 3px; border: 0; border-radius: 11px; font-size: 11px; line-height: 1.1; font-weight: 850; cursor: pointer; }
     .edit-service { background: var(--yellow); color: #17191a; }
     .keep-service { background: #43c77a; color: #102017; }
     .offer-delete-service { background: #f45b5b; color: #fff; border: 0 !important; }
+    .add-second-service { grid-column: 1 / -1; background: #4C9BFF; color: #071625; }
     .day-action-sheet .delete-confirm { margin-top: 10px; }
     #screenMarkPrompt .day-action-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     #screenMarkPrompt .day-action-actions button { min-height: 40px; padding: 7px 10px; font-size: 12px; white-space: nowrap; }
@@ -1084,7 +1091,7 @@
     }
     .toast {
       position: fixed;
-      z-index: 10;
+      z-index: 200;
       right: 18px;
       bottom: calc(92px + env(safe-area-inset-bottom));
       left: 18px;
@@ -1101,6 +1108,18 @@
       transition: .25s ease;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .confirmation-backdrop { position: fixed; z-index: 19999; inset: 0; display: none; background: rgba(0,0,0,.42); }
+    .confirmation-backdrop.show { display: block; }
+    .toast.centered {
+      z-index: 20000;
+      top: 50%; right: auto; bottom: auto; left: 50%;
+      width: min(calc(100vw - 40px), 360px);
+      text-align: center;
+      pointer-events: auto;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      transform: translate(-50%, calc(-50% + 10px));
+    }
+    .toast.centered.show { transform: translate(-50%, -50%); }
 
     .settings-screen { position: fixed; z-index: 80; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: rgba(0,0,0,.72); color: var(--cream); }
     .settings-screen.open { display: flex; }
@@ -1110,15 +1129,19 @@
     .settings-back, .settings-close { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--yellow); font-size: 22px; font-weight: 900; cursor: pointer; }
     .settings-close { color: var(--cream); }
     .settings-section { margin: 0 0 16px; padding: 15px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+    .settings-scale-section, .settings-appearance-section { background: #FFFFFF !important; }
     .settings-section h3 { margin: 0 0 11px; font-size: 15px; }
+    .settings-payment-section { margin: 0 0 16px; padding: 15px; border: 1px solid var(--line); border-radius: 16px; background: #FFFFFF; }
+    .settings-payment-button { display: block; width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #153E66 !important; border-radius: 11px; background: #4C9BFF; color: #071625; font: inherit; font-size: 13px; font-weight: 950; text-align: center; cursor: pointer; }
     .settings-section h3.settings-scale-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px; }
     .settings-scale-heading span { color: var(--muted); font-size: 12px; font-weight: 750; }
+    .settings-count-from-title { margin: 10px 0 3px; color: #008CFF; font-size: 14px; font-weight: 900; text-align: center; }
     .settings-section p { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
     .settings-reset { width: 100%; min-height: 43px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 12px; font-weight: 850; cursor: pointer; }
     .settings-scale-select { display: block; width: 100%; min-height: 46px; margin: 0; padding: 10px 12px; border: 1px solid #4C9BFF; border-radius: 11px; background: #fff; color: #202629; font: inherit; font-size: 13px; font-weight: 900; cursor: pointer; }
     #configureScaleSelect { color: #B8B8B8 !important; }
-    #configureScaleSelect.has-selection { color: #202629 !important; }
-    #configureScaleSelect.has-saved { color: #808080 !important; }
+    #configureScaleSelect.has-selection { color: #FF0000 !important; -webkit-text-fill-color: #FF0000 !important; }
+    #configureScaleSelect.has-saved { color: #FF0000 !important; -webkit-text-fill-color: #FF0000 !important; }
     #configureScaleSelect option:disabled { color: #B8B8B8; }
     .settings-scale-save { width: 100%; min-height: 43px; margin-top: 10px; padding: 9px 12px; border: 1px solid #153E66; border-radius: 11px; background: #4C9BFF; color: #071625; font: inherit; font-size: 12px; font-weight: 950; cursor: pointer; }
     .settings-scale-save:disabled { opacity: .55; cursor: not-allowed; }
@@ -1251,7 +1274,8 @@
     .important-app-content > span { display: block; margin-bottom: 12px; }
     .important-app-pix { align-self: flex-start; margin-top: 4px !important; font-size: clamp(13px,3.2vw,17px); font-weight: 700; }
     .important-app-logo { display: block; width: min(72%,220px); height: auto; max-height: 90px; object-fit: contain; margin-top: 24px; padding-top: 12px; }
-    .important-app-back { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; padding: 8px; margin: 52px auto 0; border: 2px solid #000; border-radius: 50%; color: #000; background: #fff; cursor: pointer; }
+    .important-app-back { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; padding: 8px; margin: 52px auto 0; border: 2px solid #008CFF !important; border-radius: 50%; color: #008CFF; background: #000; box-shadow: 0 0 0 1px #008CFF, 0 0 8px rgba(0,140,255,.95); cursor: pointer; }
+    #closeImportantAppScreen.important-app-back { border: 2px solid #008CFF !important; }
     .important-app-back svg { display: block; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
     .important-app-back:active { transform: scale(.94); }
     .useful-link-empty { padding: 18px 12px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); text-align: center; font-size: 13px; line-height: 1.4; }
@@ -2148,8 +2172,6 @@
     .view[data-view="extras"] .section-heading h2 { position: relative; top: 2px; }
       
     /* Tabela pessoal de pagamentos e seus controles. */
-    .payment-table-open { display: none; width: min(100%, 360px); min-height: 42px; margin: 9px auto 0; padding: 8px 12px; border: 1px solid #4C9BFF; border-radius: 12px; background: #D6E8F7; color: #153E66; font: inherit; font-size: 12px; font-weight: 900; line-height: 1.2; text-align: center; text-transform: none; cursor: pointer; }
-    #servicePlanner.questionnaire-only .payment-table-open { display: block; }
     .payment-table-screen[hidden] { display: none !important; }
     .service-planner.payment-config-only { align-items: stretch; }
     .service-planner.payment-config-only .planner-sheet { width: 100%; max-width: none; height: 100dvh; max-height: none; overflow: hidden; padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom)); border: 0; border-radius: 0; background: #E5F1FC; color: #153E66; }
@@ -2237,6 +2259,76 @@
       width: min(63vw, 320px) !important;
       max-width: min(63vw, 320px) !important;
       margin: 58px auto 18px !important;
+    }
+
+    #settingsScreen button,
+    #settingsScreen button:hover,
+    #settingsScreen button:active,
+    #settingsScreen button:focus-visible,
+    #settingsScreen button:disabled,
+    #settingsScreen button.selected {
+      background: #E0E0E0 !important;
+      border: 2px solid #4C9BFF !important;
+      color: #000000 !important;
+      box-shadow: none !important;
+      opacity: 1 !important;
+    }
+    #settingsScreen .settings-back,
+    #settingsScreen .settings-close,
+    #settingsScreen .settings-back:hover,
+    #settingsScreen .settings-close:hover,
+    #settingsScreen .settings-back:active,
+    #settingsScreen .settings-close:active,
+    #settingsScreen .settings-back:focus-visible,
+    #settingsScreen .settings-close:focus-visible {
+      background: #000000 !important;
+      border: 2px solid #4C9BFF !important;
+      color: #4C9BFF !important;
+      -webkit-text-fill-color: #4C9BFF !important;
+    }
+    #settingsScreen .theme-choice:not(.selected) {
+      color: #808080 !important;
+      -webkit-text-fill-color: #808080 !important;
+    }
+    #settingsScreen .theme-choice.selected {
+      color: #FF0000 !important;
+      -webkit-text-fill-color: #FF0000 !important;
+      text-shadow: none !important;
+    }
+    #settingsScreen .settings-scale-start-button {
+      color: #008CFF !important;
+      -webkit-text-fill-color: #008CFF !important;
+    }
+    #settingsScreen .settings-scale-heading,
+    #settingsScreen .settings-scale-heading span,
+    #settingsScreen .settings-count-from-title {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+    }
+    #settingsScreen #configureScaleSave {
+      color: #FF0000 !important;
+      -webkit-text-fill-color: #FF0000 !important;
+      text-shadow: none !important;
+    }
+    #settingsScreen #settingsOpenPaymentTable {
+      color: #FF0000 !important;
+      -webkit-text-fill-color: #FF0000 !important;
+      text-shadow: none !important;
+    }
+    #settingsScreen .settings-scale-start-button:not(.has-value) {
+      background: #D0D0D0 !important;
+    }
+    #settingsScreen .settings-scale-start-button.has-value {
+      background: #D0D0D0 !important;
+      color: #FF0000 !important;
+      -webkit-text-fill-color: #FF0000 !important;
+    }
+    #settingsScreen .settings-scale-start-button.is-disabled,
+    #settingsScreen .settings-scale-start-button.is-disabled.has-value {
+      background: #D0D0D0 !important;
+      color: #808080 !important;
+      -webkit-text-fill-color: #808080 !important;
+      cursor: not-allowed;
     }
 
   </style>
@@ -2345,7 +2437,7 @@
         </header>
         <label class="notes-title-label" for="notesTitleInput">TÍTULO:</label>
         <input class="notes-title-input" id="notesTitleInput" type="text" maxlength="100" placeholder="Opcional" aria-label="Título opcional da anotação" />
-        <textarea class="notes-textarea" id="notesTextarea" placeholder="Digite sua anotação..."></textarea>
+        <textarea class="notes-textarea" id="notesTextarea" aria-label="Texto da anotação" placeholder="Digite sua anotação..."></textarea>
         <audio class="notes-audio-preview" id="notesAudioPreview" controls hidden></audio>
         <p class="notes-audio-status notes-intro" id="notesAudioStatus" aria-live="polite" hidden></p>
         <div class="notes-actions"><button class="notes-save" type="button" id="notesSave">SALVAR ANOTAÇÃO</button><button class="notes-delete" type="button" id="notesDelete">CANCELAR ANOTAÇÃO</button></div>
@@ -2451,7 +2543,8 @@
         </div>
         <div class="day-action-sheet" id="screenDayActionSheet" hidden>
           <p id="screenDayActionMessage">Serviço selecionado.</p>
-          <div class="day-action-actions"><button class="keep-service" type="button" id="screenKeepService">MANTER SERVIÇO</button><button class="edit-service" type="button" id="screenEditService">EDITAR SERVIÇO</button><button class="offer-delete-service" type="button" id="screenOfferDelete">EXCLUIR SERVIÇO</button></div>
+          <select class="day-action-service-select" id="screenActionServiceSelect" aria-label="Escolha qual serviço do dia" hidden></select>
+          <div class="day-action-actions"><button class="keep-service" type="button" id="screenKeepService">MANTER SERVIÇO</button><button class="edit-service" type="button" id="screenEditService">EDITAR SERVIÇO</button><button class="offer-delete-service" type="button" id="screenOfferDelete">EXCLUIR SERVIÇO</button><button class="add-second-service" type="button" id="screenAddSecondService" hidden>ADICIONAR OUTRO SERVIÇO</button></div>
           <div class="delete-confirm-overlay" id="screenDeleteConfirm" hidden><div class="delete-confirm"><p id="screenDeleteMessage"></p><div class="delete-confirm-actions"><button class="cancel-delete" type="button" id="screenCancelDelete">MANTER O SERVIÇO</button><button class="confirm-delete" type="button" id="screenConfirmDelete">EXCLUIR O SERVIÇO</button></div></div></div>
         </div>
       </section>
@@ -2462,7 +2555,7 @@
       <section class="planner-sheet" role="dialog" aria-modal="true" aria-label="Marque seu serviço">
         <header class="planner-header">
           <button class="planner-back" type="button" data-close-planner aria-label="Voltar">←</button>
-          <div id="plannerTitleBlock"><span class="planner-kicker">Agenda de serviço:</span><h2 id="plannerTitle">Marque seu serviço</h2><button class="payment-table-open" id="openPaymentTable" type="button">clique aqui para configurar sua tabela de pagamentos</button></div>
+          <div id="plannerTitleBlock"><span class="planner-kicker">Agenda de serviço:</span><h2 id="plannerTitle">Marque seu serviço</h2><p class="planner-payment-table-reminder">Não esqueça de configurar a sua &quot;Tabela de Pagamentos&quot; no ambiente de &quot;Configurações&quot;</p></div>
           <button class="planner-close" type="button" aria-label="Fechar calendário" data-close-planner>×</button>
         </header>
         <section class="payment-table-screen" id="paymentTableScreen" aria-label="Configurar tabela de pagamentos" hidden>
@@ -2495,10 +2588,12 @@
         </div>
         <div class="day-action-sheet" id="dayActionSheet" hidden>
           <p id="dayActionMessage">Serviço selecionado.</p>
+          <select class="day-action-service-select" id="dayActionServiceSelect" aria-label="Escolha qual serviço do dia" hidden></select>
           <div class="day-action-actions">
             <button class="keep-service" type="button" id="keepService">Manter serviço</button>
             <button class="edit-service" type="button" id="editService">Editar serviço</button>
             <button class="offer-delete-service" type="button" id="offerDeleteService">Excluir serviço</button>
+            <button class="add-second-service" type="button" id="addSecondService" hidden>Adicionar outro serviço</button>
           </div>
           <div class="delete-confirm-overlay" id="calendarDeleteConfirm" hidden>
             <div class="delete-confirm">
@@ -2582,6 +2677,7 @@
 
     <div class="toast" role="status" aria-live="polite"></div>
   </div>
+  <div class="confirmation-backdrop" aria-hidden="true"></div>
 
   <div class="service-time-picker" id="serviceTimePicker" hidden aria-hidden="true">
     <div class="service-time-picker-scrim" data-close-time-picker></div>
@@ -2611,7 +2707,7 @@
         <h2 id="settingsTitle">Configurações</h2>
         <button class="settings-close" type="button" data-close-settings aria-label="Fechar">×</button>
       </header>
-      <section class="settings-section">
+      <section class="settings-section settings-scale-section">
         <h3 class="settings-scale-heading">Configure sua escala <span>(serviço ordinário)</span></h3>
         <select class="settings-scale-select" id="configureScaleSelect" aria-label="Escolha sua escala de serviço" required>
           <option value="" selected disabled>informe sua escala</option>
@@ -2630,6 +2726,7 @@
           <option value="12x48x12x72">12 x 48 x 12 x 72</option>
           <option value="nao-informar">Não informar</option>
         </select>
+        <h4 class="settings-count-from-title">A contar de:</h4>
         <div class="settings-scale-start-controls">
           <button class="settings-scale-start-button" id="configureScaleStart" type="button">Quando o serviço deve ser iniciado</button>
           <button class="settings-scale-start-button" id="configureScaleStartTimeButton" type="button">Escolher horário de início</button>
@@ -2638,14 +2735,16 @@
         </div>
         <button class="settings-scale-save" id="configureScaleSave" type="button" disabled>Salvar escala</button>
       </section>
-      <section class="settings-section">
+      <section class="settings-payment-section" aria-label="Configuração da tabela de pagamentos">
+        <button class="settings-payment-button" id="settingsOpenPaymentTable" type="button">Configure sua Tabela de Pagamentos</button>
+      </section>
+      <section class="settings-section settings-appearance-section">
         <h3>Modo de aparência</h3>
         <div class="theme-choices" role="group" aria-label="Escolha o modo de aparência">
           <button class="theme-choice" type="button" data-theme-choice="light" aria-pressed="false">Claro</button>
           <button class="theme-choice" type="button" data-theme-choice="dark" aria-pressed="false">Escuro</button>
           <button class="theme-choice" type="button" data-theme-choice="auto" aria-pressed="false">Automático</button>
         </div>
-        <p>Automático acompanha a preferência de aparência do aparelho.</p>
       </section>
     </section>
   </div>
@@ -2755,7 +2854,7 @@
           <a class="padrinho-apef-website" href="https://www.apeflog.com/" target="_blank" rel="noopener noreferrer">https://www.apeflog.com/</a>
         </div>
         <div class="padrinho-apef-copy">
-          <p class="padrinho-apef-description">A Transportadora que cuida da sua mercadoria desde a coleta até a entrega. Serviços de paletização, agendamentos de entregas, monitoramento de cargas e gerenciamento de riscos.</p>
+          <p class="padrinho-apef-description">A Transportadora que cuida da sua mercadoria desde a coleta até a entrega. Serviços de paletização, agendamento de entregas, monitoramento de cargas e gerenciamento de riscos.</p>
           <div class="padrinho-apef-contact">
             <a href="mailto:controladoria@apeflog.com">controladoria@apeflog.com</a>
           </div>
@@ -2799,11 +2898,37 @@
     const configuredScaleStartStorageKey = 'mareTudo.configuredScaleStartDate.v1';
     const configuredScaleStartTimeStorageKey = 'mareTudo.configuredScaleStartTime.v1';
     const configuredScaleExcludedDatesStorageKey = 'mareTudo.configuredScaleExcludedDates.v1';
+    function updateConfigureScaleStartControls() {
+      const disabled = configureScaleSelect?.value === 'nao-informar';
+      [configureScaleStartButton, configureScaleStartTimeButton].forEach(button => {
+        if (!button) return;
+        button.disabled = disabled;
+        button.classList.toggle('is-disabled', disabled);
+        button.setAttribute('aria-disabled', String(disabled));
+      });
+      if (configureScaleStartButton) {
+        if (disabled) {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, '0');
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const year = today.getFullYear();
+          configureScaleStartButton.textContent = `Data: ${day}/${month}/${year}`;
+          configureScaleStartButton.classList.add('has-value');
+        } else {
+          const [year, month, day] = (configureScaleStartInput?.value || '').split('-');
+          const hasValue = Boolean(year && month && day);
+          configureScaleStartButton.textContent = hasValue ? `Data: ${day}/${month}/${year}` : 'Quando o serviço deve ser iniciado';
+          configureScaleStartButton.classList.toggle('has-value', hasValue);
+        }
+      }
+    }
     if (configureScaleStartButton && configureScaleStartInput) {
       try { configureScaleStartInput.value = localStorage.getItem(configuredScaleStartStorageKey) || ''; } catch (_) {}
       const updateConfigureScaleStartLabel = () => {
         const [year, month, day] = (configureScaleStartInput.value || '').split('-');
-        configureScaleStartButton.textContent = year ? `Data: ${day}/${month}/${year}` : 'Quando o serviço deve ser iniciado';
+        const hasValue = Boolean(year);
+        configureScaleStartButton.textContent = hasValue ? `Data: ${day}/${month}/${year}` : 'Quando o serviço deve ser iniciado';
+        configureScaleStartButton.classList.toggle('has-value', hasValue);
       };
       updateConfigureScaleStartLabel();
       configureScaleStartButton.addEventListener('click', () => {
@@ -2823,7 +2948,9 @@
     if (configureScaleStartTimeButton && configureScaleStartTimeInput) {
       try { configureScaleStartTimeInput.value = localStorage.getItem(configuredScaleStartTimeStorageKey) || ''; } catch (_) {}
       const updateConfigureScaleStartTimeLabel = () => {
-        configureScaleStartTimeButton.textContent = configureScaleStartTimeInput.value ? `Hora: ${configureScaleStartTimeInput.value}` : 'Escolher horário de início';
+        const hasValue = Boolean(configureScaleStartTimeInput.value);
+        configureScaleStartTimeButton.textContent = hasValue ? `Hora: ${configureScaleStartTimeInput.value}` : 'Escolher horário de início';
+        configureScaleStartTimeButton.classList.toggle('has-value', hasValue);
       };
       updateConfigureScaleStartTimeLabel();
       const closeScaleDigitalClock = () => {
@@ -2875,16 +3002,28 @@
       });
     }
     if (configureScaleSelect && configureScaleSave) {
+      try {
+        const savedScale = localStorage.getItem(configuredScaleStorageKey) || '';
+        if (savedScale && [...configureScaleSelect.options].some(option => option.value === savedScale)) {
+          configureScaleSelect.value = savedScale;
+          configureScaleSelect.classList.add('has-saved');
+          configureScaleSave.classList.add('is-saved');
+          configureScaleSave.disabled = true;
+        }
+      } catch (_) {}
+      updateConfigureScaleStartControls();
       configureScaleSelect.addEventListener('change', () => {
         configureScaleSelect.classList.add('has-selection');
         configureScaleSelect.classList.remove('has-saved');
         configureScaleSave.classList.remove('is-saved');
         configureScaleSave.disabled = !configureScaleSelect.value;
+        updateConfigureScaleStartControls();
       });
     }
     const views = [...document.querySelectorAll('.view')];
     const tabs = [...document.querySelectorAll('.tab')];
     const toast = document.querySelector('.toast');
+    const toastBackdrop = document.querySelector('.confirmation-backdrop');
     let toastTimer;
     const importantAppScreen = document.querySelector('#importantAppScreen');
 
@@ -2906,22 +3045,63 @@
       if (event.key === 'Escape' && importantAppScreen.classList.contains('open')) closeImportantAppScreen();
     });
 
+    function dismissCenteredConfirmation(event) {
+      if (!toast.classList.contains('centered')) return;
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      clearTimeout(toastTimer);
+      toast.classList.remove('show', 'centered');
+      toastBackdrop.classList.remove('show');
+    }
+    toast.addEventListener('click', dismissCenteredConfirmation);
+    toastBackdrop.addEventListener('click', dismissCenteredConfirmation);
+
     function showToast(message) {
+      const centeredConfirmations = new Set([
+        'Data de início da escala salva.',
+        'Horário de início da escala salvo.',
+        'Escala salva!',
+        'Registro salvo.',
+        'Registro atualizado.',
+        'Edição cancelada.',
+        'Registro excluído.',
+        'Link atualizado.',
+        'Link adicionado.',
+        'Tabela de pagamentos salva neste aparelho.',
+        'Serviço excluído do calendário.',
+        'Anotação excluída.',
+        'Anotação salva.',
+        'Edição da anotação cancelada.',
+        'Lembrete salvo.',
+        'lembrete e serviço salvos',
+        'Serviço mantido no calendário.',
+        'Serviço salvo. Calendário atualizado.'
+      ]);
+      const isCountConfirmation = /^\d+ serviç/.test(message);
+      const isRankConfirmation = message.startsWith('Graduação/Posto selecionado:');
+      const isCentered = centeredConfirmations.has(message) || isCountConfirmation || isRankConfirmation;
       toast.textContent = message;
+      toast.classList.toggle('centered', isCentered);
+      toastBackdrop.classList.toggle('show', isCentered);
       toast.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show', 'centered');
+        toastBackdrop.classList.remove('show');
+      }, 2800);
     }
     if (configureScaleSave && configureScaleSelect) {
       configureScaleSave.addEventListener('click', () => {
         if (!configureScaleSelect.value) return showToast('Escolha uma escala antes de salvar.');
         try {
           localStorage.setItem(configuredScaleStorageKey, configureScaleSelect.value);
-          configureScaleSelect.value = '';
-          configureScaleSelect.classList.remove('has-selection', 'has-saved');
+          configureScaleSelect.classList.remove('has-selection');
+          configureScaleSelect.classList.add('has-saved');
           configureScaleSave.classList.add('is-saved');
           configureScaleSave.disabled = true;
-          showToast('Escala salva neste aparelho.');
+          showToast('Escala salva!');
         } catch (_) { showToast('Não foi possível salvar a escala neste aparelho.'); }
       });
     }
@@ -3625,9 +3805,11 @@
     const deleteConfirmMessage = document.querySelector('#deleteConfirmMessage');
     const dayActionSheet = document.querySelector('#dayActionSheet');
     const dayActionMessage = document.querySelector('#dayActionMessage');
+    const dayActionServiceSelect = document.querySelector('#dayActionServiceSelect');
     const editServiceButton = document.querySelector('#editService');
     const keepServiceButton = document.querySelector('#keepService');
     const offerDeleteServiceButton = document.querySelector('#offerDeleteService');
+    const addSecondServiceButton = document.querySelector('#addSecondService');
     const calendarDeleteConfirm = document.querySelector('#calendarDeleteConfirm');
     const calendarDeleteConfirmMessage = document.querySelector('#calendarDeleteConfirmMessage');
     const cancelCalendarDeleteButton = document.querySelector('#cancelCalendarDelete');
@@ -3636,12 +3818,19 @@
     let calendarCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let selectedServiceDate = '';
     let editingServiceId = null;
+    let editingGeneratedScaleService = false;
     let actionDate = '';
+    let actionServiceId = '';
     let lastCalendarClickDate = '';
     let lastCalendarClickAt = 0;
     let services = loadServices();
 
     const financeCategories = ['ORDINÁRIO', 'RAS', 'PROEIS', 'SEGURANÇA PRESENTE', 'PADRINHO', 'DEIXA "KETO"', 'CAVALINHO', 'OUTROS'];
+    function financeCategoryForService(type) {
+      const normalized = String(type || '').trim().toUpperCase().replace(/[“”]/g, '"').replace(/\s+/g, ' ');
+      if (normalized.includes('DEIXA') && normalized.includes('KETO')) return 'DEIXA "KETO"';
+      return financeCategories.includes(normalized) ? normalized : 'OUTROS';
+    }
     const financeKey = 'mareTudo.finance';
     const financeMonthYearStorageKey = 'mareTudo.finance.selectedMonthYear';
     const paymentTableStorageKey = 'mareTudo.paymentTable';
@@ -3663,8 +3852,8 @@
     try {
       const now = new Date();
       const currentMonthYear = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const savedMonthYear = localStorage.getItem(financeMonthYearStorageKey) || '';
-      financeMonthYearInput.value = /^\d{4}-(0[1-9]|1[0-2])$/.test(savedMonthYear) ? savedMonthYear : currentMonthYear;
+      financeMonthYearInput.value = currentMonthYear;
+      try { localStorage.setItem(financeMonthYearStorageKey, currentMonthYear); } catch (_) {}
       updateFinanceMonthYearButton();
     } catch (_) {}
     financeMonthYearInput?.addEventListener('change', () => {
@@ -3674,7 +3863,6 @@
       renderFinanceRows();
     });
     const financeSelectAll = document.querySelector('#financeSelectAll');
-    const financeCount = document.querySelector('#financeCount');
     const financeReceivedTotal = document.querySelector('#financeReceivedTotal');
     const financeReceivableTotal = document.querySelector('#financeReceivableTotal');
     const financeForecastButton = document.querySelector('#financeForecastButton');
@@ -3777,7 +3965,7 @@
 
     function updateWorkedHoursBanner() {
       const totalMinutes = servicesInSelectedFinancePeriod().reduce((sum, service) => {
-        if (!automaticallyPaidServiceTypes.has(service.type) || !serviceHasFinished(service)) return sum;
+        if (!automaticallyPaidServiceTypes.has(financeCategoryForService(service.type)) || !serviceHasFinished(service)) return sum;
         return sum + workedServiceDurationMinutes(service);
       }, 0);
       if (financeWorkedHours) financeWorkedHours.textContent = formatWorkedDuration(totalMinutes);
@@ -3808,7 +3996,8 @@
       const totals = {};
       financeCategories.forEach(category => { totals[category] = { received: 0, receivable: 0, workedServices: 0, scheduledServices: 0, count: 0 }; });
       servicesInSelectedFinancePeriod().forEach(service => {
-        const result = totals[service.type];
+        const category = financeCategoryForService(service.type);
+        const result = totals[category];
         if (!result) return;
         const completed = serviceHasFinished(service);
         if (completed) result.workedServices += 1;
@@ -3833,7 +4022,7 @@
       const data = loadFinanceData();
       const automaticTotals = calculateAutomaticFinance();
       const periodServices = servicesInSelectedFinancePeriod();
-      const categoriesWithServices = financeCategories.filter(category => periodServices.some(service => service.type === category));
+      const categoriesWithServices = financeCategories.filter(category => periodServices.some(service => financeCategoryForService(service.type) === category));
       if (!categoriesWithServices.length) {
         financeRows.innerHTML = '<p class="finance-empty">Nenhum serviço encontrado para o mês e ano selecionados.</p>';
         updateFinanceCount();
@@ -3865,7 +4054,7 @@
       const data = loadFinanceData();
       const automaticTotals = calculateAutomaticFinance();
       const periodServices = servicesInSelectedFinancePeriod();
-      const categoriesWithServices = financeCategories.filter(category => periodServices.some(service => service.type === category));
+      const categoriesWithServices = financeCategories.filter(category => periodServices.some(service => financeCategoryForService(service.type) === category));
       financeRows.innerHTML = categoriesWithServices.map(category => {
         const saved = data[category] || {};
         const colorClass = serviceColorClass(category);
@@ -3897,7 +4086,6 @@
         financeSelectAll.checked = visibleCategoryCount > 0 && selected === visibleCategoryCount;
         financeSelectAll.indeterminate = selected > 0 && selected < visibleCategoryCount;
       }
-      if (financeCount) financeCount.textContent = `${selected} selecionado${selected === 1 ? '' : 's'} · ${selectedRank()} (faixa ${selectedRankLevel()})`;
     }
 
     function calculateFinance() {
@@ -4067,7 +4255,7 @@
 
     const paymentTableScreen = document.querySelector('#paymentTableScreen');
     const paymentTableGroups = document.querySelector('#paymentTableGroups');
-    const openPaymentTableButton = document.querySelector('#openPaymentTable');
+    const settingsOpenPaymentTableButton = document.querySelector('#settingsOpenPaymentTable');
     const paymentTableBackButton = document.querySelector('#paymentTableBack');
     const savePaymentTableButton = document.querySelector('#savePaymentTable');
     const paymentCategoryColors = {
@@ -4151,9 +4339,10 @@
       catch (_) { showToast('Não foi possível salvar a tabela neste aparelho.'); return false; }
     }
     function configuredServicePaymentAmount(service) {
-      const category = readPaymentTable()[service.type];
+      const serviceCategory = financeCategoryForService(service.type);
+      const category = readPaymentTable()[serviceCategory];
       if (!category) return 0;
-      if (!hourlyPaymentCategories.has(service.type)) return parseMoney(category.default);
+      if (!hourlyPaymentCategories.has(serviceCategory)) return parseMoney(category.default);
       let hoursKey = service.hours || '';
       if (!hoursKey) {
         const minutes = workedServiceDurationMinutes(service);
@@ -4183,11 +4372,16 @@
       if (!servicePaymentSource || servicePaymentSource === 'table') autoFillConfiguredPayment();
     }
     buildPaymentTable();
-    openPaymentTableButton.addEventListener('click', () => {
+    function showPaymentTableScreen() {
       fillPaymentTableInputs();
       paymentTableScreen.hidden = false;
       servicePlanner.classList.remove('questionnaire-only', 'calendar-only');
       servicePlanner.classList.add('payment-config-only');
+    }
+    settingsOpenPaymentTableButton.addEventListener('click', () => {
+      closeSettingsScreen();
+      openPlanner();
+      showPaymentTableScreen();
     });
     paymentTableInputs.forEach(input => {
       input.addEventListener('input', () => {
@@ -4280,10 +4474,19 @@
       return 'outros';
     }
 
+    function serviceColorValue(type) {
+      const colors = { ordinario: '#43c77a', ras: '#4c9bff', proeis: '#B388FF', seguranca: '#FF9800', padrinho: '#f25b5b', keto: '#f9a8d4', cavalinho: '#8b5a2b', outros: '#f9d266' };
+      return colors[serviceColorClass(type)] || colors.outros;
+    }
+
     function serviceAbbreviation(type) {
       const normalized = String(type || '').replace(/[“”\"]/g, '').trim().toUpperCase();
-      if (normalized === 'DEIXA KETO') return 'DK';
+      if (normalized === 'DEIXA KETO') return 'DKT';
       return normalized.slice(0, 3);
+    }
+
+    function serviceAbbreviationColor(type) {
+      return serviceColorClass(type) === 'cavalinho' ? '#FFFFFF' : '#17191A';
     }
 
     function deletionConfirmationMessage(type) {
@@ -4302,22 +4505,57 @@
       dayActionMessage.hidden = false;
       dayActionActions.hidden = false;
       actionDate = '';
+      actionServiceId = '';
+      dayActionServiceSelect.hidden = true;
+    }
+
+    function serviceCountForDate(key) {
+      const savedCount = services.filter(service => service.date === key).length;
+      const generatedCount = getScheduledScaleServices(key, key, services).length;
+      return savedCount + generatedCount;
+    }
+
+    function serviceDayLabel(service) {
+      return `${service.type}${service.hours ? `, ${service.hours}` : ''}${service.startTime || service.endTime ? `, ${service.startTime || '--:--'}–${service.endTime || '--:--'}` : ''}`;
+    }
+
+    function fillActionServiceSelect(select, entries) {
+      select.replaceChildren();
+      entries.forEach((service, index) => {
+        const option = document.createElement('option');
+        option.value = service.id;
+        option.textContent = `Serviço ${index + 1}: ${serviceDayLabel(service)}`;
+        select.appendChild(option);
+      });
+      select.hidden = entries.length < 2;
+      select.value = entries[0]?.id || '';
+      return select.value;
     }
 
     function openDayActionSheet(key) {
-      const existing = services.find(service => service.date === key);
-      if (!existing) {
+      const existingServices = services.filter(service => service.date === key);
+      if (!existingServices.length) {
         showToast('Não há serviço cadastrado neste dia.');
         return;
       }
       actionDate = key;
-      dayActionMessage.textContent = `${readableDate(key)} — ${existing.type}${existing.hours ? `, ${existing.hours}` : ''}`;
-      calendarDeleteConfirmMessage.textContent = deletionConfirmationMessage(existing.type);
+      actionServiceId = fillActionServiceSelect(dayActionServiceSelect, existingServices);
+      dayActionMessage.textContent = `${readableDate(key)} — ${existingServices.length} serviço${existingServices.length === 1 ? '' : 's'} no dia`;
+      calendarDeleteConfirmMessage.textContent = deletionConfirmationMessage(existingServices[0].type);
+      addSecondServiceButton.hidden = serviceCountForDate(key) >= 2;
       calendarDeleteConfirm.hidden = true;
       dayActionMessage.hidden = false;
       dayActionActions.hidden = false;
       dayActionSheet.hidden = false;
     }
+
+    dayActionServiceSelect.addEventListener('change', () => {
+      actionServiceId = dayActionServiceSelect.value;
+      const selected = services.find(service => service.id === actionServiceId);
+      if (!selected) return;
+      dayActionMessage.textContent = `${readableDate(actionDate)} — ${serviceDayLabel(selected)}`;
+      calendarDeleteConfirmMessage.textContent = deletionConfirmationMessage(selected.type);
+    });
 
     function removeService(serviceId, dateKey) {
       services = services.filter(service => service.id !== serviceId);
@@ -4370,27 +4608,65 @@
         if (key === todayKey) button.classList.add('today');
         if (key === selectedServiceDate) button.classList.add('selected');
         const dayServices = services.filter(service => service.date === key);
-        const savedColors = dayServices.map(service => serviceColorClass(service.type));
-        const previewColor = !servicePlanner.classList.contains('calendar-only') && key === selectedServiceDate && serviceType.value ? serviceColorClass(serviceType.value) : '';
-        const dayColors = [...new Set([...savedColors, previewColor].filter(Boolean))];
-        if (dayColors.length) {
-          button.classList.add('has-service', `service-${dayColors[0]}`);
-          if (dayColors.length > 1) button.classList.add('multiple-services');
-          const abbreviationType = previewColor ? serviceType.value : dayServices[0]?.type;
-          const abbreviation = document.createElement('span');
-          abbreviation.className = 'service-abbrev';
-          abbreviation.textContent = serviceAbbreviation(abbreviationType);
-          button.appendChild(abbreviation);
-          button.title = dayServices.map(service => service.type).join(' • ');
-          if (previewColor) button.title = (button.title ? button.title + ' • ' : '') + serviceType.value + ' (pré-visualização)';
+        const editingSavedService = Boolean(editingServiceId && dayServices.some(service => service.id === editingServiceId));
+        const previewService = !servicePlanner.classList.contains('calendar-only') && key === selectedServiceDate && serviceType.value && !editingSavedService
+          ? { type: serviceType.value, preview: true }
+          : null;
+        const displayedServices = [...dayServices, ...(previewService ? [previewService] : [])];
+        if (displayedServices.length) {
+          const firstType = displayedServices[0].type;
+          button.classList.add('has-service', `service-${serviceColorClass(firstType)}`);
+          if (displayedServices.length > 1) {
+            button.classList.add('multiple-services');
+            const firstColor = serviceColorValue(displayedServices[0].type);
+            const secondColor = serviceColorValue(displayedServices[1].type);
+            button.style.background = `linear-gradient(90deg, ${firstColor} 0%, ${firstColor} 50%, ${secondColor} 50%, ${secondColor} 100%)`;
+            button.style.borderColor = firstColor;
+          }
+          if (displayedServices.length > 1) {
+            const pair = document.createElement('span');
+            pair.className = 'service-abbrev-pair';
+            displayedServices.slice(0, 2).forEach(service => {
+              const code = document.createElement('span');
+              code.className = 'service-abbrev-half';
+              code.textContent = serviceAbbreviation(service.type);
+              code.style.color = serviceAbbreviationColor(service.type);
+              pair.appendChild(code);
+            });
+            button.appendChild(pair);
+          } else {
+            const abbreviation = document.createElement('span');
+            abbreviation.className = 'service-abbrev';
+            abbreviation.textContent = serviceAbbreviation(displayedServices[0].type);
+            button.appendChild(abbreviation);
+          }
+          const serviceSummary = displayedServices.map(service => `${serviceAbbreviation(service.type)} ${service.type}${service.preview ? ' (pré-visualização)' : ''}`).join(' • ');
+          button.title = serviceSummary;
+          button.setAttribute('aria-label', `${readableDate(key)} — ${serviceSummary}`);
         }
         calendarGrid.appendChild(button);
       }
     }
 
-    function selectServiceDate(key) {
+    function prepareNewServiceDate(key) {
+      editingGeneratedScaleService = false;
+      editingServiceId = null;
       selectedServiceDate = key;
-      const existing = services.find(service => service.date === key);
+      serviceDate.value = key;
+      updateServiceDateButton();
+      serviceForm.hidden = false;
+      deleteServiceWrap.hidden = true;
+      deleteConfirm.hidden = true;
+      const count = serviceCountForDate(key);
+      selectedDateLabel.textContent = readableDate(key) + (count >= 2 ? ' — limite de 2 serviços atingido' : (count === 1 ? ' — novo serviço; já há 1 neste dia' : ' — novo serviço'));
+      selectedDateLabel.classList.add('has-value');
+      if (!servicePlanner.classList.contains('questionnaire-only')) renderCalendar();
+    }
+
+    function selectServiceDate(key, preferredServiceId = '') {
+      editingGeneratedScaleService = false;
+      selectedServiceDate = key;
+      const existing = services.find(service => service.id === preferredServiceId && service.date === key) || services.find(service => service.date === key);
       editingServiceId = existing ? existing.id : null;
       selectedDateLabel.textContent = readableDate(key) + (existing ? ' — serviço cadastrado' : ' — preencha os dados');
       selectedDateLabel.classList.add('has-value');
@@ -4548,7 +4824,6 @@
       notesScreen.setAttribute('aria-hidden', 'false');
       document.body.classList.add('planner-open');
       renderNotesArchive();
-      setTimeout(() => notesTitleInput.focus(), 0);
     }
 
     function newNote() {
@@ -4557,7 +4832,6 @@
       notesTitleInput.value = '';
       notesTextarea.value = '';
       renderNotesArchive();
-      notesTitleInput.focus();
     }
 
     function openNotesScreen() {
@@ -4571,7 +4845,6 @@
       notesScreen.classList.add('open');
       notesScreen.setAttribute('aria-hidden', 'false');
       document.body.classList.add('planner-open');
-      setTimeout(() => notesTitleInput.focus(), 0);
     }
 
     function openNotesArchiveScreen() {
@@ -4586,7 +4859,6 @@
       notesArchiveScreen.classList.add('open');
       notesArchiveScreen.setAttribute('aria-hidden', 'false');
       document.body.classList.add('planner-open');
-      setTimeout(() => notesSearch.focus(), 0);
     }
 
     function returnToNotesScreen() {
@@ -4595,7 +4867,6 @@
       notesScreen.classList.add('open');
       notesScreen.setAttribute('aria-hidden', 'false');
       document.body.classList.add('planner-open');
-      setTimeout(() => notesTitleInput.focus(), 0);
     }
 
     function closeNotesScreen() {
@@ -4629,7 +4900,6 @@
       notesTextarea.value = '';
       setNotesAudioPreview('', '');
       renderNotesArchive();
-      notesTitleInput.focus();
       showToast('Anotação salva.');
     });
     document.querySelector('#notesDelete').addEventListener('click', () => {
@@ -4763,6 +5033,51 @@
       reminderDate.disabled = true;
       reminderNotes.value = [serviceLocation.value.trim(), serviceNotes.value.trim()].filter(Boolean).join(' · ');
     }
+
+    function saveServiceForReminder() {
+      if (!serviceQuestionnaireIsComplete()) {
+        showToast('Termine de preencher o questionário de marcação de serviço');
+        return null;
+      }
+      const replacingGeneratedOrdinary = editingGeneratedScaleService && serviceType.value === 'ORDINÁRIO';
+      if (!editingServiceId && serviceCountForDate(selectedServiceDate) >= 2 && !replacingGeneratedOrdinary) {
+        showToast('Já existem 2 serviços cadastrados para esta data.');
+        return null;
+      }
+      if (!serviceForm.reportValidity()) return null;
+      const formattedReceivable = servicePaymentMode === 'value' ? formatServiceReceivable(serviceReceivable.value) : '';
+      if (servicePaymentMode === 'value' && parseMoney(serviceReceivable.value) <= 0) {
+        showToast('Informe um valor a receber maior que zero.');
+        serviceReceivable.focus();
+        return null;
+      }
+      if (servicePaymentMode === 'value') serviceReceivable.value = formattedReceivable;
+      const service = {
+        id: editingServiceId || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        date: selectedServiceDate,
+        type: serviceType.value,
+        hours: serviceHours.value,
+        startTime: serviceStartTime.value,
+        endTime: serviceEndTime.value,
+        paymentMode: servicePaymentMode,
+        paymentSource: servicePaymentMode === 'free' ? 'free' : (servicePaymentSource || 'manual'),
+        receivable: formattedReceivable,
+        location: serviceLocation.value.trim(),
+        notes: serviceNotes.value.trim()
+      };
+      const existingIndex = services.findIndex(item => item.id === service.id);
+      if (existingIndex >= 0) services[existingIndex] = service;
+      else services.push(service);
+      localStorage.setItem(servicesKey, JSON.stringify(services));
+      editingGeneratedScaleService = false;
+      renderFinanceRows();
+      editingServiceId = service.id;
+      deleteServiceWrap.hidden = false;
+      deleteConfirm.hidden = true;
+      selectedDateLabel.textContent = readableDate(selectedServiceDate) + ' — serviço salvo';
+      selectedDateLabel.classList.add('has-value');
+      return service;
+    }
     document.querySelector('#serviceReminderButton').addEventListener('click', openServiceReminderSetup);
     function closeRemindersScreen() {
       remindersScreen.classList.remove('open');
@@ -4802,14 +5117,16 @@
       if (!reminderDate.value) return;
       const reminders = loadReminders();
       const existingReminder = reminders.find(item => item.id === activeReminderId);
+      const linkedService = reminderOpenedFromService ? saveServiceForReminder() : null;
+      if (reminderOpenedFromService && !linkedService) return;
       const generatedTitle = reminderServiceType.value.trim() ? `Serviço ${reminderServiceType.value.trim()}` : `Lembrete de serviço · ${reminderDate.value}`;
-      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), linkedService: reminderOpenedFromService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false };
+      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), linkedService: reminderOpenedFromService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), linkedServiceId: linkedService?.id || existingReminder?.linkedServiceId || '', advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false };
       const index = reminders.findIndex(item => item.id === reminder.id);
       if (index >= 0) reminders[index] = reminder; else reminders.push(reminder);
       saveReminders(reminders);
       clearReminderForm();
       renderReminders();
-      showToast('Lembrete salvo.');
+      showToast(reminderOpenedFromService ? 'lembrete e serviço salvos' : 'Lembrete salvo.');
       if (reminderOpenedFromService) closeRemindersScreen();
       else {
         remindersForm.hidden = true;
@@ -4856,6 +5173,8 @@
     document.body.appendChild(screenMarkPrompt);
     document.body.appendChild(screenActionSheet);
     const screenActionMessage = document.querySelector('#screenDayActionMessage');
+    const screenActionServiceSelect = document.querySelector('#screenActionServiceSelect');
+    const screenAddSecondServiceButton = document.querySelector('#screenAddSecondService');
     const screenDeleteConfirm = document.querySelector('#screenDeleteConfirm');
     const screenDeleteMessage = document.querySelector('#screenDeleteMessage');
     let screenCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -4864,9 +5183,11 @@
     let screenLastAt = 0;
     let screenClickTimer = null;
     let screenActionDate = '';
+    let screenActionServiceId = '';
     let screenActionIsScaleGenerated = false;
     let returnToCalendarAfterQuestionnaire = false;
     let returnCalendarDate = '';
+    let returnToListAfterQuestionnaire = false;
 
     function getConfiguredScale() {
       try {
@@ -4902,7 +5223,7 @@
       if (rangeEnd.getTime() <= anchorMs) return [];
       const firstCycle = Math.max(0, Math.floor((rangeStart.getTime() - anchorMs) / cycleMs) - 2);
       const lastCycle = Math.ceil((rangeEnd.getTime() - anchorMs) / cycleMs) + 1;
-      const occupiedDates = new Set(actualServices.filter(service => service && service.date).map(service => service.date));
+      const occupiedDates = new Set(actualServices.filter(service => service && service.date && service.type === 'ORDINÁRIO').map(service => service.date));
       const vacationRecords = loadVacationRecords();
       let excludedDates = new Set();
       try {
@@ -4956,13 +5277,34 @@
         if (key === screenSelectedDate) button.classList.add('selected');
         const matches = services.filter(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
         const generatedService = generatedByDate.get(key);
-        if (!matches.length && generatedService) matches.push(generatedService);
-        const colors = [...new Set(matches.map(service => serviceColorClass(service.type)))];
-        if (colors.length) {
-          button.classList.add('has-service', `service-${colors[0]}`);
-          if (colors.length > 1) button.classList.add('multiple-services');
-          const abbreviation = document.createElement('span'); abbreviation.className = 'service-abbrev'; abbreviation.textContent = serviceAbbreviation(matches[0].type); button.appendChild(abbreviation);
-          button.title = matches.map(service => service.type).join(' • ');
+        if (generatedService) matches.push(generatedService);
+        if (matches.length) {
+          button.classList.add('has-service', `service-${serviceColorClass(matches[0].type)}`);
+          if (matches.length > 1) {
+            button.classList.add('multiple-services');
+            const firstColor = serviceColorValue(matches[0].type);
+            const secondColor = serviceColorValue(matches[1].type);
+            button.style.background = `linear-gradient(90deg, ${firstColor} 0%, ${firstColor} 50%, ${secondColor} 50%, ${secondColor} 100%)`;
+            button.style.borderColor = firstColor;
+            const pair = document.createElement('span');
+            pair.className = 'service-abbrev-pair';
+            matches.slice(0, 2).forEach(service => {
+              const code = document.createElement('span');
+              code.className = 'service-abbrev-half';
+              code.textContent = serviceAbbreviation(service.type);
+              code.style.color = serviceAbbreviationColor(service.type);
+              pair.appendChild(code);
+            });
+            button.appendChild(pair);
+          } else {
+            const abbreviation = document.createElement('span');
+            abbreviation.className = 'service-abbrev';
+            abbreviation.textContent = serviceAbbreviation(matches[0].type);
+            button.appendChild(abbreviation);
+          }
+          const serviceSummary = matches.map(service => `${serviceAbbreviation(service.type)} ${service.type}`).join(' • ');
+          button.title = serviceSummary;
+          button.setAttribute('aria-label', `${readableDate(key)} — ${serviceSummary}`);
         }
         screenGrid.appendChild(button);
       }
@@ -4991,7 +5333,7 @@
       }
       items.forEach(service => {
         const card = document.createElement('article');
-        card.className = `calendar-list-card service-${serviceColorClass(service.type)}`;
+        card.className = `calendar-list-card useful-link-item service-${serviceColorClass(service.type)}`;
         const date = document.createElement('strong');
         const [year, month, day] = service.date.split('-');
         const weekday = new Date(`${service.date}T00:00:00`).toLocaleDateString('pt-BR', { weekday: 'long' });
@@ -5000,16 +5342,102 @@
         type.className = 'calendar-list-type';
         type.textContent = service.type || 'Serviço';
         const details = [];
+        const sameDateServices = items.filter(item => item.date === service.date);
+        if (sameDateServices.length > 1) details.push(`Serviço ${sameDateServices.indexOf(service) + 1} de ${sameDateServices.length}`);
         if (service.hours) details.push(`Duração: ${service.hours}`);
         if (service.startTime || service.endTime) details.push(`Horário: ${service.startTime || '--:--'}–${service.endTime || '--:--'}`);
         if (service.location) details.push(`Local: ${service.location}`);
         if (service.scaleGenerated) details.push(`Escala ${service.scalePattern}`);
         const info = document.createElement('span');
         info.textContent = details.join(' · ') || 'Sem detalhes adicionais';
-        card.append(date, type, info);
+        const main = document.createElement('div');
+        main.className = 'useful-link-main';
+        main.append(date, type, info);
+        const actions = document.createElement('div');
+        actions.className = 'useful-link-actions';
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'useful-link-action';
+        edit.textContent = 'EDITAR';
+        edit.dataset.serviceListEdit = service.id;
+        edit.dataset.serviceDate = service.date;
+        edit.dataset.scaleGenerated = service.scaleGenerated ? 'true' : 'false';
+        edit.setAttribute('aria-label', `Editar serviço ${service.type || 'marcado'} de ${day}/${month}/${year}`);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'useful-link-action';
+        remove.textContent = 'EXCLUIR';
+        remove.dataset.serviceListDelete = service.id;
+        remove.dataset.serviceDate = service.date;
+        remove.dataset.scaleGenerated = service.scaleGenerated ? 'true' : 'false';
+        remove.setAttribute('aria-label', `Excluir serviço ${service.type || 'marcado'} de ${day}/${month}/${year}`);
+        actions.append(edit, remove);
+        card.append(main, actions);
         screenServiceList.appendChild(card);
       });
     }
+
+    function excludeGeneratedScaleService(key) {
+      const config = getConfiguredScale();
+      if (!config) return false;
+      const exclusionKey = `${config.scale}|${config.startDate}|${key}`;
+      let exclusions = [];
+      try {
+        const saved = JSON.parse(localStorage.getItem(configuredScaleExcludedDatesStorageKey) || '[]');
+        if (Array.isArray(saved)) exclusions = saved;
+        if (!exclusions.includes(exclusionKey)) exclusions.push(exclusionKey);
+        localStorage.setItem(configuredScaleExcludedDatesStorageKey, JSON.stringify(exclusions));
+        return true;
+      } catch (_) {
+        showToast('Não foi possível excluir o serviço neste aparelho.');
+        return false;
+      }
+    }
+
+    function clearSelectedCalendarDateIfEmpty(key) {
+      const vacationRecords = loadVacationRecords();
+      const hasSavedService = services.some(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
+      const hasGeneratedService = getScheduledScaleServices(key, key, services).length > 0;
+      if (!hasSavedService && !hasGeneratedService && screenSelectedDate === key) screenSelectedDate = '';
+    }
+
+    screenServiceList.addEventListener('click', event => {
+      const editButton = event.target.closest('[data-service-list-edit]');
+      if (editButton) {
+        const key = editButton.dataset.serviceDate;
+        if (editButton.dataset.scaleGenerated === 'true') {
+          const generatedService = getScheduledScaleServices(key, key, services).find(service => service.id === editButton.dataset.serviceListEdit);
+          if (!generatedService) return;
+          returnToListAfterQuestionnaire = true;
+          openQuestionnaireOnly(key, false, '', true);
+        } else {
+          const service = services.find(item => item.id === editButton.dataset.serviceListEdit);
+          if (!service) return;
+          returnToListAfterQuestionnaire = true;
+          openQuestionnaireOnly(key, false, service.id);
+        }
+        return;
+      }
+      const deleteButton = event.target.closest('[data-service-list-delete]');
+      if (!deleteButton) return;
+      const key = deleteButton.dataset.serviceDate;
+      const isGenerated = deleteButton.dataset.scaleGenerated === 'true';
+      const service = isGenerated
+        ? getScheduledScaleServices(key, key, services).find(item => item.id === deleteButton.dataset.serviceListDelete)
+        : services.find(item => item.id === deleteButton.dataset.serviceListDelete);
+      if (!service || !window.confirm(deletionConfirmationMessage(service.type))) return;
+      if (isGenerated) {
+        if (!excludeGeneratedScaleService(key)) return;
+      } else {
+        services = services.filter(item => item.id !== service.id);
+        localStorage.setItem(servicesKey, JSON.stringify(services));
+      }
+      clearSelectedCalendarDateIfEmpty(key);
+      renderStandaloneServiceList();
+      renderStandaloneCalendar();
+      renderFinanceRows();
+      showToast('Serviço excluído do calendário.');
+    });
 
     function setStandaloneListView(showList) {
       calendarScreen.classList.toggle('list-view', showList);
@@ -5036,6 +5464,8 @@
       screenLastAt = 0;
       clearTimeout(screenClickTimer);
       screenActionDate = '';
+      screenActionServiceId = '';
+      screenActionServiceSelect.hidden = true;
       screenActionIsScaleGenerated = false;
       screenMarkPrompt.hidden = true;
       screenActionSheet.hidden = true;
@@ -5052,6 +5482,8 @@
       screenActionSheet.hidden = true;
       screenDeleteConfirm.hidden = true;
       screenActionDate = '';
+      screenActionServiceId = '';
+      screenActionServiceSelect.hidden = true;
       screenActionIsScaleGenerated = false;
       screenLastDate = '';
       screenLastAt = 0;
@@ -5063,17 +5495,29 @@
 
     function openScreenActions(key) {
       const vacationRecords = loadVacationRecords();
-      const existing = services.find(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
-      const generated = existing ? null : getScheduledScaleServices(key, key, services)[0];
-      const selectedService = existing || generated;
+      const existingServices = services.filter(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
+      const generated = getScheduledScaleServices(key, key, services)[0];
+      const selectedService = existingServices[0] || generated;
       if (!selectedService) return;
       screenActionDate = key;
-      screenActionIsScaleGenerated = Boolean(generated);
-      screenActionMessage.textContent = `${readableDate(key)} — ${selectedService.type}${selectedService.hours ? `, ${selectedService.hours}` : ''}`;
+      screenActionServiceId = fillActionServiceSelect(screenActionServiceSelect, existingServices);
+      screenActionIsScaleGenerated = !existingServices.length && Boolean(generated);
+      if (!existingServices.length && generated) screenActionServiceId = generated.id;
+      const dayEntries = [...existingServices, ...(generated ? [generated] : [])];
+      screenActionMessage.textContent = `${readableDate(key)} — ${dayEntries.map(serviceDayLabel).join(' / ')}`;
+      screenAddSecondServiceButton.hidden = serviceCountForDate(key) >= 2;
       screenDeleteMessage.textContent = deletionConfirmationMessage(selectedService.type);
       screenDeleteConfirm.hidden = true;
       screenActionSheet.hidden = false;
     }
+
+    screenActionServiceSelect.addEventListener('change', () => {
+      screenActionServiceId = screenActionServiceSelect.value;
+      const selected = services.find(service => service.id === screenActionServiceId);
+      if (!selected) return;
+      screenActionMessage.textContent = `${readableDate(screenActionDate)} — ${serviceDayLabel(selected)}`;
+      screenDeleteMessage.textContent = deletionConfirmationMessage(selected.type);
+    });
 
     document.querySelector('#screenPreviousMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() - 1); renderStandaloneCalendar(); });
     document.querySelector('#screenNextMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() + 1); renderStandaloneCalendar(); });
@@ -5092,7 +5536,7 @@
       const calendarIsOpen = calendarScreen.classList.contains('open');
       const messageIsOpen = !screenMarkPrompt.hidden || !screenActionSheet.hidden;
       if (!calendarIsOpen || !messageIsOpen) return;
-      const responseButton = event.target.closest('#screenMarkPrompt button, #screenDayActionSheet button');
+      const responseButton = event.target.closest('#screenMarkPrompt button, #screenDayActionSheet button, #screenActionServiceSelect');
       if (responseButton) return;
       if (event.target.closest('#calendarScreen')) {
         screenMarkPrompt.hidden = true;
@@ -5111,7 +5555,7 @@
     function handleScreenDoubleClick(key) {
       const vacationRecords = loadVacationRecords();
       const hasSavedService = services.some(service => service.date === key && !isHiddenByVacation(service, vacationRecords));
-      const hasGeneratedOrdinary = !hasSavedService && getScheduledScaleServices(key, key, services).length > 0;
+      const hasGeneratedOrdinary = getScheduledScaleServices(key, key, services).length > 0;
       if (hasSavedService || hasGeneratedOrdinary) {
         openScreenActions(key);
       } else {
@@ -5148,14 +5592,22 @@
       screenActionDate = '';
     });
     document.querySelector('#screenKeepService').addEventListener('click', () => { screenActionSheet.hidden = true; });
+    screenAddSecondServiceButton.addEventListener('click', () => {
+      const key = screenActionDate;
+      if (!key || serviceCountForDate(key) >= 2) return;
+      screenActionSheet.hidden = true;
+      closeStandaloneCalendar();
+      openQuestionnaireOnly(key, true);
+    });
     document.querySelector('#screenEditService').addEventListener('click', () => {
       const key = screenActionDate;
-      const isGenerated = screenActionIsScaleGenerated;
+      const selectedSavedService = services.find(service => service.id === screenActionServiceId);
+      const isGenerated = !selectedSavedService && screenActionIsScaleGenerated;
       screenActionSheet.hidden = true;
       returnToCalendarAfterQuestionnaire = true;
       returnCalendarDate = key;
       closeStandaloneCalendar();
-      openQuestionnaireOnly(key);
+      openQuestionnaireOnly(key, false, selectedSavedService?.id || '');
       if (isGenerated) {
         const generated = getScheduledScaleServices(key, key, services)[0];
         serviceType.value = generated?.type || 'ORDINÁRIO';
@@ -5166,7 +5618,7 @@
     document.querySelector('#screenOfferDelete').addEventListener('click', () => { screenActionMessage.hidden = true; screenActionSheet.querySelector('.day-action-actions').hidden = true; screenDeleteConfirm.hidden = false; });
     document.querySelector('#screenCancelDelete').addEventListener('click', () => { screenDeleteConfirm.hidden = true; screenActionMessage.hidden = false; screenActionSheet.querySelector('.day-action-actions').hidden = false; });
     document.querySelector('#screenConfirmDelete').addEventListener('click', () => {
-      const existing = services.find(service => service.date === screenActionDate);
+      const existing = services.find(service => service.id === screenActionServiceId) || services.find(service => service.date === screenActionDate);
       if (existing) {
         services = services.filter(service => service.id !== existing.id);
         localStorage.setItem(servicesKey, JSON.stringify(services));
@@ -5186,6 +5638,7 @@
           return;
         }
       }
+      clearSelectedCalendarDateIfEmpty(screenActionDate);
       screenActionSheet.hidden = true; screenDeleteConfirm.hidden = true; screenActionMessage.hidden = false;
       screenActionIsScaleGenerated = false;
       renderStandaloneCalendar(); showToast('Serviço excluído do calendário.');
@@ -5225,8 +5678,9 @@
       });
     }
 
-    function openQuestionnaireOnly(dateToEdit = '') {
+    function openQuestionnaireOnly(dateToEdit = '', addSecondService = false, serviceToEditId = '', editGeneratedScaleService = false) {
       services = loadServices();
+      editingGeneratedScaleService = Boolean(editGeneratedScaleService);
       if (dateToEdit) {
         returnToCalendarAfterQuestionnaire = true;
         returnCalendarDate = dateToEdit;
@@ -5249,18 +5703,20 @@
       const today = new Date();
       const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
       const targetDate = dateToEdit || todayKey;
-      if (dateToEdit) {
+      if (dateToEdit && !addSecondService && !editGeneratedScaleService) {
         serviceDate.value = targetDate;
-        selectServiceDate(targetDate);
-        const generated = services.some(service => service.date === targetDate) ? null : getScheduledScaleServices(targetDate, targetDate, services)[0];
+        selectServiceDate(targetDate, serviceToEditId);
+        const generated = serviceToEditId || services.some(service => service.date === targetDate) ? null : getScheduledScaleServices(targetDate, targetDate, services)[0];
         if (generated) {
           serviceType.value = generated.type;
           setServiceHours(generated.hours || '');
           updateDeleteConfirmationMessage();
         }
       } else {
-        returnToCalendarAfterQuestionnaire = false;
-        returnCalendarDate = '';
+        if (!dateToEdit) {
+          returnToCalendarAfterQuestionnaire = false;
+          returnCalendarDate = '';
+        }
         selectedServiceDate = targetDate;
         editingServiceId = null;
         serviceForm.reset();
@@ -5275,21 +5731,32 @@
         setServicePayment('', '', '');
         serviceLocation.value = '';
         serviceNotes.value = '';
-        selectedDateLabel.textContent = readableDate(targetDate) + ' — preencha os dados';
+        selectedDateLabel.textContent = readableDate(targetDate) + (editGeneratedScaleService ? ' — serviço gerado pela escala' : (addSecondService ? ' — adicionar outro serviço' : ' — preencha os dados'));
         selectedDateLabel.classList.add('has-value');
         updateServiceDateButton();
         serviceForm.hidden = false;
         deleteServiceWrap.hidden = true;
         deleteConfirm.hidden = true;
         updateDeleteConfirmationMessage();
+        if (editGeneratedScaleService) {
+          const generated = getScheduledScaleServices(targetDate, targetDate, services)[0];
+          if (generated) {
+            serviceType.value = generated.type;
+            setServiceHours(generated.hours || '');
+            updateDeleteConfirmationMessage();
+            autoFillConfiguredPayment();
+          }
+        }
       }
     }
 
     function closePlanner() {
       const returnToCalendar = returnToCalendarAfterQuestionnaire;
       const dateToReturn = returnCalendarDate;
+      const returnToList = returnToListAfterQuestionnaire;
       returnToCalendarAfterQuestionnaire = false;
       returnCalendarDate = '';
+      returnToListAfterQuestionnaire = false;
       servicePlanner.classList.remove('open', 'questionnaire-only', 'calendar-only', 'payment-config-only');
       paymentTableScreen.hidden = true;
       servicePlanner.style.removeProperty('display');
@@ -5305,6 +5772,7 @@
           screenSelectedDate = dateToReturn;
           renderStandaloneCalendar();
         }
+        if (returnToList) setStandaloneListView(true);
       } else if (document.querySelector('.view.active')?.dataset.view === 'home') {
         app.classList.add('home-screen');
       }
@@ -5312,12 +5780,14 @@
 
     function returnToCalendarFromQuestionnaire() {
       const dateToReturn = returnCalendarDate || (returnToCalendarAfterQuestionnaire ? serviceDate.value : '');
+      const returnToList = returnToListAfterQuestionnaire;
       if (!dateToReturn) {
         closePlanner();
         return;
       }
       returnToCalendarAfterQuestionnaire = false;
       returnCalendarDate = '';
+      returnToListAfterQuestionnaire = false;
       servicePlanner.classList.remove('open', 'questionnaire-only', 'calendar-only');
       servicePlanner.style.removeProperty('display');
       questionnaireDateWrap.hidden = true;
@@ -5328,6 +5798,7 @@
       screenCursor = new Date(year, month - 1, 1);
       screenSelectedDate = dateToReturn;
       renderStandaloneCalendar();
+      if (returnToList) setStandaloneListView(true);
     }
 
     document.querySelector('.planner-back').addEventListener('click', event => {
@@ -5356,7 +5827,8 @@
     });
     serviceDate.addEventListener('change', () => {
       if (serviceDate.value) {
-        selectServiceDate(serviceDate.value);
+        if (editingServiceId) selectServiceDate(serviceDate.value);
+        else prepareNewServiceDate(serviceDate.value);
         setTimeout(() => serviceDate.blur(), 0);
       }
     });
@@ -5409,19 +5881,25 @@
     });
     editServiceButton.addEventListener('click', () => {
       const key = actionDate;
-      const existing = services.find(service => service.date === key);
+      const existing = services.find(service => service.id === actionServiceId) || services.find(service => service.date === key);
       if (!existing) return hideDayActionSheet();
       hideDayActionSheet();
       returnToCalendarAfterQuestionnaire = true;
       returnCalendarDate = key;
-      openQuestionnaireOnly(key);
+      openQuestionnaireOnly(key, false, existing.id);
     });
     keepServiceButton.addEventListener('click', () => {
       hideDayActionSheet();
       showToast('Serviço mantido no calendário.');
     });
+    addSecondServiceButton.addEventListener('click', () => {
+      const key = actionDate;
+      if (!key || serviceCountForDate(key) >= 2) return;
+      hideDayActionSheet();
+      openQuestionnaireOnly(key, true);
+    });
     offerDeleteServiceButton.addEventListener('click', () => {
-      const existing = services.find(service => service.date === actionDate);
+      const existing = services.find(service => service.id === actionServiceId) || services.find(service => service.date === actionDate);
       if (!existing) return hideDayActionSheet();
       // A segunda mensagem substitui a primeira, sem deixar o menu anterior visível.
       dayActionMessage.hidden = true;
@@ -5434,7 +5912,7 @@
       showToast('Serviço mantido no calendário.');
     });
     confirmCalendarDeleteButton.addEventListener('click', () => {
-      const existing = services.find(service => service.date === actionDate);
+      const existing = services.find(service => service.id === actionServiceId) || services.find(service => service.date === actionDate);
       if (!existing) return hideDayActionSheet();
       removeService(existing.id, actionDate);
     });
@@ -5461,6 +5939,11 @@
     serviceForm.addEventListener('submit', event => {
       event.preventDefault();
       if (!selectedServiceDate) return;
+      const replacingGeneratedOrdinary = editingGeneratedScaleService && serviceType.value === 'ORDINÁRIO';
+      if (!editingServiceId && serviceCountForDate(selectedServiceDate) >= 2 && !replacingGeneratedOrdinary) {
+        showToast('Já existem 2 serviços cadastrados para esta data.');
+        return;
+      }
       const hasCompleteTimeRange = Boolean(serviceStartTime.value && serviceEndTime.value);
       if (!serviceHours.value && !hasCompleteTimeRange) {
         showToast('Escolha uma duração ou informe início e término do serviço.');
@@ -5496,6 +5979,7 @@
       if (existingIndex >= 0) services[existingIndex] = service;
       else services.push(service);
       localStorage.setItem(servicesKey, JSON.stringify(services));
+      editingGeneratedScaleService = false;
       renderFinanceRows();
       editingServiceId = service.id;
       deleteServiceWrap.hidden = false;
@@ -5523,7 +6007,7 @@
       history.replaceState(null, '', valid === 'home' ? '#inicio' : '#' + valid);
       if (valid === 'financeiro') {
         const data = loadFinanceData();
-        const visibleCategories = new Set(services.map(service => service.type));
+        const visibleCategories = new Set(services.map(service => financeCategoryForService(service.type)));
         financeCategories.forEach(category => {
           if (!visibleCategories.has(category)) return;
           data[category] = { ...(data[category] || {}), selected: true };
@@ -5711,7 +6195,7 @@
       const grid = document.createElement('div');
       grid.className = 'other-services-grid';
       const secondaryLabels = {
-        ferias: 'Chinelinho',
+        ferias: 'Pé que dói / Férias / 851',
         lembretes: 'Padrinho',
         anotacoes: 'Minhas Anotações',
         'links-uteis': 'Links Úteis',
@@ -6093,3 +6577,4 @@
   </script>
 </body>
 </html>
+
