@@ -6254,7 +6254,7 @@
       if (navigation) navigate(navigation.dataset.go);
 
       const action = event.target.closest('[data-toast]');
-      if (action) showToast(action.dataset.toast);
+      if (action && !action.closest('#quickActions')) showToast(action.dataset.toast);
 
       const tool = event.target.closest('.action-card');
       if (tool && tool.dataset.tool && !tool.closest('#quickActions')) showToast(tool.dataset.message);
@@ -6351,6 +6351,7 @@
     oldCoverCards.forEach(card => card.remove());
     keptCards.forEach(card => quickActions.appendChild(card));
     const primaryCards = keptCards;
+    primaryCards.forEach(card => card.removeAttribute('data-message'));
     const cards = [...primaryCards];
 
     const extrasView = document.querySelector('.view[data-view="extras"]');
