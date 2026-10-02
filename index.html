@@ -3054,6 +3054,12 @@
           configureScaleStartButton.classList.toggle('has-value', hasValue);
         }
       }
+      if (!disabled && configureScaleStartTimeButton) {
+        const timeValue = configureScaleStartTimeInput?.value || '';
+        const hasTimeValue = /^\d{2}:\d{2}$/.test(timeValue);
+        configureScaleStartTimeButton.textContent = hasTimeValue ? `Hora: ${timeValue}` : 'Escolher horário de início';
+        configureScaleStartTimeButton.classList.toggle('has-value', hasTimeValue);
+      }
     }
     if (configureScaleStartButton && configureScaleStartInput) {
       try { configureScaleStartInput.value = localStorage.getItem(configuredScaleStartStorageKey) || ''; } catch (_) {}
