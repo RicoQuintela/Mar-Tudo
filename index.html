@@ -585,6 +585,7 @@
     #reminderDate:disabled::-webkit-inner-spin-button { display: none !important; -webkit-appearance: none !important; width: 0; margin: 0; }
     .reminders-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
     .reminders-field-full { margin-top: 9px; }
+    .reminders-hint { margin: 5px 0 0; color: var(--muted); font-size: 10px; line-height: 1.35; }
     .reminders-save { width: 100%; min-height: 44px; margin-top: 10px; border: 0; border-radius: 12px; background: linear-gradient(90deg, #4c9bff, #2563eb); color: #fff; font-size: 12px; font-weight: 950; cursor: pointer; box-shadow: 0 0 12px rgba(76,155,255,.25); }
     .reminders-cancel { display: none; width: 100%; min-height: 36px; margin-top: 7px; border: 1px solid rgba(255,255,255,.2); border-radius: 10px; background: transparent; color: var(--cream); font-size: 11px; font-weight: 800; cursor: pointer; }
     .reminders-cancel.visible { display: block; }
@@ -2599,6 +2600,7 @@
           <input id="reminderRepeat" type="hidden" value="none" />
           <div class="reminders-grid"><div><label for="reminderServiceType">Tipo de serviço</label><input class="reminders-input" id="reminderServiceType" readonly placeholder="Preenchido pela marcação" /></div><div><label for="reminderServiceTime">Horário do serviço</label><input class="reminders-input" id="reminderServiceTime" readonly placeholder="Preenchido pela marcação" /></div></div>
           <div class="reminders-grid"><div><label for="reminderDate">Data do serviço</label><input class="reminders-input" id="reminderDate" type="date" required /></div><div><label for="reminderAdvanceValue">Quanto tempo antes do serviço você quer ser lembrado?</label><div class="reminders-advance-input"><input class="reminders-input" id="reminderAdvanceValue" type="number" min="0" step="1" inputmode="numeric" placeholder="0" aria-label="Número de tempo antes" /><select class="reminders-select" id="reminderAdvanceUnit" aria-label="Unidade de tempo"><option value="minutes">minutos antes</option><option value="hours">horas antes</option><option value="days">dias antes</option></select></div></div></div>
+          <div class="reminders-field-full"><label for="reminderServiceStartTime">Horário de início do serviço</label><input class="reminders-input" id="reminderServiceStartTime" type="time" required /><p class="reminders-hint">Usado para calcular a hora exata do aviso. Se a marcação só tiver a duração, informe o início aqui.</p></div>
           <div class="reminders-field-full"><label for="reminderNotes">Observação (opcional)</label><textarea class="reminders-notes" id="reminderNotes" maxlength="220" placeholder="Algum detalhe importante?"></textarea></div>
           <button class="reminders-save" id="reminderSave" type="submit">SALVAR LEMBRETE</button>
           <button class="reminders-cancel" id="reminderCancel" type="button">CANCELAR EDIÇÃO</button>
@@ -5081,6 +5083,7 @@
     const reminderServiceType = document.querySelector('#reminderServiceType');
     const reminderServiceTime = document.querySelector('#reminderServiceTime');
     const reminderDate = document.querySelector('#reminderDate');
+    const reminderServiceStartTime = document.querySelector('#reminderServiceStartTime');
     const reminderAdvanceValue = document.querySelector('#reminderAdvanceValue');
     const reminderAdvanceUnit = document.querySelector('#reminderAdvanceUnit');
     const reminderRepeat = document.querySelector('#reminderRepeat');
@@ -5091,6 +5094,10 @@
     const remindersKey = 'mareTudo.reminders';
     let activeReminderId = null;
     let reminderOpenedFromService = false;
+    let reminderWorkerRegistration = null;
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').then(registration => { reminderWorkerRegistration = registration; }).catch(() => {});
+    }
     const reminderColors = { pink: '#f472b6', yellow: '#f7bd35', green: '#43c77a', blue: '#4c9bff' };
     const reminderRepeatLabels = { none: '', daily: ' · todos os dias', weekly: ' · toda semana', monthly: ' · todo mês' };
     const reminderUnitLabels = { minutes: ['minuto', 'minutos'], hours: ['hora', 'horas'], days: ['dia', 'dias'] };
@@ -5115,11 +5122,29 @@
       const legacy = { '15m': '15 minutos antes', '30m': '30 minutos antes', '1h': '1 hora antes', '2h': '2 horas antes', '1d': '1 dia antes' };
       return legacy[item.advance] || 'no dia do serviço';
     }
+    function reminderDueDate(item) {
+      if (!item.date || !item.serviceStartTime) return null;
+      const [year, month, day] = item.date.split('-').map(Number);
+      const [hour, minute] = item.serviceStartTime.split(':').map(Number);
+      if (![year, month, day, hour, minute].every(Number.isFinite)) return null;
+      const serviceMoment = new Date(year, month - 1, day, hour, minute, 0, 0);
+      if (Number.isNaN(serviceMoment.getTime())) return null;
+      const amount = Math.max(0, Number(item.advanceValue) || 0);
+      const unitMs = { minutes: 60000, hours: 3600000, days: 86400000 }[item.advanceUnit] || 60000;
+      return new Date(serviceMoment.getTime() - amount * unitMs);
+    }
+    function reminderDueLabel(item) {
+      const due = reminderDueDate(item);
+      if (!due) return 'horário do aviso pendente';
+      const date = due.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const time = due.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      return `aviso ${date} às ${time}`;
+    }
     function reminderDateLabel(date, item) {
       if (!date) return 'Sem data';
       const [year, month, day] = date.split('-').map(Number);
       const label = new Date(year, month - 1, day).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      return `${label} · ${reminderAdvanceLabel(item)}`;
+      return `${label} · ${reminderAdvanceLabel(item)} · ${reminderDueLabel(item)}`;
     }
     function escapeReminder(value) {
       return String(value || '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -5151,6 +5176,7 @@
       reminderServiceTime.value = item.serviceTime || '';
       reminderDate.value = item.date || reminderToday();
       reminderDate.disabled = Boolean(item.linkedService || item.serviceType || item.serviceTime);
+      reminderServiceStartTime.value = item.serviceStartTime || (item.serviceTime.match(/^(\d{2}:\d{2})/) || [])[1] || '';
       const legacyAdvance = { none: { value: '', unit: 'minutes' }, '15m': { value: 15, unit: 'minutes' }, '30m': { value: 30, unit: 'minutes' }, '1h': { value: 1, unit: 'hours' }, '2h': { value: 2, unit: 'hours' }, '1d': { value: 1, unit: 'days' } };
       const savedAdvance = item.advanceValue !== undefined ? { value: item.advanceValue, unit: item.advanceUnit || 'minutes' } : (legacyAdvance[item.advance] || legacyAdvance.none);
       reminderAdvanceValue.value = savedAdvance.value;
@@ -5197,6 +5223,7 @@
       reminderServiceTime.value = startTime || endTime
         ? `${startTime || '--:--'} às ${endTime || '--:--'}`
         : serviceHours.value.trim();
+      reminderServiceStartTime.value = startTime;
       reminderDate.value = selectedServiceDate || serviceDate.value || reminderToday();
       reminderDate.disabled = true;
       reminderNotes.value = [serviceLocation.value.trim(), serviceNotes.value.trim()].filter(Boolean).join(' · ');
@@ -5280,26 +5307,86 @@
         renderReminders();
       } else if (event.target.closest('[data-reminder-edit]')) editReminder(id);
     });
-    remindersForm.addEventListener('submit', event => {
+    async function requestReminderNotificationPermission() {
+      if (!('Notification' in window)) return false;
+      if (Notification.permission === 'granted') return true;
+      if (Notification.permission === 'denied') return false;
+      try { return await Notification.requestPermission() === 'granted'; }
+      catch (_) { return false; }
+    }
+    async function showReminderNotification(item) {
+      const bodyParts = [];
+      if (item.serviceType) bodyParts.push(item.serviceType);
+      if (item.serviceStartTime) bodyParts.push(`Início às ${item.serviceStartTime}`);
+      if (item.notes) bodyParts.push(item.notes);
+      const options = { body: bodyParts.join(' · ') || 'Está na hora do seu lembrete.', tag: `mare-tudo-${item.id}`, data: { url: location.href } };
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = reminderWorkerRegistration || await navigator.serviceWorker.ready;
+          await registration.showNotification(item.title || 'Lembrete de serviço', options);
+          return;
+        } catch (_) {}
+      }
+      if (!('Notification' in window)) throw new Error('notifications-unavailable');
+      new Notification(item.title || 'Lembrete de serviço', options);
+    }
+    async function deliverDueReminders() {
+      const items = loadReminders();
+      const now = Date.now();
+      let changed = false;
+      for (const item of items) {
+        if (item.done || item.notificationSentAt) continue;
+        const due = reminderDueDate(item);
+        if (!due || due.getTime() > now) continue;
+        try {
+          if ('Notification' in window && Notification.permission === 'granted') {
+            await showReminderNotification(item);
+          } else if (document.visibilityState === 'visible') {
+            showToast(`Lembrete: ${item.title || 'serviço'}${item.serviceStartTime ? ` · início às ${item.serviceStartTime}` : ''}`);
+          } else {
+            continue;
+          }
+          item.notificationSentAt = new Date().toISOString();
+          changed = true;
+        } catch (_) {
+          item.notificationSentAt = 'failed';
+          changed = true;
+          if (document.visibilityState === 'visible') showToast('Não foi possível exibir a notificação deste lembrete.');
+        }
+      }
+      if (changed) saveReminders(items);
+    }
+    remindersForm.addEventListener('submit', async event => {
       event.preventDefault();
       if (!reminderDate.value) return;
+      if (!reminderServiceStartTime.value) {
+        showToast('Informe o horário de início para programar a notificação.');
+        reminderServiceStartTime.focus();
+        return;
+      }
+      const notificationPermissionGranted = await requestReminderNotificationPermission();
+      const linkedToCurrentService = reminderOpenedFromService;
       const reminders = loadReminders();
       const existingReminder = reminders.find(item => item.id === activeReminderId);
-      const linkedService = reminderOpenedFromService ? saveServiceForReminder() : null;
-      if (reminderOpenedFromService && !linkedService) return;
+      const linkedService = linkedToCurrentService ? saveServiceForReminder() : null;
+      if (linkedToCurrentService && !linkedService) return;
       const generatedTitle = reminderServiceType.value.trim() ? `Serviço ${reminderServiceType.value.trim()}` : `Lembrete de serviço · ${reminderDate.value}`;
-      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), linkedService: reminderOpenedFromService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), linkedServiceId: linkedService?.id || existingReminder?.linkedServiceId || '', advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false };
+      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), serviceStartTime: reminderServiceStartTime.value, linkedService: linkedToCurrentService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), linkedServiceId: linkedService?.id || existingReminder?.linkedServiceId || '', advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false, notificationSentAt: existingReminder?.notificationSentAt || '' };
+      if (!existingReminder || existingReminder.notificationSentAt === 'failed' || reminderDueDate(existingReminder)?.getTime() !== reminderDueDate(reminder)?.getTime()) reminder.notificationSentAt = '';
       const index = reminders.findIndex(item => item.id === reminder.id);
       if (index >= 0) reminders[index] = reminder; else reminders.push(reminder);
       saveReminders(reminders);
       clearReminderForm();
       renderReminders();
-      showToast(reminderOpenedFromService ? 'lembrete e serviço salvos' : 'Lembrete salvo.');
-      if (reminderOpenedFromService) closeRemindersScreen();
-      else {
-        remindersForm.hidden = true;
-      }
+      showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : 'Lembrete salvo.');
+      if (!notificationPermissionGranted) setTimeout(() => showToast('Permita as notificações para receber o aviso automático.'), 1800);
+      void deliverDueReminders();
+      if (linkedToCurrentService) closeRemindersScreen();
+      else remindersForm.hidden = true;
     });
+    void deliverDueReminders();
+    setInterval(deliverDueReminders, 30000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void deliverDueReminders(); });
 
     const paymentsScreen = document.querySelector('#paymentsScreen');
     function openPaymentsScreen() {
