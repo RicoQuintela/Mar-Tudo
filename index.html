@@ -2730,7 +2730,7 @@
         <div class="selected-date" id="selectedDate" aria-live="polite">Escolha uma data para preencher o serviço.</div>
         <div class="questionnaire-date" id="questionnaireDateWrap" hidden>
           <div class="form-label" id="serviceDateLabel">Data do serviço:</div>
-          <button class="form-field service-date-button empty" id="selectServiceDateButton" type="button" aria-describedby="serviceDateLabel">SELECIONAR DATA</button>
+          <button class="form-field service-date-button empty" id="selectServiceDateButton" type="button" aria-describedby="serviceDateLabel">Selecione a data</button>
           <input class="service-date-input" id="serviceDate" type="date" tabindex="-1" aria-label="Data do serviço" />
         </div>
         <form class="service-form" id="serviceForm" hidden>
@@ -4593,14 +4593,20 @@
 
     function applyServiceDateButtonTypeface() {
       const reference = window.getComputedStyle(serviceType);
-      ['font-family', 'font-size', 'font-weight', 'font-style', 'line-height', 'letter-spacing', 'text-transform'].forEach(property => {
+      ['font-family', 'font-weight', 'font-style', 'line-height', 'letter-spacing', 'text-transform'].forEach(property => {
         selectServiceDateButton.style.setProperty(property, reference.getPropertyValue(property), 'important');
       });
+      selectServiceDateButton.style.setProperty('font-size', '16px', 'important');
+      selectServiceDateButton.style.setProperty(
+        'color',
+        selectServiceDateButton.classList.contains('empty') ? reference.color : '#FF9800',
+        'important'
+      );
     }
 
     function updateServiceDateButton() {
       if (!serviceDate.value || !serviceDateSelectionConfirmed) {
-        selectServiceDateButton.textContent = 'SELECIONAR DATA';
+        selectServiceDateButton.textContent = 'Selecione a data';
         selectServiceDateButton.classList.add('empty');
         applyServiceDateButtonTypeface();
         return;
