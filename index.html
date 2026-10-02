@@ -5176,7 +5176,7 @@
       reminderServiceTime.value = item.serviceTime || '';
       reminderDate.value = item.date || reminderToday();
       reminderDate.disabled = Boolean(item.linkedService || item.serviceType || item.serviceTime);
-      reminderServiceStartTime.value = item.serviceStartTime || (item.serviceTime.match(/^(\d{2}:\d{2})/) || [])[1] || '';
+      reminderServiceStartTime.value = item.serviceStartTime || (((item.serviceTime || '').match(/^(\d{2}:\d{2})/) || [])[1]) || '';
       const legacyAdvance = { none: { value: '', unit: 'minutes' }, '15m': { value: 15, unit: 'minutes' }, '30m': { value: 30, unit: 'minutes' }, '1h': { value: 1, unit: 'hours' }, '2h': { value: 2, unit: 'hours' }, '1d': { value: 1, unit: 'days' } };
       const savedAdvance = item.advanceValue !== undefined ? { value: item.advanceValue, unit: item.advanceUnit || 'minutes' } : (legacyAdvance[item.advance] || legacyAdvance.none);
       reminderAdvanceValue.value = savedAdvance.value;
