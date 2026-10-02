@@ -1603,13 +1603,25 @@
     }
   
     /* Fundo branco nos campos pedidos; conteúdo e valores permanecem intactos. */
-    #servicePlanner.questionnaire-only #selectServiceDateButton,
     #servicePlanner.questionnaire-only #serviceType,
     #servicePlanner.questionnaire-only #serviceType:valid,
     #servicePlanner.questionnaire-only #serviceLocation,
     #servicePlanner.questionnaire-only #serviceNotes,
     #servicePlanner.questionnaire-only #serviceType option {
       background: #FFFFFF !important;
+    }
+
+    #servicePlanner.questionnaire-only #selectServiceDateButton.empty {
+      background: #D9D9D9 !important;
+      border-color: #A6A6A6 !important;
+      color: #737373 !important;
+      box-shadow: none !important;
+    }
+    #servicePlanner.questionnaire-only #selectServiceDateButton:not(.empty) {
+      background: #FF9800 !important;
+      border-color: #FF9800 !important;
+      color: #17191A !important;
+      font-weight: 900 !important;
     }
   
     #servicePlanner.questionnaire-only #serviceLocation,
