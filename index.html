@@ -3150,6 +3150,16 @@
       } catch (_) {}
       updateConfigureScaleStartControls();
       configureScaleSelect.addEventListener('change', () => {
+        configureScaleStartInput.value = '';
+        configureScaleStartTimeInput.value = '';
+        configureScaleStartButton.textContent = 'Quando o serviço deve ser iniciado';
+        configureScaleStartTimeButton.textContent = 'Escolher horário de início';
+        configureScaleStartButton.classList.remove('has-value');
+        configureScaleStartTimeButton.classList.remove('has-value');
+        try {
+          localStorage.removeItem(configuredScaleStartStorageKey);
+          localStorage.removeItem(configuredScaleStartTimeStorageKey);
+        } catch (_) {}
         configureScaleSelect.classList.add('has-selection');
         configureScaleSelect.classList.remove('has-saved');
         configureScaleSave.classList.remove('is-saved');
