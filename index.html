@@ -6257,10 +6257,7 @@
       if (action) showToast(action.dataset.toast);
 
       const tool = event.target.closest('.action-card');
-      if (tool && tool.dataset.tool) {
-        if (tool.dataset.go) showToast(tool.dataset.message);
-        else showToast(tool.dataset.message);
-      }
+      if (tool && tool.dataset.tool && !tool.closest('#quickActions')) showToast(tool.dataset.message);
     });
 
 
@@ -6443,7 +6440,6 @@
         openSettingsScreen();
       } else if (button.dataset.go) {
         navigate(button.dataset.go);
-        if (button.dataset.message) showToast(button.dataset.message);
       }
     });
     quickActions.addEventListener('contextmenu', event => {
