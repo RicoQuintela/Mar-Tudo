@@ -4591,15 +4591,24 @@
       return new Date(year, month - 1, day).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
     }
 
+    function applyServiceDateButtonTypeface() {
+      const reference = window.getComputedStyle(serviceType);
+      ['font-family', 'font-size', 'font-weight', 'font-style', 'line-height', 'letter-spacing', 'text-transform'].forEach(property => {
+        selectServiceDateButton.style.setProperty(property, reference.getPropertyValue(property), 'important');
+      });
+    }
+
     function updateServiceDateButton() {
       if (!serviceDate.value || !serviceDateSelectionConfirmed) {
         selectServiceDateButton.textContent = 'SELECIONAR DATA';
         selectServiceDateButton.classList.add('empty');
+        applyServiceDateButtonTypeface();
         return;
       }
       const label = readableDate(serviceDate.value);
       selectServiceDateButton.textContent = label.charAt(0).toUpperCase() + label.slice(1);
       selectServiceDateButton.classList.remove('empty');
+      applyServiceDateButtonTypeface();
     }
 
     function serviceColorClass(type) {
