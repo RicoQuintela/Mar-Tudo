@@ -3948,6 +3948,7 @@
     const servicesKey = 'mareTudo.services';
     let calendarCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let selectedServiceDate = '';
+    let serviceDateSelectionConfirmed = false;
     let editingServiceId = null;
     let editingGeneratedScaleService = false;
     let actionDate = '';
@@ -4591,7 +4592,7 @@
     }
 
     function updateServiceDateButton() {
-      if (!serviceDate.value) {
+      if (!serviceDate.value || !serviceDateSelectionConfirmed) {
         selectServiceDateButton.textContent = 'SELECIONAR DATA';
         selectServiceDateButton.classList.add('empty');
         return;
@@ -4789,6 +4790,7 @@
       editingGeneratedScaleService = false;
       editingServiceId = null;
       selectedServiceDate = key;
+      serviceDateSelectionConfirmed = true;
       serviceDate.value = key;
       updateServiceDateButton();
       serviceForm.hidden = false;
@@ -4803,6 +4805,7 @@
     function selectServiceDate(key, preferredServiceId = '') {
       editingGeneratedScaleService = false;
       selectedServiceDate = key;
+      serviceDateSelectionConfirmed = true;
       const existing = services.find(service => service.id === preferredServiceId && service.date === key) || services.find(service => service.date === key);
       editingServiceId = existing ? existing.id : null;
       selectedDateLabel.textContent = readableDate(key) + (existing ? ' — serviço cadastrado' : ' — preencha os dados');
@@ -5841,6 +5844,7 @@
       const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
       const targetDate = dateToEdit || todayKey;
       const dateIsPreselected = Boolean(dateToEdit || addSecondService || editGeneratedScaleService);
+      serviceDateSelectionConfirmed = dateIsPreselected;
       if (dateToEdit && !addSecondService && !editGeneratedScaleService) {
         serviceDate.value = targetDate;
         selectServiceDate(targetDate, serviceToEditId);
