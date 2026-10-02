@@ -3074,7 +3074,6 @@
         updateConfigureScaleStartLabel();
         try {
           localStorage.setItem(configuredScaleStartStorageKey, configureScaleStartInput.value);
-          showToast('Data de início da escala salva.');
         } catch (_) { showToast('Não foi possível salvar a data neste aparelho.'); }
       });
     }
@@ -3123,7 +3122,6 @@
         try {
           localStorage.setItem(configuredScaleStartTimeStorageKey, time);
           closeScaleDigitalClock();
-          showToast('Horário de início da escala salvo.');
         } catch (_) { showToast('Não foi possível salvar o horário neste aparelho.'); }
       });
       document.addEventListener('keydown', event => {
@@ -3193,8 +3191,6 @@
 
     function showToast(message) {
       const centeredConfirmations = new Set([
-        'Data de início da escala salva.',
-        'Horário de início da escala salvo.',
         'Escala salva!',
         'Registro salvo.',
         'Registro atualizado.',
