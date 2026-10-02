@@ -1614,15 +1614,20 @@
     #servicePlanner.questionnaire-only #selectServiceDateButton {
       background: #FFFFFF !important;
     }
-    #servicePlanner.questionnaire-only #selectServiceDateButton.empty {
-      color: #202629 !important;
+    #servicePlanner.questionnaire-only #selectServiceDateButton.empty,
+    #servicePlanner.questionnaire-only #selectServiceDateButton:not(.empty) {
+      font-family: inherit !important;
+      font-size: 14px !important;
       font-style: normal !important;
       font-weight: 400 !important;
+      letter-spacing: normal !important;
+      text-transform: none !important;
+    }
+    #servicePlanner.questionnaire-only #selectServiceDateButton.empty {
+      color: #202629 !important;
     }
     #servicePlanner.questionnaire-only #selectServiceDateButton:not(.empty) {
       color: #FF9800 !important;
-      font-weight: 900 !important;
-      font-style: italic !important;
     }
   
     #servicePlanner.questionnaire-only #serviceLocation,
