@@ -4440,6 +4440,7 @@
         return valid;
       } catch (_) { return {}; }
     }
+    readPaymentTable();
     function fillPaymentTableInputs() {
       const saved = readPaymentTable();
       paymentTableInputs.forEach(input => {
