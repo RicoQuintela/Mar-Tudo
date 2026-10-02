@@ -5835,6 +5835,7 @@
       const today = new Date();
       const todayKey = dateKey(today.getFullYear(), today.getMonth(), today.getDate());
       const targetDate = dateToEdit || todayKey;
+      const dateIsPreselected = Boolean(dateToEdit || addSecondService || editGeneratedScaleService);
       if (dateToEdit && !addSecondService && !editGeneratedScaleService) {
         serviceDate.value = targetDate;
         selectServiceDate(targetDate, serviceToEditId);
@@ -5852,7 +5853,7 @@
         selectedServiceDate = targetDate;
         editingServiceId = null;
         serviceForm.reset();
-        serviceDate.value = targetDate;
+        serviceDate.value = dateIsPreselected ? targetDate : '';
         serviceType.value = '';
         serviceStartTime.value = '';
         serviceEndTime.value = '';
@@ -5863,8 +5864,10 @@
         setServicePayment('', '', '');
         serviceLocation.value = '';
         serviceNotes.value = '';
-        selectedDateLabel.textContent = readableDate(targetDate) + (editGeneratedScaleService ? ' — serviço gerado pela escala' : (addSecondService ? ' — adicionar outro serviço' : ' — preencha os dados'));
-        selectedDateLabel.classList.add('has-value');
+        selectedDateLabel.textContent = dateIsPreselected
+          ? readableDate(targetDate) + (editGeneratedScaleService ? ' — serviço gerado pela escala' : (addSecondService ? ' — adicionar outro serviço' : ' — preencha os dados'))
+          : 'Escolha uma data para preencher o serviço.';
+        selectedDateLabel.classList.toggle('has-value', dateIsPreselected);
         updateServiceDateButton();
         serviceForm.hidden = false;
         deleteServiceWrap.hidden = true;
