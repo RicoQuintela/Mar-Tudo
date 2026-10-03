@@ -6,5 +6,25 @@
   "scope": "/Mar-Tudo/",
   "display": "standalone",
   "background_color": "#E5F1FC",
-  "theme_color": "#E5F1FC"
+  "theme_color": "#E5F1FC",
+  "icons": [
+    {
+      "src": "./icons/mare-tudo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/mare-tudo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/mare-tudo-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }
