@@ -1,0 +1,10 @@
+{
+  "id": "/Mar-Tudo/",
+  "name": "Maré Tudo",
+  "short_name": "Maré Tudo",
+  "start_url": "/Mar-Tudo/",
+  "scope": "/Mar-Tudo/",
+  "display": "standalone",
+  "background_color": "#E5F1FC",
+  "theme_color": "#E5F1FC"
+}

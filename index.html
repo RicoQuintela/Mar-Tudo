@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#E5F1FC" />
+  <link rel="manifest" href="./manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Maré Tudo" />
@@ -2455,6 +2456,13 @@
     #settingsScreen .settings-scale-heading > span { font-weight: 900 !important; }
     #settingsScreen .settings-scale-heading > span::after { content: ":"; color: #000000; }
   </style>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({ appId: "e078e43d-0121-444a-a658-b780030a81f4" });
+    });
+  </script>
 </head>
 <body>
   <div class="basequin-intro" id="baseQuinIntro" role="dialog" aria-modal="true" aria-label="Tela de entrada">
@@ -5095,6 +5103,90 @@
     let activeReminderId = null;
     let reminderOpenedFromService = false;
     let reminderWorkerRegistration = null;
+    const remotePushEndpoint = 'https://mare-tudo-push.ricoquintela74.workers.dev';
+    function withOneSignal(callback, timeoutMs = 10000) {
+      return new Promise(resolve => {
+        const deferred = window.OneSignalDeferred;
+        if (!deferred || typeof deferred.push !== 'function') return resolve(null);
+        let settled = false;
+        const finish = value => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve(value);
+        };
+        const timer = setTimeout(() => finish(null), timeoutMs);
+        deferred.push(async OneSignal => {
+          try { finish(await callback(OneSignal)); }
+          catch (_) { finish(null); }
+        });
+      });
+    }
+    async function currentOneSignalSubscriptionId() {
+      return (await withOneSignal(OneSignal => {
+        const subscription = OneSignal?.User?.PushSubscription;
+        return subscription?.optedIn && subscription?.id ? subscription.id : '';
+      })) || '';
+    }
+    async function remotePushRequest(path, payload) {
+      const response = await fetch(`${remotePushEndpoint}/${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error('remote-push-failed');
+      return result;
+    }
+    async function cancelRemoteReminder(messageId) {
+      if (!messageId) return true;
+      try {
+        const result = await remotePushRequest('cancel', { messageId });
+        return Boolean(result.ok && result.cancelled);
+      } catch (_) { return false; }
+    }
+    async function scheduleRemoteReminder(item, subscriptionId, previousMessageId = '') {
+      const due = reminderDueDate(item);
+      if (!due || due.getTime() <= Date.now() || item.done || !subscriptionId) {
+        if (previousMessageId) await cancelRemoteReminder(previousMessageId);
+        return { scheduled: false };
+      }
+      try {
+        const result = await remotePushRequest('schedule', {
+          subscriptionId,
+          reminderId: item.id,
+          dueAt: due.toISOString(),
+          previousMessageId
+        });
+        return { scheduled: true, messageId: result.id, dueAt: due.toISOString() };
+      } catch (_) {
+        if (previousMessageId) await cancelRemoteReminder(previousMessageId);
+        return { scheduled: false };
+      }
+    }
+    let reminderPushSyncInProgress = false;
+    async function syncUnscheduledRemoteReminders() {
+      if (reminderPushSyncInProgress) return;
+      reminderPushSyncInProgress = true;
+      try {
+        const subscriptionId = await currentOneSignalSubscriptionId();
+        if (!subscriptionId) return;
+        const items = loadReminders();
+        let changed = false;
+        for (const item of items) {
+          if (item.done || item.pushMessageId) continue;
+          const due = reminderDueDate(item);
+          if (!due || due.getTime() <= Date.now()) continue;
+          const result = await scheduleRemoteReminder(item, subscriptionId);
+          if (result.scheduled) {
+            item.pushMessageId = result.messageId;
+            item.pushDueAt = result.dueAt;
+            changed = true;
+          }
+        }
+        if (changed) saveReminders(items);
+      } finally { reminderPushSyncInProgress = false; }
+    }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').then(registration => { reminderWorkerRegistration = registration; }).catch(() => {});
     }
@@ -5108,6 +5200,13 @@
       } catch (_) { return []; }
     }
     function saveReminders(items) { localStorage.setItem(remindersKey, JSON.stringify(items)); }
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      const subscription = OneSignal?.User?.PushSubscription;
+      if (subscription?.addEventListener) {
+        subscription.addEventListener('change', () => { void syncUnscheduledRemoteReminders(); });
+      }
+      if (subscription?.optedIn && subscription?.id) void syncUnscheduledRemoteReminders();
+    });
     function reminderToday() {
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -5289,7 +5388,7 @@
       clearReminderForm();
       remindersForm.hidden = true;
     });
-    remindersList.addEventListener('click', event => {
+    remindersList.addEventListener('click', async event => {
       const item = event.target.closest('.reminder-item');
       if (!item) return;
       const id = item.dataset.reminderId;
@@ -5298,22 +5397,28 @@
       if (index < 0) return;
       if (event.target.closest('[data-reminder-toggle]')) {
         reminders[index].done = !reminders[index].done;
+        if (reminders[index].done) {
+          if (reminders[index].pushMessageId) await cancelRemoteReminder(reminders[index].pushMessageId);
+          reminders[index].pushMessageId = '';
+          reminders[index].pushDueAt = '';
+        } else {
+          const subscriptionId = await currentOneSignalSubscriptionId();
+          const result = await scheduleRemoteReminder(reminders[index], subscriptionId);
+          if (result.scheduled) {
+            reminders[index].pushMessageId = result.messageId;
+            reminders[index].pushDueAt = result.dueAt;
+          }
+        }
         saveReminders(reminders);
         renderReminders();
       } else if (event.target.closest('[data-reminder-remove]')) {
         if (!window.confirm('Excluir este lembrete?')) return;
+        if (reminders[index].pushMessageId) await cancelRemoteReminder(reminders[index].pushMessageId);
         saveReminders(reminders.filter(reminder => reminder.id !== id));
         if (activeReminderId === id) clearReminderForm();
         renderReminders();
       } else if (event.target.closest('[data-reminder-edit]')) editReminder(id);
     });
-    async function requestReminderNotificationPermission() {
-      if (!('Notification' in window)) return false;
-      if (Notification.permission === 'granted') return true;
-      if (Notification.permission === 'denied') return false;
-      try { return await Notification.requestPermission() === 'granted'; }
-      catch (_) { return false; }
-    }
     async function showReminderNotification(item) {
       const bodyParts = [];
       if (item.serviceType) bodyParts.push(item.serviceType);
@@ -5335,7 +5440,7 @@
       const now = Date.now();
       let changed = false;
       for (const item of items) {
-        if (item.done || item.notificationSentAt) continue;
+        if (item.done || item.notificationSentAt || item.pushMessageId) continue;
         const due = reminderDueDate(item);
         if (!due || due.getTime() > now) continue;
         try {
@@ -5364,22 +5469,33 @@
         reminderServiceStartTime.focus();
         return;
       }
-      const notificationPermissionGranted = await requestReminderNotificationPermission();
+      const subscriptionId = await currentOneSignalSubscriptionId();
+      const notificationPermissionGranted = Boolean(subscriptionId) || ('Notification' in window && Notification.permission === 'granted');
       const linkedToCurrentService = reminderOpenedFromService;
       const reminders = loadReminders();
       const existingReminder = reminders.find(item => item.id === activeReminderId);
+      const previousPushMessageId = existingReminder?.pushMessageId || '';
       const linkedService = linkedToCurrentService ? saveServiceForReminder() : null;
       if (linkedToCurrentService && !linkedService) return;
       const generatedTitle = reminderServiceType.value.trim() ? `Serviço ${reminderServiceType.value.trim()}` : `Lembrete de serviço · ${reminderDate.value}`;
-      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), serviceStartTime: reminderServiceStartTime.value, linkedService: linkedToCurrentService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), linkedServiceId: linkedService?.id || existingReminder?.linkedServiceId || '', advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false, notificationSentAt: existingReminder?.notificationSentAt || '' };
+      const reminder = { id: activeReminderId || `${Date.now()}-${Math.random().toString(16).slice(2)}`, title: reminderTitle.value.trim() || generatedTitle, date: reminderDate.value, serviceType: reminderServiceType.value.trim(), serviceTime: reminderServiceTime.value.trim(), serviceStartTime: reminderServiceStartTime.value, linkedService: linkedToCurrentService || Boolean(existingReminder?.linkedService || existingReminder?.serviceType || existingReminder?.serviceTime), linkedServiceId: linkedService?.id || existingReminder?.linkedServiceId || '', advanceValue: reminderAdvanceValue.value === '' ? 0 : Math.max(0, Number(reminderAdvanceValue.value)), advanceUnit: reminderAdvanceUnit.value, repeat: reminderRepeat.value, color: existingReminder?.color || 'blue', notes: reminderNotes.value.trim(), done: existingReminder ? Boolean(existingReminder.done) : false, notificationSentAt: existingReminder?.notificationSentAt || '', pushMessageId: '', pushDueAt: '' };
       if (!existingReminder || existingReminder.notificationSentAt === 'failed' || reminderDueDate(existingReminder)?.getTime() !== reminderDueDate(reminder)?.getTime()) reminder.notificationSentAt = '';
       const index = reminders.findIndex(item => item.id === reminder.id);
       if (index >= 0) reminders[index] = reminder; else reminders.push(reminder);
       saveReminders(reminders);
+      const pushResult = await scheduleRemoteReminder(reminder, subscriptionId, previousPushMessageId);
+      if (pushResult.scheduled) {
+        reminder.pushMessageId = pushResult.messageId;
+        reminder.pushDueAt = pushResult.dueAt;
+        saveReminders(reminders);
+      }
       clearReminderForm();
       renderReminders();
       showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : 'Lembrete salvo.');
-      if (!notificationPermissionGranted) setTimeout(() => showToast('Permita as notificações para receber o aviso automático.'), 1800);
+      const remoteDue = reminderDueDate(reminder);
+      if (remoteDue && remoteDue.getTime() > Date.now() && !pushResult.scheduled) {
+        setTimeout(() => showToast(notificationPermissionGranted ? 'Lembrete salvo, mas o aviso com o app fechado não foi ativado.' : 'Ative as notificações para receber o aviso com o app fechado.'), 1800);
+      }
       void deliverDueReminders();
       if (linkedToCurrentService) closeRemindersScreen();
       else remindersForm.hidden = true;
@@ -6878,4 +6994,5 @@
   </script>
 </body>
 </html>
+
 
