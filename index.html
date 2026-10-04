@@ -1642,7 +1642,7 @@
       text-transform: none !important;
     }
     #servicePlanner.questionnaire-only #selectServiceDateButton.empty {
-      color: #202629 !important;
+      color: #AAB7C4 !important;
     }
     #servicePlanner.questionnaire-only #selectServiceDateButton:not(.empty) {
       color: #FF9800 !important;
@@ -2494,6 +2494,10 @@
     }
     /* Contorno azul fino nos dias da aba Serviços já marcados. */
     #calendarScreen .calendar-day:not(.empty):not(.today) { border: 1px solid #008CFF !important; }
+
+      /* Placeholders de data e tipo acompanham o cinza dos demais campos; valores escolhidos seguem laranja. */
+    #servicePlanner.questionnaire-only #serviceType:invalid,
+    #servicePlanner.questionnaire-only #serviceType option[value=""] { color: #AAB7C4 !important; }
 
   </style>
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -4742,7 +4746,7 @@
       selectServiceDateButton.style.setProperty('font-size', '15px', 'important');
       selectServiceDateButton.style.setProperty('font-weight', selected ? '900' : reference.getPropertyValue('font-weight'), 'important');
       selectServiceDateButton.style.setProperty('font-style', selected ? 'italic' : reference.getPropertyValue('font-style'), 'important');
-      selectServiceDateButton.style.setProperty('color', selected ? '#FF9800' : reference.color, 'important');
+      selectServiceDateButton.style.setProperty('color', selected ? '#FF9800' : '#AAB7C4', 'important');
     }
 
     function updateServiceDateButton() {
