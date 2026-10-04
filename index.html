@@ -920,15 +920,6 @@
 
     .planner-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
     .service-planner .planner-sheet { background: linear-gradient(145deg, #050607 0%, #181c1e 52%, #42484c 100%); }
-    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .planner-header h2,
-    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .form-label,
-    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .payment-heading { color: #008CFF !important; }
-    @media (prefers-color-scheme: dark) {
-      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .planner-header h2,
-      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .form-label,
-      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .payment-heading { color: #008CFF !important; }
-    }
-
     /* Aproveitamento da tela de marcação sem rolagem. */
     .service-planner.questionnaire-only .planner-sheet {
       overflow: hidden;
@@ -2480,6 +2471,30 @@
     #settingsScreen h2, #settingsScreen h3, #settingsScreen h4 { font-weight: 900 !important; }
     #settingsScreen .settings-scale-heading > span { font-weight: 900 !important; }
     #settingsScreen .settings-scale-heading > span::after { content: ":"; color: #000000; }
+      /* Títulos e rótulos azuis apenas no tema escuro; o modo claro permanece igual. */
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only #plannerTitle,
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only #serviceDateLabel,
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceType"],
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceHours"],
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only #servicePaymentHeading,
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceLocation"],
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceNotes"],
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceLocation"] span,
+    :root[data-theme-mode="dark"] #servicePlanner.questionnaire-only label[for="serviceNotes"] span { color: #008CFF !important; }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only #plannerTitle,
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only #serviceDateLabel,
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceType"],
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceHours"],
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only #servicePaymentHeading,
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceLocation"],
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceNotes"],
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceLocation"] span,
+      :root[data-theme-mode="auto"] #servicePlanner.questionnaire-only label[for="serviceNotes"] span { color: #008CFF !important; }
+    }
+    /* Contorno azul fino nos dias da aba Serviços já marcados. */
+    #calendarScreen .calendar-day:not(.empty):not(.today) { border: 1px solid #008CFF !important; }
+
   </style>
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
