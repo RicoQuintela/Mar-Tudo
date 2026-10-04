@@ -5521,10 +5521,6 @@
       else remindersForm.hidden = true;
     });
     void deliverDueReminders();
-      if (linkedToCurrentService) closeRemindersScreen();
-      else remindersForm.hidden = true;
-    });
-    void deliverDueReminders();
     setInterval(deliverDueReminders, 30000);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void deliverDueReminders(); });
 
