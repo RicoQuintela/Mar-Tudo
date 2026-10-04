@@ -3328,9 +3328,20 @@
         'Serviço mantido no calendário.',
         'Serviço salvo. Calendário atualizado.'
       ]);
+      const reminderStatusMessages = new Set([
+        'Informe o horário de início para programar a notificação.',
+        'Não foi possível salvar o lembrete neste aparelho. Verifique o espaço disponível.',
+        'Lembrete salvo.',
+        'Lembrete salvo. Conferindo notificação...',
+        'Notificação ativada para o horário escolhido. O som segue as configurações do aparelho.',
+        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira as permissões de notificações do aparelho.',
+        'Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e as permissões do aparelho.',
+        'lembrete e serviço salvos'
+      ]);
       const isCountConfirmation = /^\d+ serviç/.test(message);
       const isRankConfirmation = message.startsWith('Graduação/Posto selecionado:');
       const isCentered = centeredConfirmations.has(message) || isCountConfirmation || isRankConfirmation;
+      const toastDuration = reminderStatusMessages.has(message) ? 4200 : 2800;
       toast.textContent = message;
       toast.classList.remove('reminder-alert');
       toast.setAttribute('role', 'status');
@@ -3345,7 +3356,7 @@
       toastTimer = setTimeout(() => {
         toast.classList.remove('show', 'centered');
         toastBackdrop.classList.remove('show');
-      }, 2800);
+      }, toastDuration);
     }
     function showReminderAlert(items) {
       const details = items.map(item => {
