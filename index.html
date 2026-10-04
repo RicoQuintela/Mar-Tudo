@@ -1296,7 +1296,7 @@
 
     .important-app-screen { position: fixed; z-index: 10050; inset: 0; display: none; align-items: stretch; justify-content: center; padding: 0; background: var(--bg); color: #111; }
     .important-app-screen.open { display: flex; }
-    .important-app-page { position: relative; width: 100%; max-width: 570px; height: 100dvh; overflow-y: auto; padding: calc(18px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom)); background: var(--bg); }
+    .important-app-page { position: relative; width: 100%; max-width: 570px; height: 100dvh; overflow-y: auto; padding: calc(18px + env(safe-area-inset-top)) 16px calc(82px + env(safe-area-inset-bottom)); background: var(--bg); }
     .important-app-card { display: block; width: 92%; height: 82%; margin: 9% auto 0; padding: 0; border: 2px solid #000; border-radius: 20px; color: #000; background: #8ecbff; box-shadow: 0 8px 18px rgba(0,0,0,.16); }
     .important-app-content { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; width: 100%; height: 100%; overflow: auto; padding: 20px 18px; border: 1px solid #000; border-radius: 14px; box-shadow: inset 0 0 0 4px #8ecbff, inset 0 0 0 5px #000; color: #111; background: #fff; font-size: clamp(11px,2.8vw,15px); font-weight: 500; line-height: 1.45; text-align: center; }
     .important-app-content strong { margin-bottom: 12px; font-size: clamp(15px,3.8vw,21px); }
@@ -2134,7 +2134,7 @@
       box-shadow: 0 -4px 14px rgba(0,0,0,.32);
     }
     .app-footer-menu.is-visible { display: flex; }
-    .app-footer-menu.above-target-screen { z-index: 10020; }
+    .app-footer-menu.above-target-screen { z-index: 10060; }
     .app-footer-menu::-webkit-scrollbar { display: none; }
     .app-footer-menu-button {
       display: flex; flex: 1 0 68px; align-items: center; justify-content: center;
@@ -7219,10 +7219,18 @@
       footerMenu.appendChild(button);
     });
     footerMenu.addEventListener('click', event => {
-      if (!event.target.closest('.app-footer-menu-button')) return;
-      ['#serviceTimePickerClose', '.settings-screen.open .settings-close', '.useful-links-screen.open .useful-links-close', '.padrinho-screen.open .padrinho-close', '.payments-screen.open .payments-close', '.notes-screen.open .notes-close', '.vacation-screen.open .vacation-close', '.reminders-screen.open .reminders-close', '.calendar-screen.open .calendar-screen-close', '.service-planner.open .planner-close'].forEach(selector => {
+      const button = event.target.closest('.app-footer-menu-button');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      ['#serviceTimePickerClose', '.settings-screen.open .settings-close', '.useful-links-screen.open .useful-links-close', '.padrinho-screen.open .padrinho-close', '.payments-screen.open .payments-close', '.notes-screen.open .notes-close', '.vacation-screen.open .vacation-close', '.important-app-screen.open .important-app-back', '.reminders-screen.open .reminders-close', '.calendar-screen.open .calendar-screen-close', '.service-planner.open .planner-close'].forEach(selector => {
         document.querySelectorAll(selector).forEach(closeButton => closeButton.click());
       });
+      if (button.hasAttribute('data-open-service')) return openQuestionnaireOnly();
+      if (button.hasAttribute('data-open-calendar')) return openStandaloneCalendar();
+      if (button.hasAttribute('data-open-reminders')) return openRemindersScreen();
+      if (button.hasAttribute('data-open-settings')) return openSettingsScreen();
+      if (button.dataset.go) navigate(button.dataset.go);
     }, true);
     document.body.appendChild(footerMenu);
 
@@ -7314,7 +7322,7 @@
     function updateFooterMenuVisibility() {
       const activeView = document.querySelector('.view.active');
       const isHome = activeView?.dataset.view === 'home';
-      const targetScreenOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open'));
+      const targetScreenOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .useful-links-screen.open, .important-app-screen.open'));
       footerMenu.classList.toggle('above-target-screen', targetScreenOpen);
       const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
