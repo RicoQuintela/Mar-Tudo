@@ -5460,7 +5460,7 @@
     }
     function serviceQuestionnaireIsComplete() {
       const hasCompleteTimeRange = Boolean(serviceStartTime.value && serviceEndTime.value);
-      const hasValidPayment = servicePaymentMode === 'free' || (servicePaymentMode === 'value' && parseMoney(serviceReceivable.value) > 0);
+      const hasValidPayment = servicePaymentMode === 'free' || (servicePaymentMode === 'value' && parseMoney(serviceReceivable.value) >= 0);
       return Boolean(
         selectedServiceDate && serviceDate.value === selectedServiceDate &&
         serviceType.value.trim() &&
@@ -5500,9 +5500,12 @@
         return null;
       }
       if (!serviceForm.reportValidity()) return null;
-      const formattedReceivable = servicePaymentMode === 'value' ? formatServiceReceivable(serviceReceivable.value) : '';
-      if (servicePaymentMode === 'value' && parseMoney(serviceReceivable.value) <= 0) {
-        showToast('Informe um valor a receber maior que zero.');
+      const hasReceivableInput = Boolean(String(serviceReceivable.value ?? '').trim());
+      const formattedReceivable = servicePaymentMode === 'value'
+        ? (hasReceivableInput ? formatServiceReceivable(serviceReceivable.value) : '0,00')
+        : '';
+      if (servicePaymentMode === 'value' && parseMoney(serviceReceivable.value) < 0) {
+        showToast('O valor a receber não pode ser negativo.');
         serviceReceivable.focus();
         return null;
       }
@@ -6514,9 +6517,12 @@
         return;
       }
       const receivableValue = parseMoney(serviceReceivable.value);
-      const formattedReceivable = servicePaymentMode === 'value' ? formatServiceReceivable(serviceReceivable.value) : '';
-      if (servicePaymentMode === 'value' && receivableValue <= 0) {
-        showToast('Informe um valor a receber maior que zero.');
+      const hasReceivableInput = Boolean(String(serviceReceivable.value ?? '').trim());
+      const formattedReceivable = servicePaymentMode === 'value'
+        ? (hasReceivableInput ? formatServiceReceivable(serviceReceivable.value) : '0,00')
+        : '';
+      if (servicePaymentMode === 'value' && receivableValue < 0) {
+        showToast('O valor a receber não pode ser negativo.');
         serviceReceivable.focus();
         return;
       }
