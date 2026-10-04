@@ -2134,6 +2134,7 @@
       box-shadow: 0 -4px 14px rgba(0,0,0,.32);
     }
     .app-footer-menu.is-visible { display: flex; }
+    .app-footer-menu.above-target-screen { z-index: 10020; }
     .app-footer-menu::-webkit-scrollbar { display: none; }
     .app-footer-menu-button {
       display: flex; flex: 1 0 68px; align-items: center; justify-content: center;
@@ -2163,10 +2164,10 @@
     .view[data-view="extras"] .other-service-button,
     .view[data-view="extras"] .most-important-app-button { touch-action: manipulation; cursor: pointer; }
     .notes-sheet, .reminders-sheet, .payments-sheet, .calendar-screen-sheet,
-    .planner-sheet, .settings-sheet, .useful-links-sheet { padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+    .planner-sheet, .settings-sheet, .useful-links-sheet, .vacation-sheet { padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
     .view:not([data-view="home"]) main { padding-bottom: 82px !important; }
     .finance-page { padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important; }
-    .notes-screen .notes-sheet { padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important; }
+    .notes-screen .notes-sheet { padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
   
     .view[data-view="extras"] main button:not(.screen-back):not(.brand-toolbar-back):not(.brand-toolbar-close):not(.most-important-app-button),
     .view[data-view="extras"] main button:not(.screen-back):not(.brand-toolbar-back):not(.brand-toolbar-close):not(.most-important-app-button):active,
@@ -7219,7 +7220,7 @@
     });
     footerMenu.addEventListener('click', event => {
       if (!event.target.closest('.app-footer-menu-button')) return;
-      ['#serviceTimePickerClose', '.settings-screen.open .settings-close', '.useful-links-screen.open .useful-links-close', '.padrinho-screen.open .padrinho-close', '.payments-screen.open .payments-close', '.notes-screen.open .notes-close', '.reminders-screen.open .reminders-close', '.calendar-screen.open .calendar-screen-close', '.service-planner.open .planner-close'].forEach(selector => {
+      ['#serviceTimePickerClose', '.settings-screen.open .settings-close', '.useful-links-screen.open .useful-links-close', '.padrinho-screen.open .padrinho-close', '.payments-screen.open .payments-close', '.notes-screen.open .notes-close', '.vacation-screen.open .vacation-close', '.reminders-screen.open .reminders-close', '.calendar-screen.open .calendar-screen-close', '.service-planner.open .planner-close'].forEach(selector => {
         document.querySelectorAll(selector).forEach(closeButton => closeButton.click());
       });
     }, true);
@@ -7313,7 +7314,9 @@
     function updateFooterMenuVisibility() {
       const activeView = document.querySelector('.view.active');
       const isHome = activeView?.dataset.view === 'home';
-      const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
+      const targetScreenOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open'));
+      footerMenu.classList.toggle('above-target-screen', targetScreenOpen);
+      const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
       footerMenu.classList.toggle('is-visible', !isHome || overlayOpen || baseQuinHomeMode);
       if (activeView?.dataset.view === 'extras') requestAnimationFrame(prepareExtrasButtons);
