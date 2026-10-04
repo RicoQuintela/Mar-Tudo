@@ -692,6 +692,7 @@
     #screenMarkPrompt:not([hidden]) > p { color: #183A59; font-size: 14px; }
     .calendar-screen .calendar-legend { margin-top: 28px; }
     .calendar-screen .calendar-instruction { margin-top: 18px; }
+    .calendar-screen #screenCalendarGrid { touch-action: pan-y; }
 
     .service-planner {
       position: fixed;
@@ -5747,6 +5748,11 @@
     document.body.appendChild(calendarScreen);
     const screenGrid = document.querySelector('#screenCalendarGrid');
     const screenMonth = document.querySelector('#screenCalendarMonth');
+    const screenCalendarParts = [
+      document.querySelector('#calendarScreen .calendar-toolbar'),
+      document.querySelector('#calendarScreen .weekdays'),
+      screenGrid
+    ];
     const screenListToggle = document.querySelector('#screenListToggle');
     const screenServiceList = document.querySelector('#screenServiceList');
     const screenMarkPrompt = document.querySelector('#screenMarkPrompt');
@@ -5763,6 +5769,10 @@
     let screenLastDate = '';
     let screenLastAt = 0;
     let screenClickTimer = null;
+    let screenSwipeStart = null;
+    let screenSwipeAnimating = false;
+    let screenSwipeReturnTimer = null;
+    let screenSwipeSuppressClickUntil = 0;
     let screenActionDate = '';
     let screenActionServiceId = '';
     let screenActionIsScaleGenerated = false;
@@ -6102,6 +6112,98 @@
 
     document.querySelector('#screenPreviousMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() - 1); renderStandaloneCalendar(); });
     document.querySelector('#screenNextMonth').addEventListener('click', () => { screenCursor.setMonth(screenCursor.getMonth() + 1); renderStandaloneCalendar(); });
+    function setScreenCalendarMotion(x, transition) {
+      screenCalendarParts.forEach(part => {
+        part.style.transition = transition;
+        part.style.transform = `translateX(${x}px)`;
+      });
+    }
+    function clearScreenCalendarMotion() {
+      screenCalendarParts.forEach(part => {
+        part.style.removeProperty('transition');
+        part.style.removeProperty('transform');
+      });
+    }
+    function finishScreenGridSwipe() {
+      clearTimeout(screenSwipeReturnTimer);
+      setScreenCalendarMotion(0, 'transform 180ms ease-out');
+      screenSwipeReturnTimer = setTimeout(() => {
+        clearScreenCalendarMotion();
+        screenSwipeAnimating = false;
+      }, 190);
+    }
+    function moveStandaloneMonthBySwipe(direction) {
+      const width = Math.max(screenGrid.clientWidth, window.innerWidth);
+      const outgoingX = direction > 0 ? -width : width;
+      const incomingX = direction > 0 ? width : -width;
+      clearTimeout(screenSwipeReturnTimer);
+      setScreenCalendarMotion(outgoingX, 'transform 180ms ease-out');
+      screenSwipeReturnTimer = setTimeout(() => {
+        if (!calendarScreen.classList.contains('open')) {
+          clearScreenCalendarMotion();
+          screenSwipeAnimating = false;
+          return;
+        }
+        screenCursor.setMonth(screenCursor.getMonth() + direction);
+        renderStandaloneCalendar();
+        setScreenCalendarMotion(incomingX, 'none');
+        void screenGrid.offsetWidth;
+        requestAnimationFrame(() => {
+          setScreenCalendarMotion(0, 'transform 180ms ease-out');
+          screenSwipeReturnTimer = setTimeout(() => {
+            clearScreenCalendarMotion();
+            screenSwipeAnimating = false;
+          }, 190);
+        });
+      }, 180);
+    }
+    screenGrid.addEventListener('touchstart', event => {
+      if (!calendarScreen.classList.contains('open') || calendarScreen.classList.contains('list-view') || screenSwipeAnimating || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      screenSwipeStart = { x: touch.clientX, y: touch.clientY, axis: '' };
+    }, { passive: true });
+    screenGrid.addEventListener('touchmove', event => {
+      if (!screenSwipeStart || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      const dx = touch.clientX - screenSwipeStart.x;
+      const dy = touch.clientY - screenSwipeStart.y;
+      if (!screenSwipeStart.axis && Math.max(Math.abs(dx), Math.abs(dy)) > 12) {
+        screenSwipeStart.axis = Math.abs(dx) > Math.abs(dy) * 1.15 ? 'horizontal' : 'vertical';
+      }
+      if (screenSwipeStart.axis !== 'horizontal') return;
+      screenSwipeSuppressClickUntil = Date.now() + 450;
+      event.preventDefault();
+      setScreenCalendarMotion(dx, 'none');
+    }, { passive: false });
+    screenGrid.addEventListener('touchend', event => {
+      if (!screenSwipeStart) return;
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - screenSwipeStart.x;
+      const dy = touch.clientY - screenSwipeStart.y;
+      const shouldChangeMonth = screenSwipeStart.axis === 'horizontal' && Math.abs(dx) >= 55 && Math.abs(dx) > Math.abs(dy) * 1.2;
+      const hadHorizontalMovement = screenSwipeStart.axis === 'horizontal';
+      screenSwipeStart = null;
+      if (hadHorizontalMovement) {
+        screenLastDate = '';
+        screenLastAt = 0;
+        clearTimeout(screenClickTimer);
+      }
+      if (shouldChangeMonth) {
+        screenSwipeAnimating = true;
+        moveStandaloneMonthBySwipe(dx < 0 ? 1 : -1);
+      } else if (hadHorizontalMovement) {
+        screenSwipeAnimating = true;
+        finishScreenGridSwipe();
+      }
+    }, { passive: true });
+    screenGrid.addEventListener('touchcancel', () => {
+      const hadHorizontalMovement = screenSwipeStart?.axis === 'horizontal';
+      screenSwipeStart = null;
+      if (hadHorizontalMovement) {
+        screenSwipeAnimating = true;
+        finishScreenGridSwipe();
+      }
+    }, { passive: true });
     screenListToggle.addEventListener('click', () => setStandaloneListView(!calendarScreen.classList.contains('list-view')));
     document.querySelector('#closeCalendarScreen').addEventListener('click', closeStandaloneCalendar);
     document.querySelector('#screenBack').addEventListener('click', closeStandaloneCalendar);
@@ -6145,6 +6247,11 @@
     }
 
     screenGrid.addEventListener('click', event => {
+      if (Date.now() < screenSwipeSuppressClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       const day = event.target.closest('.calendar-day[data-date]');
       if (!day) return;
       const key = day.dataset.date;
