@@ -7218,11 +7218,9 @@
       Object.entries(item.attrs).forEach(([name, value]) => button.setAttribute(name, value));
       footerMenu.appendChild(button);
     });
-    footerMenu.addEventListener('click', event => {
-      const button = event.target.closest('.app-footer-menu-button');
-      if (!button) return;
+    function activateFooterMenuButton(button, event) {
       event.preventDefault();
-      event.stopPropagation();
+      event.stopImmediatePropagation();
       ['#serviceTimePickerClose', '.settings-screen.open .settings-close', '.useful-links-screen.open .useful-links-close', '.padrinho-screen.open .padrinho-close', '.payments-screen.open .payments-close', '.notes-screen.open .notes-close', '.vacation-screen.open .vacation-close', '.important-app-screen.open .important-app-back', '.reminders-screen.open .reminders-close', '.calendar-screen.open .calendar-screen-close', '.service-planner.open .planner-close'].forEach(selector => {
         document.querySelectorAll(selector).forEach(closeButton => closeButton.click());
       });
@@ -7231,6 +7229,25 @@
       if (button.hasAttribute('data-open-reminders')) return openRemindersScreen();
       if (button.hasAttribute('data-open-settings')) return openSettingsScreen();
       if (button.dataset.go) navigate(button.dataset.go);
+    }
+    footerMenu.addEventListener('click', event => {
+      const button = event.target.closest('.app-footer-menu-button');
+      if (button) activateFooterMenuButton(button, event);
+    }, true);
+    // Em Links Úteis, captura também toques cuja camada-alvo seja a própria tela.
+    document.addEventListener('click', event => {
+      if (!usefulLinksScreen.classList.contains('open') || !footerMenu.classList.contains('is-visible')) return;
+      if (event.target.closest('.confirmation-backdrop.show, .toast.centered.show, .toast.reminder-alert.show, #scaleDigitalClock:not([hidden]), #serviceTimePicker:not([hidden])')) return;
+      let button = event.target.closest('.app-footer-menu-button');
+      if (!button) {
+        const menuRect = footerMenu.getBoundingClientRect();
+        if (event.clientY < menuRect.top || event.clientY > menuRect.bottom) return;
+        button = [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
+          const rect = candidate.getBoundingClientRect();
+          return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+        });
+      }
+      if (button) activateFooterMenuButton(button, event);
     }, true);
     document.body.appendChild(footerMenu);
 
