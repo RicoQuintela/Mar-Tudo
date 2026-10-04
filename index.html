@@ -920,6 +920,14 @@
 
     .planner-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
     .service-planner .planner-sheet { background: linear-gradient(145deg, #050607 0%, #181c1e 52%, #42484c 100%); }
+    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .planner-header h2,
+    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .form-label,
+    :root[data-theme-mode="dark"] .service-planner.questionnaire-only .payment-heading { color: #008CFF !important; }
+    @media (prefers-color-scheme: dark) {
+      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .planner-header h2,
+      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .form-label,
+      :root[data-theme-mode="auto"] .service-planner.questionnaire-only .payment-heading { color: #008CFF !important; }
+    }
 
     /* Aproveitamento da tela de marcação sem rolagem. */
     .service-planner.questionnaire-only .planner-sheet {
