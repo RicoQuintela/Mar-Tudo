@@ -1124,6 +1124,21 @@
       transform: translate(-50%, calc(-50% + 10px));
     }
     .toast.centered.show { transform: translate(-50%, -50%); }
+    .toast.reminder-alert {
+      z-index: 20001 !important;
+      max-height: min(72vh, 560px);
+      overflow-y: auto;
+      padding: 24px 22px;
+      border: 3px solid #f7bd35 !important;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #fff4c7, #ffffff) !important;
+      color: #151515 !important;
+      font-size: clamp(17px, 4.5vw, 21px);
+      font-weight: 900;
+      line-height: 1.5;
+      white-space: pre-line;
+      box-shadow: 0 20px 60px rgba(0,0,0,.52), 0 0 0 5px rgba(247,189,53,.24) !important;
+    }
 
     .settings-screen { position: fixed; z-index: 80; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: rgba(0,0,0,.72); color: var(--cream); }
     .settings-screen.open { display: flex; }
@@ -3184,6 +3199,43 @@
     const toast = document.querySelector('.toast');
     const toastBackdrop = document.querySelector('.confirmation-backdrop');
     let toastTimer;
+    let reminderAudioContext = null;
+    function unlockReminderAudio() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass || reminderAudioContext?.state === 'running') return;
+      try {
+        if (!reminderAudioContext) reminderAudioContext = new AudioContextClass();
+        const resumeResult = reminderAudioContext.resume();
+        if (resumeResult?.catch) resumeResult.catch(() => {});
+      } catch (_) {}
+    }
+    document.addEventListener('pointerdown', unlockReminderAudio, { capture: true });
+    document.addEventListener('keydown', unlockReminderAudio, { capture: true });
+    function playReminderSound() {
+      const context = reminderAudioContext;
+      if (!context) return;
+      const playChime = () => {
+        const notes = [784, 988, 1175, 784, 988, 1175];
+        const start = context.currentTime + 0.03;
+        notes.forEach((frequency, index) => {
+          const noteStart = start + index * 0.24;
+          const oscillator = context.createOscillator();
+          const volume = context.createGain();
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(frequency, noteStart);
+          volume.gain.setValueAtTime(0.0001, noteStart);
+          volume.gain.exponentialRampToValueAtTime(0.18, noteStart + 0.025);
+          volume.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.2);
+          oscillator.connect(volume);
+          volume.connect(context.destination);
+          oscillator.start(noteStart);
+          oscillator.stop(noteStart + 0.22);
+        });
+      };
+      if (context.state === 'suspended') {
+        context.resume().then(() => { if (context.state === 'running') playChime(); }).catch(() => {});
+      } else if (context.state === 'running') playChime();
+    }
     const importantAppScreen = document.querySelector('#importantAppScreen');
 
     function openImportantAppScreen() {
@@ -3211,7 +3263,12 @@
         event.stopPropagation();
       }
       clearTimeout(toastTimer);
-      toast.classList.remove('show', 'centered');
+      toast.classList.remove('show', 'centered', 'reminder-alert');
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      toast.removeAttribute('aria-modal');
+      toast.removeAttribute('aria-label');
+      toast.removeAttribute('tabindex');
       toastBackdrop.classList.remove('show');
     }
     toast.addEventListener('click', dismissCenteredConfirmation);
@@ -3233,8 +3290,9 @@
         'Edição da anotação cancelada.',
         'Lembrete salvo.',
         'Lembrete salvo. Conferindo notificação...',
-        'Notificação ativada para o horário escolhido.',
-        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado.',
+        'Notificação ativada para o horário escolhido. O som segue as configurações do Android.',
+        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira a permissão no Android.',
+        'Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e a permissão no Android.',
         'lembrete e serviço salvos',
         'Serviço mantido no calendário.',
         'Serviço salvo. Calendário atualizado.'
@@ -3243,6 +3301,12 @@
       const isRankConfirmation = message.startsWith('Graduação/Posto selecionado:');
       const isCentered = centeredConfirmations.has(message) || isCountConfirmation || isRankConfirmation;
       toast.textContent = message;
+      toast.classList.remove('reminder-alert');
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      toast.removeAttribute('aria-modal');
+      toast.removeAttribute('aria-label');
+      toast.removeAttribute('tabindex');
       toast.classList.toggle('centered', isCentered);
       toastBackdrop.classList.toggle('show', isCentered);
       toast.classList.add('show');
@@ -3251,6 +3315,28 @@
         toast.classList.remove('show', 'centered');
         toastBackdrop.classList.remove('show');
       }, 2800);
+    }
+    function showReminderAlert(items) {
+      const details = items.map(item => {
+        const lines = [item.title || 'Lembrete de serviço'];
+        if (item.serviceType) lines.push(item.serviceType);
+        if (item.serviceTime) lines.push(item.serviceTime);
+        else if (item.serviceStartTime) lines.push(`Início às ${item.serviceStartTime}`);
+        if (item.notes) lines.push(item.notes);
+        return lines.join('\n');
+      });
+      const heading = items.length > 1 ? '🔔 LEMBRETES AGENDADOS' : '🔔 LEMBRETE';
+      toast.textContent = `${heading}\n\n${details.join('\n\n')}\n\nToque para fechar`;
+      clearTimeout(toastTimer);
+      toast.setAttribute('role', 'alertdialog');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-modal', 'true');
+      toast.setAttribute('aria-label', heading);
+      toast.setAttribute('tabindex', '-1');
+      toast.classList.add('reminder-alert', 'centered', 'show');
+      toastBackdrop.classList.add('show');
+      toast.focus({ preventScroll: true });
+      playReminderSound();
     }
     if (configureScaleSave && configureScaleSelect) {
       configureScaleSave.addEventListener('click', () => {
@@ -5133,6 +5219,39 @@
         return subscription?.optedIn && subscription?.id ? subscription.id : '';
       }, timeoutMs)) || '';
     }
+    function requestReminderPushSubscriptionId() {
+      const deferred = window.OneSignalDeferred;
+      if (!deferred || typeof deferred.push !== 'function') return Promise.resolve('');
+      return new Promise(resolve => {
+        let settled = false;
+        const finish = value => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve(value || '');
+        };
+        const timer = setTimeout(() => finish(''), 45000);
+        deferred.push(async OneSignal => {
+          try {
+            let subscription = OneSignal?.User?.PushSubscription;
+            if (subscription?.optedIn && subscription?.id) return finish(subscription.id);
+            const browserPermission = 'Notification' in window ? Notification.permission : 'denied';
+            if (browserPermission === 'default') await OneSignal?.Notifications?.requestPermission?.();
+            const permissionGranted = ('Notification' in window && Notification.permission === 'granted') || OneSignal?.Notifications?.permission === true;
+            if (!permissionGranted) return finish('');
+            subscription = OneSignal?.User?.PushSubscription;
+            if (subscription?.optIn) await subscription.optIn();
+            const deadline = Date.now() + 10000;
+            while (Date.now() < deadline) {
+              subscription = OneSignal?.User?.PushSubscription;
+              if (subscription?.optedIn && subscription?.id) return finish(subscription.id);
+              await new Promise(resolveWait => setTimeout(resolveWait, 250));
+            }
+            finish('');
+          } catch (_) { finish(''); }
+        });
+      });
+    }
     async function remotePushRequest(path, payload) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 6000);
@@ -5450,27 +5569,36 @@
       const items = loadReminders();
       const now = Date.now();
       let changed = false;
+      const foregroundAlerts = [];
       for (const item of items) {
-        if (item.done || item.notificationSentAt || item.pushMessageId) continue;
+        if (item.done || item.notificationSentAt) continue;
         const due = reminderDueDate(item);
         if (!due || due.getTime() > now) continue;
+        if (document.visibilityState === 'visible') {
+          foregroundAlerts.push(item);
+          item.notificationSentAt = new Date().toISOString();
+          if (item.pushMessageId) {
+            void cancelRemoteReminder(item.pushMessageId);
+            item.pushMessageId = '';
+            item.pushDueAt = '';
+          }
+          changed = true;
+          continue;
+        }
+        if (item.pushMessageId) continue;
         try {
           if ('Notification' in window && Notification.permission === 'granted') {
             await showReminderNotification(item);
-          } else if (document.visibilityState === 'visible') {
-            showToast(`Lembrete: ${item.title || 'serviço'}${item.serviceStartTime ? ` · início às ${item.serviceStartTime}` : ''}`);
-          } else {
-            continue;
+            item.notificationSentAt = new Date().toISOString();
+            changed = true;
           }
-          item.notificationSentAt = new Date().toISOString();
-          changed = true;
         } catch (_) {
           item.notificationSentAt = 'failed';
           changed = true;
-          if (document.visibilityState === 'visible') showToast('Não foi possível exibir a notificação deste lembrete.');
         }
       }
       if (changed) saveReminders(items);
+      if (foregroundAlerts.length) showReminderAlert(foregroundAlerts);
     }
     remindersForm.addEventListener('submit', event => {
       event.preventDefault();
@@ -5499,10 +5627,16 @@
       clearReminderForm();
       renderReminders();
       const remoteDue = reminderDueDate(reminder);
-      showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : (remoteDue && remoteDue.getTime() > Date.now() ? 'Lembrete salvo. Conferindo notificação...' : 'Lembrete salvo.'));
-      if (remoteDue && remoteDue.getTime() > Date.now()) {
+      const hasFutureDue = Boolean(remoteDue && remoteDue.getTime() > Date.now());
+      const pushSubscriptionPromise = hasFutureDue ? requestReminderPushSubscriptionId() : Promise.resolve('');
+      showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : (hasFutureDue ? 'Lembrete salvo. Conferindo notificação...' : 'Lembrete salvo.'));
+      if (hasFutureDue) {
         void (async () => {
-          const subscriptionId = await currentOneSignalSubscriptionId(2500);
+          const subscriptionId = await pushSubscriptionPromise;
+          if (!subscriptionId) {
+            showToast('Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira a permissão no Android.');
+            return;
+          }
           const pushResult = await scheduleRemoteReminder(reminder, subscriptionId, previousPushMessageId);
           const latestReminders = loadReminders();
           const latestReminder = latestReminders.find(item => item.id === reminder.id);
@@ -5510,9 +5644,9 @@
             latestReminder.pushMessageId = pushResult.messageId;
             latestReminder.pushDueAt = pushResult.dueAt;
             saveReminders(latestReminders);
-            showToast('Notificação ativada para o horário escolhido.');
+            showToast('Notificação ativada para o horário escolhido. O som segue as configurações do Android.');
           } else {
-            showToast('Lembrete salvo, mas não foi possível ativar a notificação com o app fechado.');
+            showToast('Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e a permissão no Android.');
           }
         })();
       }
