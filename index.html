@@ -3294,9 +3294,9 @@
         'Edição da anotação cancelada.',
         'Lembrete salvo.',
         'Lembrete salvo. Conferindo notificação...',
-        'Notificação ativada para o horário escolhido. O som segue as configurações do Android.',
-        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira a permissão no Android.',
-        'Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e a permissão no Android.',
+        'Notificação ativada para o horário escolhido. O som segue as configurações do aparelho.',
+        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira as permissões de notificações do aparelho.',
+        'Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e as permissões do aparelho.',
         'lembrete e serviço salvos',
         'Serviço mantido no calendário.',
         'Serviço salvo. Calendário atualizado.'
@@ -5638,7 +5638,7 @@
         void (async () => {
           const subscriptionId = await pushSubscriptionPromise;
           if (!subscriptionId) {
-            showToast('Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira a permissão no Android.');
+            showToast('Lembrete salvo, mas não foi possível ativar a notificação com o app fechado. Confira as permissões de notificações do aparelho.');
             return;
           }
           const pushResult = await scheduleRemoteReminder(reminder, subscriptionId, previousPushMessageId);
@@ -5648,9 +5648,9 @@
             latestReminder.pushMessageId = pushResult.messageId;
             latestReminder.pushDueAt = pushResult.dueAt;
             saveReminders(latestReminders);
-            showToast('Notificação ativada para o horário escolhido. O som segue as configurações do Android.');
+            showToast('Notificação ativada para o horário escolhido. O som segue as configurações do aparelho.');
           } else {
-            showToast('Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e a permissão no Android.');
+            showToast('Lembrete salvo, mas não foi possível agendar a notificação. Confira a conexão e as permissões do aparelho.');
           }
         })();
       }
