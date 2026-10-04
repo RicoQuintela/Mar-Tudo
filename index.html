@@ -5615,34 +5615,45 @@
       const now = Date.now();
       let changed = false;
       const foregroundAlerts = [];
+      const remainingItems = [];
+      const isVisible = document.visibilityState === 'visible';
       for (const item of items) {
-        if (item.done || item.notificationSentAt) continue;
         const due = reminderDueDate(item);
-        if (!due || due.getTime() > now) continue;
-        if (document.visibilityState === 'visible') {
-          foregroundAlerts.push(item);
-          item.notificationSentAt = new Date().toISOString();
-          if (item.pushMessageId) {
-            void cancelRemoteReminder(item.pushMessageId);
-            item.pushMessageId = '';
-            item.pushDueAt = '';
-          }
+        if (!due || due.getTime() > now) {
+          remainingItems.push(item);
+          continue;
+        }
+        if (item.done || (item.notificationSentAt && item.notificationSentAt !== 'failed')) {
+          if (item.pushMessageId) void cancelRemoteReminder(item.pushMessageId);
           changed = true;
           continue;
         }
-        if (item.pushMessageId) continue;
+        if (isVisible) {
+          foregroundAlerts.push(item);
+          if (item.pushMessageId) void cancelRemoteReminder(item.pushMessageId);
+          changed = true;
+          continue;
+        }
+        if (item.notificationSentAt === 'failed' || item.pushMessageId) {
+          remainingItems.push(item);
+          continue;
+        }
         try {
           if ('Notification' in window && Notification.permission === 'granted') {
             await showReminderNotification(item);
-            item.notificationSentAt = new Date().toISOString();
             changed = true;
+            continue;
           }
         } catch (_) {
           item.notificationSentAt = 'failed';
           changed = true;
         }
+        remainingItems.push(item);
       }
-      if (changed) saveReminders(items);
+      if (changed) {
+        saveReminders(remainingItems);
+        if (remindersScreen.classList.contains('open')) renderReminders();
+      }
       if (foregroundAlerts.length) showReminderAlert(foregroundAlerts);
     }
     remindersForm.addEventListener('submit', event => {
