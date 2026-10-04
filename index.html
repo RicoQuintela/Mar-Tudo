@@ -3232,6 +3232,9 @@
         'Anotação salva.',
         'Edição da anotação cancelada.',
         'Lembrete salvo.',
+        'Lembrete salvo. Conferindo notificação...',
+        'Notificação ativada para o horário escolhido.',
+        'Lembrete salvo, mas não foi possível ativar a notificação com o app fechado.',
         'lembrete e serviço salvos',
         'Serviço mantido no calendário.',
         'Serviço salvo. Calendário atualizado.'
@@ -5124,18 +5127,24 @@
         });
       });
     }
-    async function currentOneSignalSubscriptionId() {
+    async function currentOneSignalSubscriptionId(timeoutMs = 10000) {
       return (await withOneSignal(OneSignal => {
         const subscription = OneSignal?.User?.PushSubscription;
         return subscription?.optedIn && subscription?.id ? subscription.id : '';
-      })) || '';
+      }, timeoutMs)) || '';
     }
     async function remotePushRequest(path, payload) {
-      const response = await fetch(`${remotePushEndpoint}/${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      let response;
+      try {
+        response = await fetch(`${remotePushEndpoint}/${path}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+      } finally { clearTimeout(timeout); }
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error('remote-push-failed');
       return result;
@@ -5463,7 +5472,7 @@
       }
       if (changed) saveReminders(items);
     }
-    remindersForm.addEventListener('submit', async event => {
+    remindersForm.addEventListener('submit', event => {
       event.preventDefault();
       if (!reminderDate.value) return;
       if (!reminderServiceStartTime.value) {
@@ -5471,8 +5480,6 @@
         reminderServiceStartTime.focus();
         return;
       }
-      const subscriptionId = await currentOneSignalSubscriptionId();
-      const notificationPermissionGranted = Boolean(subscriptionId) || ('Notification' in window && Notification.permission === 'granted');
       const linkedToCurrentService = reminderOpenedFromService;
       const reminders = loadReminders();
       const existingReminder = reminders.find(item => item.id === activeReminderId);
@@ -5484,21 +5491,36 @@
       if (!existingReminder || existingReminder.notificationSentAt === 'failed' || reminderDueDate(existingReminder)?.getTime() !== reminderDueDate(reminder)?.getTime()) reminder.notificationSentAt = '';
       const index = reminders.findIndex(item => item.id === reminder.id);
       if (index >= 0) reminders[index] = reminder; else reminders.push(reminder);
-      saveReminders(reminders);
-      const pushResult = await scheduleRemoteReminder(reminder, subscriptionId, previousPushMessageId);
-      if (pushResult.scheduled) {
-        reminder.pushMessageId = pushResult.messageId;
-        reminder.pushDueAt = pushResult.dueAt;
-        saveReminders(reminders);
+      try { saveReminders(reminders); }
+      catch (_) {
+        showToast('Não foi possível salvar o lembrete neste aparelho. Verifique o espaço disponível.');
+        return;
       }
       clearReminderForm();
       renderReminders();
-      showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : 'Lembrete salvo.');
       const remoteDue = reminderDueDate(reminder);
-      if (remoteDue && remoteDue.getTime() > Date.now() && !pushResult.scheduled) {
-        setTimeout(() => showToast(notificationPermissionGranted ? 'Lembrete salvo, mas o aviso com o app fechado não foi ativado.' : 'Ative as notificações para receber o aviso com o app fechado.'), 1800);
+      showToast(linkedToCurrentService ? 'lembrete e serviço salvos' : (remoteDue && remoteDue.getTime() > Date.now() ? 'Lembrete salvo. Conferindo notificação...' : 'Lembrete salvo.'));
+      if (remoteDue && remoteDue.getTime() > Date.now()) {
+        void (async () => {
+          const subscriptionId = await currentOneSignalSubscriptionId(2500);
+          const pushResult = await scheduleRemoteReminder(reminder, subscriptionId, previousPushMessageId);
+          const latestReminders = loadReminders();
+          const latestReminder = latestReminders.find(item => item.id === reminder.id);
+          if (pushResult.scheduled && latestReminder) {
+            latestReminder.pushMessageId = pushResult.messageId;
+            latestReminder.pushDueAt = pushResult.dueAt;
+            saveReminders(latestReminders);
+            showToast('Notificação ativada para o horário escolhido.');
+          } else {
+            showToast('Lembrete salvo, mas não foi possível ativar a notificação com o app fechado.');
+          }
+        })();
       }
       void deliverDueReminders();
+      if (linkedToCurrentService) closeRemindersScreen();
+      else remindersForm.hidden = true;
+    });
+    void deliverDueReminders();
       if (linkedToCurrentService) closeRemindersScreen();
       else remindersForm.hidden = true;
     });
