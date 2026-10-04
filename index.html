@@ -3288,11 +3288,17 @@
       if (event.key === 'Escape' && importantAppScreen.classList.contains('open')) closeImportantAppScreen();
     });
 
+    let activeReminderAlertItems = [];
     function dismissCenteredConfirmation(event) {
       if (!toast.classList.contains('centered')) return;
       if (event) {
         event.preventDefault();
         event.stopPropagation();
+      }
+      if (toast.classList.contains('reminder-alert')) {
+        const informedReminderIds = activeReminderAlertItems.map(item => item.id);
+        activeReminderAlertItems = [];
+        deleteInformedReminders(informedReminderIds);
       }
       clearTimeout(toastTimer);
       toast.classList.remove('show', 'centered', 'reminder-alert');
@@ -3307,6 +3313,7 @@
     toastBackdrop.addEventListener('click', dismissCenteredConfirmation);
 
     function showToast(message) {
+      if (toast.classList.contains('reminder-alert')) return;
       const centeredConfirmations = new Set([
         'Escala salva!',
         'Registro salvo.',
@@ -3360,7 +3367,10 @@
       }, toastDuration);
     }
     function showReminderAlert(items) {
-      const details = items.map(item => {
+      const combined = new Map(activeReminderAlertItems.map(item => [item.id, item]));
+      items.forEach(item => combined.set(item.id, item));
+      activeReminderAlertItems = [...combined.values()];
+      const details = activeReminderAlertItems.map(item => {
         const lines = [item.title || 'Lembrete de serviço'];
         if (item.serviceType) lines.push(item.serviceType);
         if (item.serviceTime) lines.push(item.serviceTime);
@@ -3368,7 +3378,7 @@
         if (item.notes) lines.push(item.notes);
         return lines.join('\n');
       });
-      const heading = items.length > 1 ? '🔔 LEMBRETES AGENDADOS' : '🔔 LEMBRETE';
+      const heading = activeReminderAlertItems.length > 1 ? '🔔 LEMBRETES AGENDADOS' : '🔔 LEMBRETE';
       toast.textContent = `${heading}\n\n${details.join('\n\n')}\n\nToque para fechar`;
       clearTimeout(toastTimer);
       toast.setAttribute('role', 'alertdialog');
@@ -3380,6 +3390,19 @@
       toastBackdrop.classList.add('show');
       toast.focus({ preventScroll: true });
       playReminderSound();
+    }
+    function deleteInformedReminders(ids) {
+      const idSet = new Set(ids);
+      if (!idSet.size) return;
+      const items = loadReminders();
+      const removedItems = items.filter(item => idSet.has(item.id));
+      if (!removedItems.length) return;
+      try { saveReminders(items.filter(item => !idSet.has(item.id))); }
+      catch (_) { return; }
+      removedItems.forEach(item => {
+        if (item.pushMessageId) void cancelRemoteReminder(item.pushMessageId);
+      });
+      if (remindersScreen.classList.contains('open')) renderReminders();
     }
     if (configureScaleSave && configureScaleSelect) {
       configureScaleSave.addEventListener('click', () => {
@@ -5357,7 +5380,22 @@
             changed = true;
           }
         }
-        if (changed) saveReminders(items);
+        if (changed) {
+          const latestItems = loadReminders();
+          const latestById = new Map(latestItems.map(item => [item.id, item]));
+          for (const item of items) {
+            if (!item.pushMessageId) continue;
+            const latest = latestById.get(item.id);
+            const latestDue = latest ? reminderDueDate(latest) : null;
+            if (!latest || latest.done || !latestDue || latestDue.getTime() <= Date.now() || latestDue.getTime() !== Date.parse(item.pushDueAt)) {
+              void cancelRemoteReminder(item.pushMessageId);
+              continue;
+            }
+            latest.pushMessageId = item.pushMessageId;
+            latest.pushDueAt = item.pushDueAt;
+          }
+          saveReminders(latestItems);
+        }
       } finally { reminderPushSyncInProgress = false; }
     }
     if ('serviceWorker' in navigator) {
@@ -5618,31 +5656,44 @@
       const foregroundAlerts = [];
       const remainingItems = [];
       const isVisible = document.visibilityState === 'visible';
+      const activeReminderIds = new Set(activeReminderAlertItems.map(item => item.id));
       for (const item of items) {
         const due = reminderDueDate(item);
         if (!due || due.getTime() > now) {
           remainingItems.push(item);
           continue;
         }
-        if (item.done || (item.notificationSentAt && item.notificationSentAt !== 'failed')) {
+        if (item.done) {
           if (item.pushMessageId) void cancelRemoteReminder(item.pushMessageId);
           changed = true;
           continue;
         }
         if (isVisible) {
-          foregroundAlerts.push(item);
-          if (item.pushMessageId) void cancelRemoteReminder(item.pushMessageId);
-          changed = true;
+          if (!activeReminderIds.has(item.id)) {
+            foregroundAlerts.push(item);
+            activeReminderIds.add(item.id);
+            item.notificationSentAt = 'in-app-shown';
+            changed = true;
+          }
+          if (item.pushMessageId) {
+            void cancelRemoteReminder(item.pushMessageId);
+            item.pushMessageId = '';
+            item.pushDueAt = '';
+            changed = true;
+          }
+          remainingItems.push(item);
           continue;
         }
-        if (item.notificationSentAt === 'failed' || item.pushMessageId) {
+        if (item.pushMessageId || item.notificationSentAt) {
           remainingItems.push(item);
           continue;
         }
         try {
           if ('Notification' in window && Notification.permission === 'granted') {
             await showReminderNotification(item);
+            item.notificationSentAt = new Date().toISOString();
             changed = true;
+            remainingItems.push(item);
             continue;
           }
         } catch (_) {
