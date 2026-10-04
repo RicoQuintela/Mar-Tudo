@@ -2147,6 +2147,7 @@
       scroll-snap-align: start;
     }
     .app-footer-menu-button:active { background: rgba(76,155,255,.2); }
+    .app-footer-menu-button { touch-action: manipulation; pointer-events: auto; }
     .other-services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
     .view[data-view="extras"] .other-services-panel { border: none !important; }
     .other-services-grid .other-service-button { min-height: 42px; margin: 0; padding: 8px; font-size: 16px !important; }
@@ -7230,23 +7231,51 @@
       if (button.hasAttribute('data-open-settings')) return openSettingsScreen();
       if (button.dataset.go) navigate(button.dataset.go);
     }
-    footerMenu.addEventListener('click', event => {
-      const button = event.target.closest('.app-footer-menu-button');
+    function footerMenuButtonAtPoint(x, y) {
+      return [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(button => {
+        const rect = button.getBoundingClientRect();
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }) || null;
+    }
+    function footerMenuBlockedByDialog() {
+      return Boolean(document.querySelector('.confirmation-backdrop.show, .toast.centered.show, .toast.reminder-alert.show, #scaleDigitalClock:not([hidden]), #serviceTimePicker:not([hidden])'));
+    }
+    let footerPointerStart = null;
+    let suppressFooterClick = null;
+    document.addEventListener('pointerdown', event => {
+      suppressFooterClick = null;
+      if (!usefulLinksScreen.classList.contains('open') || !footerMenu.classList.contains('is-visible') || footerMenuBlockedByDialog()) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest('.app-footer-menu-button') || footerMenuButtonAtPoint(event.clientX, event.clientY);
+      if (button) footerPointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    }, true);
+    document.addEventListener('pointercancel', event => {
+      if (footerPointerStart?.id === event.pointerId) footerPointerStart = null;
+    }, true);
+    document.addEventListener('pointerup', event => {
+      const start = footerPointerStart;
+      footerPointerStart = null;
+      if (!start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10) return;
+      if (!usefulLinksScreen.classList.contains('open') || !footerMenu.classList.contains('is-visible') || footerMenuBlockedByDialog()) return;
+      const button = footerMenuButtonAtPoint(event.clientX, event.clientY);
+      if (!button) return;
+      suppressFooterClick = { x: event.clientX, y: event.clientY, expires: Date.now() + 900 };
+      activateFooterMenuButton(button, event);
+    }, true);
+    document.addEventListener('click', event => {
+      if (suppressFooterClick) {
+        const skip = Date.now() <= suppressFooterClick.expires && Math.abs(event.clientX - suppressFooterClick.x) <= 20 && Math.abs(event.clientY - suppressFooterClick.y) <= 20;
+        suppressFooterClick = null;
+        if (skip) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+      }
+      if (!usefulLinksScreen.classList.contains('open') || !footerMenu.classList.contains('is-visible') || footerMenuBlockedByDialog()) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest('.app-footer-menu-button') || footerMenuButtonAtPoint(event.clientX, event.clientY);
       if (button) activateFooterMenuButton(button, event);
     }, true);
-    // Em Links Úteis, captura também toques cuja camada-alvo seja a própria tela.
-    document.addEventListener('click', event => {
-      if (!usefulLinksScreen.classList.contains('open') || !footerMenu.classList.contains('is-visible')) return;
-      if (event.target.closest('.confirmation-backdrop.show, .toast.centered.show, .toast.reminder-alert.show, #scaleDigitalClock:not([hidden]), #serviceTimePicker:not([hidden])')) return;
-      let button = event.target.closest('.app-footer-menu-button');
-      if (!button) {
-        const menuRect = footerMenu.getBoundingClientRect();
-        if (event.clientY < menuRect.top || event.clientY > menuRect.bottom) return;
-        button = [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
-          const rect = candidate.getBoundingClientRect();
-          return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
-        });
-      }
+    footerMenu.addEventListener('click', event => {
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest('.app-footer-menu-button');
       if (button) activateFooterMenuButton(button, event);
     }, true);
     document.body.appendChild(footerMenu);
