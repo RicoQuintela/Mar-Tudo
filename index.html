@@ -1198,6 +1198,7 @@
 
     .useful-links-screen { position: fixed; z-index: 90; inset: 0; display: none; width: 100vw; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--cream); }
     .useful-links-screen.open { display: flex; }
+    .useful-links-screen > .app-footer-menu { position: absolute; z-index: 10060; pointer-events: auto; }
     .useful-links-sheet { width: 100%; max-width: 520px; height: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom)); }
     .useful-links-header { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; margin-bottom: 18px; }
     .useful-links-header h2 { margin: 0; color: #008CFF; text-align: center; font-size: 19px; font-weight: 950; letter-spacing: .3px; }
@@ -3851,6 +3852,8 @@
       loadUsefulLinks();
       resetUsefulLinkForm();
       renderUsefulLinks();
+      usefulLinksScreen.appendChild(footerMenu);
+      footerMenu.classList.add('is-visible', 'above-target-screen');
       usefulLinksScreen.classList.add('open');
       usefulLinksScreen.setAttribute('aria-hidden', 'false');
     }
@@ -3858,7 +3861,9 @@
     function closeUsefulLinksScreen() {
       usefulLinksScreen.classList.remove('open');
       usefulLinksScreen.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(footerMenu);
       resetUsefulLinkForm();
+      updateFooterMenuVisibility();
     }
 
     document.querySelector('#usefulLinksBack').addEventListener('click', closeUsefulLinksScreen);
