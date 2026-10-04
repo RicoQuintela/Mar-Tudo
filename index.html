@@ -1232,6 +1232,8 @@
     .vacation-type-label { display: block; margin: 0 0 8px; color: #172431; font-size: 14px; font-weight: 900; }
     .vacation-type-select { display: block; width: 100%; min-height: 58px; padding: 12px 14px; border: 1px solid #4C9BFF; border-radius: 14px; background: #B9DCFF !important; color: #142A3B !important; color-scheme: light; font: inherit; font-size: 16px; }
     .vacation-type-select option { background: #B9DCFF; color: #142A3B; }
+    .vacation-type-select.has-selection { color: #FF9800 !important; -webkit-text-fill-color: #FF9800 !important; }
+    .vacation-type-select.has-selection option:checked { color: #FF9800; }
     .vacation-details-card { margin: 14px 0 0; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
     .vacation-details-card[hidden], .vacation-archive[hidden] { display: none !important; }
     .vacation-date-heading { margin: 0 0 10px; color: var(--cream); font-size: 13px; font-weight: 900; text-align: center; }
@@ -1239,6 +1241,7 @@
     .vacation-date-button { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 7px; min-width: 0; min-height: 64px; padding: 9px 10px; border: 1px solid #4C9BFF; border-radius: 11px; background: var(--panel-soft); color: var(--cream); text-align: left; cursor: pointer; }
     .vacation-date-button span { font-size: 10px; font-weight: 850; line-height: 1.15; }
     .vacation-date-button strong { font-size: 12px; font-weight: 900; }
+    .vacation-date-button strong.has-selection { color: #FF9800; }
     .vacation-date-input { position: fixed; top: 50%; left: 50%; width: 1px; height: 1px; padding: 0; opacity: 0; pointer-events: none; }
     .vacation-observations-label { display: block; margin: 0 0 6px; color: var(--cream); font-size: 12px; font-weight: 850; }
     .vacation-observations { display: block; width: 100%; min-height: 90px; margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); color: var(--cream); font: inherit; font-size: 14px; resize: vertical; }
@@ -3668,6 +3671,9 @@
     function updateVacationDateLabels() {
       vacationStartLabel.textContent = formatVacationDate(vacationStartDate.value);
       vacationEndLabel.textContent = formatVacationDate(vacationEndDate.value);
+      vacationTypeSelect.classList.toggle('has-selection', Boolean(vacationTypeSelect.value));
+      vacationStartLabel.classList.toggle('has-selection', Boolean(vacationStartDate.value));
+      vacationEndLabel.classList.toggle('has-selection', Boolean(vacationEndDate.value));
     }
 
     function openNativeVacationDatePicker(input) {
@@ -3679,6 +3685,7 @@
 
     vacationTypeSelect.addEventListener('change', () => {
       vacationDetails.hidden = !vacationTypeSelect.value;
+      vacationTypeSelect.classList.toggle('has-selection', Boolean(vacationTypeSelect.value));
     });
     vacationStartButton.addEventListener('click', () => openNativeVacationDatePicker(vacationStartDate));
     vacationEndButton.addEventListener('click', () => openNativeVacationDatePicker(vacationEndDate));
