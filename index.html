@@ -7215,16 +7215,19 @@
       { label: 'config.', attrs: { 'data-open-settings': 'true' } }
     ];
     function closePlannerForFooterNavigation() {
-      // A navegação do rodapé deve prevalecer sobre o retorno ao calendário
-      // que pode ter sido configurado durante a edição de um serviço.
+      // Não use closePlanner(): ele pode restaurar a capa ou reabrir o calendário.
       returnToCalendarAfterQuestionnaire = false;
       returnCalendarDate = '';
       returnToListAfterQuestionnaire = false;
-      if (servicePlanner.classList.contains('open')) closePlanner();
-    }
-    function handleFooterMenuButton(button, event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+      if (servicePlanner.classList.contains('open')) {
+        servicePlanner.classList.remove('open', 'questionnaire-only', 'calendar-only', 'payment-config-only');
+        paymentTableScreen.hidden = true;
+        servicePlanner.style.removeProperty('display');
+        hideDayActionSheet();
+        questionnaireDateWrap.hidden = true;
+        servicePlanner.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('planner-open', 'questionnaire-active');
+      }
       if (!serviceTimePicker.hidden) closeServiceTimePicker();
       if (settingsScreen.classList.contains('open')) closeSettingsScreen();
       if (usefulLinksScreen.classList.contains('open')) closeUsefulLinksScreen();
@@ -7235,6 +7238,10 @@
       if (importantAppScreen.classList.contains('open')) closeImportantAppScreen();
       if (remindersScreen.classList.contains('open')) closeRemindersScreen();
       if (calendarScreen.classList.contains('open')) closeStandaloneCalendar();
+    }
+    function handleFooterMenuButton(button, event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
       closePlannerForFooterNavigation();
       if (button.hasAttribute('data-open-service')) return openQuestionnaireOnly();
       if (button.hasAttribute('data-open-calendar')) return openStandaloneCalendar();
@@ -7250,9 +7257,14 @@
       button.setAttribute('aria-label', item.label);
       button.title = item.label;
       Object.entries(item.attrs).forEach(([name, value]) => button.setAttribute(name, value));
-      button.addEventListener('click', event => handleFooterMenuButton(button, event));
       footerMenu.appendChild(button);
     });
+    // Capture direto na barra: impede que handlers globais confundam o toque
+    // com um fechamento do formulário ou uma volta para a capa.
+    footerMenu.addEventListener('click', event => {
+      const button = event.target.closest('.app-footer-menu-button');
+      if (button) handleFooterMenuButton(button, event);
+    }, true);
     document.body.appendChild(footerMenu);
 
     // Botões de Outros Serviços: posições atuais mantidas, sem arraste.
