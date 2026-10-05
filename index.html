@@ -2126,7 +2126,7 @@
     }
   
     .app-footer-menu {
-      position: fixed; z-index: 10000; right: 0; bottom: 0; left: 0;
+      position: fixed; z-index: 40000; right: 0; bottom: 0; left: 0;
       display: none; align-items: center; gap: 6px; box-sizing: border-box;
       width: 100%; padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
       overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
@@ -6778,6 +6778,7 @@
     }
 
     document.addEventListener('click', event => {
+      if (event.target.closest('.app-footer-menu')) return;
       const vacationButton = event.target.closest('[data-open-vacation]');
       if (vacationButton) {
         event.preventDefault();
@@ -7182,6 +7183,7 @@
       'button.important-app-back', 'button.service-time-picker-close', 'button.brand-toolbar-back', 'button.brand-toolbar-close'
     ].join(',');
     document.addEventListener('click', event => {
+      if (event.target.closest('.app-footer-menu')) return;
       const control = event.target.closest(backCloseSelector);
       if (!control) return;
       event.preventDefault();
@@ -7360,13 +7362,9 @@
       const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
       footerMenu.classList.toggle('is-visible', !isHome || overlayOpen || baseQuinHomeMode);
-      // Durante a marcação, o menu precisa estar na mesma camada da tela modal.
-      // Isso evita que a camada do formulário capture o toque destinado ao rodapé.
-      if (servicePlanner.classList.contains('open')) {
-        if (footerMenu.parentElement !== servicePlanner) servicePlanner.appendChild(footerMenu);
-      } else if (footerMenu.parentElement === servicePlanner) {
-        document.body.appendChild(footerMenu);
-      }
+      // O rodapé permanece fora dos modais e usa uma camada própria.
+      // Assim nenhum backdrop ou formulário pode capturar seus toques.
+      if (footerMenu.parentElement !== document.body) document.body.appendChild(footerMenu);
       if (activeView?.dataset.view === 'extras') requestAnimationFrame(prepareExtrasButtons);
     }
     const footerVisibilityObserver = new MutationObserver(updateFooterMenuVisibility);
