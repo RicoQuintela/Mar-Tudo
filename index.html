@@ -2162,15 +2162,8 @@
     }
     .service-planner-footer-menu.is-visible { display: flex; }
     .service-planner-footer-menu::-webkit-scrollbar { display: none; }
-    .service-planner-footer-menu-button {
-      display: flex; flex: 1 0 68px; align-items: center; justify-content: center;
-      min-width: 68px; max-width: 132px; min-height: 44px; padding: 5px 7px;
-      border: 2px solid #8FC4FF; border-radius: 12px; background: transparent; color: #fff;
-      text-align: center; box-shadow: 0 0 5px rgba(76,155,255,.58), 0 0 10px rgba(76,155,255,.32), inset 0 0 3px rgba(76,155,255,.12);
-      font-size: 9px; font-weight: 850; line-height: 1.08; text-transform: uppercase; white-space: normal;
-      color: #fff; text-decoration: none; cursor: pointer; scroll-snap-align: start; touch-action: manipulation; pointer-events: auto;
-    }
-    .service-planner-footer-menu-button:active { background: rgba(76,155,255,.2); }
+    /* Os botões usam exatamente a mesma regra visual da barra principal. */
+    .service-planner-footer-menu-button { color: #fff; text-decoration: none; }
     .service-planner.questionnaire-only .planner-sheet {
       overflow-x: hidden; overflow-y: auto;
       padding-bottom: calc(74px + env(safe-area-inset-bottom)) !important;
@@ -7318,13 +7311,14 @@
     }, { capture: true, passive: false });
     // Fallback para mouse/teclado e navegadores que emitem click sem touch.
     window.addEventListener('click', event => {
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      if (target?.closest('.service-planner-footer-menu')) return;
       if (suppressFooterClick) {
         suppressFooterClick = false;
         event.preventDefault();
         event.stopImmediatePropagation();
         return;
       }
-      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
       const button = target?.closest('.app-footer-menu-button') || footerButtonAtPoint(event.clientX, event.clientY);
       if (button) handleFooterMenuButton(button, event);
     }, true);
@@ -7345,12 +7339,17 @@
     ];
     servicePlannerFooterItems.forEach(item => {
       const button = document.createElement(item.action === 'mark' ? 'button' : 'a');
-      button.className = 'service-planner-footer-menu-button';
+      button.className = 'app-footer-menu-button service-planner-footer-menu-button';
       button.textContent = item.label;
       button.setAttribute('aria-label', item.label);
       button.dataset.serviceMenuAction = item.action;
       if (item.action === 'mark') button.type = 'button';
-      else button.href = `#${item.action}`;
+      else {
+        const routeUrl = new URL(location.href);
+        routeUrl.hash = '';
+        routeUrl.searchParams.set('go', item.action);
+        button.href = routeUrl.pathname + routeUrl.search;
+      }
       servicePlannerFooterMenu.appendChild(button);
     });
     document.body.appendChild(servicePlannerFooterMenu);
@@ -7384,14 +7383,6 @@
       event.preventDefault();
       servicePlanner.querySelector('.planner-sheet')?.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    servicePlannerFooterMenu.addEventListener('click', event => {
-      const link = event.target.closest('a.service-planner-footer-menu-button');
-      if (link && link.hash === location.hash) {
-        event.preventDefault();
-        routeServiceMenuDestination(link.dataset.serviceMenuAction);
-      }
-    }, true);
-
     // Botões de Outros Serviços: posições atuais mantidas, sem arraste.
     const extrasButtonsPositionKey = 'mareTudo.otherServices.buttons.positions.v1';
     function getExtrasButtons() {
