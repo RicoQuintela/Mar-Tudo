@@ -7393,9 +7393,10 @@
       const isHome = activeView?.dataset.view === 'home';
       const targetScreenOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .useful-links-screen.open, .important-app-screen.open'));
       footerMenu.classList.toggle('above-target-screen', targetScreenOpen);
+      const plannerOpen = servicePlanner.classList.contains('open');
       const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
-      footerMenu.classList.toggle('is-visible', !isHome || overlayOpen || baseQuinHomeMode);
+      footerMenu.classList.toggle('is-visible', !plannerOpen && (!isHome || overlayOpen || baseQuinHomeMode));
       // O rodapé permanece fora dos modais e usa uma camada própria.
       // Assim nenhum backdrop ou formulário pode capturar seus toques.
       if (footerMenu.parentElement !== document.body) document.body.appendChild(footerMenu);
