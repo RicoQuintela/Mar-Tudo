@@ -2149,6 +2149,32 @@
     }
     .app-footer-menu-button:active { background: rgba(76,155,255,.2); }
     .app-footer-menu-button { touch-action: manipulation; pointer-events: auto; }
+
+    /* Barra independente exclusiva da tela “Marque seu serviço”. */
+    .service-planner-footer-menu {
+      position: fixed; z-index: 40001; right: 0; bottom: 0; left: 0;
+      display: none; align-items: center; gap: 6px; box-sizing: border-box;
+      width: 100%; padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+      overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch; touch-action: pan-x; scroll-snap-type: x proximity; scrollbar-width: none;
+      border-top: 1px solid #4C9BFF; background: rgba(0,0,0,.97);
+      box-shadow: 0 -4px 14px rgba(0,0,0,.32);
+    }
+    .service-planner-footer-menu.is-visible { display: flex; }
+    .service-planner-footer-menu::-webkit-scrollbar { display: none; }
+    .service-planner-footer-menu-button {
+      display: flex; flex: 1 0 68px; align-items: center; justify-content: center;
+      min-width: 68px; max-width: 132px; min-height: 44px; padding: 5px 7px;
+      border: 2px solid #8FC4FF; border-radius: 12px; background: transparent; color: #fff;
+      text-align: center; box-shadow: 0 0 5px rgba(76,155,255,.58), 0 0 10px rgba(76,155,255,.32), inset 0 0 3px rgba(76,155,255,.12);
+      font-size: 9px; font-weight: 850; line-height: 1.08; text-transform: uppercase; white-space: normal;
+      cursor: pointer; scroll-snap-align: start; touch-action: manipulation; pointer-events: auto;
+    }
+    .service-planner-footer-menu-button:active { background: rgba(76,155,255,.2); }
+    .service-planner.questionnaire-only .planner-sheet {
+      overflow-x: hidden; overflow-y: auto;
+      padding-bottom: calc(74px + env(safe-area-inset-bottom)) !important;
+    }
     .other-services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
     .view[data-view="extras"] .other-services-panel { border: none !important; }
     .other-services-grid .other-service-button { min-height: 42px; margin: 0; padding: 8px; font-size: 16px !important; }
@@ -6753,6 +6779,7 @@
       showToast('Serviço salvo. Calendário atualizado.');
     });
     document.addEventListener('click', event => {
+      if (event.target.closest('.service-planner-footer-menu')) return;
       if (event.target.closest('[data-close-planner]')) closePlanner();
     });
     document.addEventListener('keydown', event => {
@@ -6778,7 +6805,7 @@
     }
 
     document.addEventListener('click', event => {
-      if (event.target.closest('.app-footer-menu')) return;
+      if (event.target.closest('.app-footer-menu, .service-planner-footer-menu')) return;
       const vacationButton = event.target.closest('[data-open-vacation]');
       if (vacationButton) {
         event.preventDefault();
@@ -7183,7 +7210,7 @@
       'button.important-app-back', 'button.service-time-picker-close', 'button.brand-toolbar-back', 'button.brand-toolbar-close'
     ].join(',');
     document.addEventListener('click', event => {
-      if (event.target.closest('.app-footer-menu')) return;
+      if (event.target.closest('.app-footer-menu, .service-planner-footer-menu')) return;
       const control = event.target.closest(backCloseSelector);
       if (!control) return;
       event.preventDefault();
@@ -7303,6 +7330,97 @@
     }, true);
     document.body.appendChild(footerMenu);
 
+    // Barra nova, independente, exclusiva do ambiente “Marque seu serviço”.
+    const servicePlannerFooterMenu = document.createElement('nav');
+    servicePlannerFooterMenu.className = 'service-planner-footer-menu';
+    servicePlannerFooterMenu.setAttribute('aria-label', 'Menu da tela Marque seu serviço');
+    const servicePlannerFooterItems = [
+      { label: 'Home', action: 'home' },
+      { label: 'Marcar serviço', action: 'mark' },
+      { label: 'Serviços já marcados', action: 'calendar' },
+      { label: 'Lembretes Agendados', action: 'reminders' },
+      { label: 'Fazmirrí', action: 'financeiro' },
+      { label: 'Outros serviços', action: 'extras' },
+      { label: 'config.', action: 'settings' }
+    ];
+    servicePlannerFooterItems.forEach(item => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'service-planner-footer-menu-button';
+      button.textContent = item.label;
+      button.setAttribute('aria-label', item.label);
+      button.dataset.serviceMenuAction = item.action;
+      servicePlannerFooterMenu.appendChild(button);
+    });
+    document.body.appendChild(servicePlannerFooterMenu);
+
+    function closePlannerForServiceMenu() {
+      returnToCalendarAfterQuestionnaire = false;
+      returnCalendarDate = '';
+      returnToListAfterQuestionnaire = false;
+      servicePlanner.classList.remove('open', 'questionnaire-only', 'calendar-only', 'payment-config-only');
+      paymentTableScreen.hidden = true;
+      servicePlanner.style.removeProperty('display');
+      hideDayActionSheet();
+      questionnaireDateWrap.hidden = true;
+      servicePlanner.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('planner-open', 'questionnaire-active');
+    }
+    function handleServicePlannerFooterButton(button, event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const action = button.dataset.serviceMenuAction;
+      if (action === 'mark') {
+        servicePlanner.querySelector('.planner-sheet')?.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      closePlannerForServiceMenu();
+      if (action === 'home') return navigate('home');
+      if (action === 'calendar') return openStandaloneCalendar();
+      if (action === 'reminders') return openRemindersScreen();
+      if (action === 'financeiro') return navigate('financeiro');
+      if (action === 'extras') return navigate('extras');
+      if (action === 'settings') return openSettingsScreen();
+    }
+    function servicePlannerFooterButtonAtPoint(x, y) {
+      if (!servicePlannerFooterMenu.classList.contains('is-visible')) return null;
+      return [...servicePlannerFooterMenu.querySelectorAll('.service-planner-footer-menu-button')].find(button => {
+        const rect = button.getBoundingClientRect();
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }) || null;
+    }
+    let servicePlannerTouchStart = null;
+    let suppressServicePlannerClick = false;
+    window.addEventListener('touchstart', event => {
+      const touch = event.touches && event.touches[0];
+      const button = touch && servicePlannerFooterButtonAtPoint(touch.clientX, touch.clientY);
+      servicePlannerTouchStart = button && touch ? { x: touch.clientX, y: touch.clientY, button } : null;
+    }, { capture: true, passive: true });
+    window.addEventListener('touchend', event => {
+      const start = servicePlannerTouchStart;
+      servicePlannerTouchStart = null;
+      const touch = event.changedTouches && event.changedTouches[0];
+      if (!start || !touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 18) return;
+      const button = servicePlannerFooterButtonAtPoint(touch.clientX, touch.clientY) || start.button;
+      if (!button) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      suppressServicePlannerClick = true;
+      setTimeout(() => { suppressServicePlannerClick = false; }, 1200);
+      handleServicePlannerFooterButton(button, event);
+    }, { capture: true, passive: false });
+    window.addEventListener('click', event => {
+      if (suppressServicePlannerClick) {
+        suppressServicePlannerClick = false;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      const button = target?.closest('.service-planner-footer-menu-button') || servicePlannerFooterButtonAtPoint(event.clientX, event.clientY);
+      if (button) handleServicePlannerFooterButton(button, event);
+    }, true);
+
     // Botões de Outros Serviços: posições atuais mantidas, sem arraste.
     const extrasButtonsPositionKey = 'mareTudo.otherServices.buttons.positions.v1';
     function getExtrasButtons() {
@@ -7397,6 +7515,9 @@
       const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
       footerMenu.classList.toggle('is-visible', !plannerOpen && (!isHome || overlayOpen || baseQuinHomeMode));
+      const servicePlannerMenuOpen = plannerOpen && servicePlanner.classList.contains('questionnaire-only');
+      const anotherScreenOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
+      servicePlannerFooterMenu.classList.toggle('is-visible', servicePlannerMenuOpen && !anotherScreenOpen);
       // O rodapé permanece fora dos modais e usa uma camada própria.
       // Assim nenhum backdrop ou formulário pode capturar seus toques.
       if (footerMenu.parentElement !== document.body) document.body.appendChild(footerMenu);
