@@ -7261,10 +7261,20 @@
       Object.entries(item.attrs).forEach(([name, value]) => button.setAttribute(name, value));
       footerMenu.appendChild(button);
     });
-    // Capture direto na barra: impede que handlers globais confundam o toque
-    // com um fechamento do formulário ou uma volta para a capa.
-    footerMenu.addEventListener('click', event => {
-      const button = event.target.closest('.app-footer-menu-button');
+    // Captura na janela, antes dos handlers do formulário e dos overlays.
+    // Se o navegador reportar o backdrop como alvo, resolve o botão pelas
+    // coordenadas do toque dentro da barra visível.
+    window.addEventListener('click', event => {
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      let button = target?.closest('.app-footer-menu-button');
+      if (!button && footerMenu.classList.contains('is-visible')) {
+        const x = event.clientX;
+        const y = event.clientY;
+        button = [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
+          const rect = candidate.getBoundingClientRect();
+          return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+        }) || null;
+      }
       if (button) handleFooterMenuButton(button, event);
     }, true);
     document.body.appendChild(footerMenu);
