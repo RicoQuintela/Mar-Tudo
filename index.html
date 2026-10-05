@@ -7214,9 +7214,17 @@
       { label: 'Outros serviços', attrs: { 'data-go': 'extras' } },
       { label: 'config.', attrs: { 'data-open-settings': 'true' } }
     ];
+    function closePlannerForFooterNavigation() {
+      // A navegação do rodapé deve prevalecer sobre o retorno ao calendário
+      // que pode ter sido configurado durante a edição de um serviço.
+      returnToCalendarAfterQuestionnaire = false;
+      returnCalendarDate = '';
+      returnToListAfterQuestionnaire = false;
+      if (servicePlanner.classList.contains('open')) closePlanner();
+    }
     function handleFooterMenuButton(button, event) {
       event.preventDefault();
-      event.stopPropagation();
+      event.stopImmediatePropagation();
       if (!serviceTimePicker.hidden) closeServiceTimePicker();
       if (settingsScreen.classList.contains('open')) closeSettingsScreen();
       if (usefulLinksScreen.classList.contains('open')) closeUsefulLinksScreen();
@@ -7227,7 +7235,7 @@
       if (importantAppScreen.classList.contains('open')) closeImportantAppScreen();
       if (remindersScreen.classList.contains('open')) closeRemindersScreen();
       if (calendarScreen.classList.contains('open')) closeStandaloneCalendar();
-      if (servicePlanner.classList.contains('open')) closePlanner();
+      closePlannerForFooterNavigation();
       if (button.hasAttribute('data-open-service')) return openQuestionnaireOnly();
       if (button.hasAttribute('data-open-calendar')) return openStandaloneCalendar();
       if (button.hasAttribute('data-open-reminders')) return openRemindersScreen();
