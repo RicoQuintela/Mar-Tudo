@@ -7312,13 +7312,13 @@
     // Fallback para mouse/teclado e navegadores que emitem click sem touch.
     window.addEventListener('click', event => {
       const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-      if (target?.closest('.service-planner-footer-menu')) return;
       if (suppressFooterClick) {
         suppressFooterClick = false;
         event.preventDefault();
         event.stopImmediatePropagation();
         return;
       }
+      if (target?.closest('.service-planner-footer-menu')) return;
       const button = target?.closest('.app-footer-menu-button') || footerButtonAtPoint(event.clientX, event.clientY);
       if (button) handleFooterMenuButton(button, event);
     }, true);
@@ -7355,17 +7355,11 @@
         return;
       }
       closePlannerForNewFooter();
-      const openDestination = () => {
-        if (action === 'home') return navigate('home');
-        if (action === 'calendar') return openStandaloneCalendar();
-        if (action === 'reminders') return openRemindersScreen();
-        if (action === 'settings') return openSettingsScreen();
-        if (action === 'financeiro' || action === 'extras') return navigate(action);
-      };
-      requestAnimationFrame(openDestination);
-      if (action === 'home' || action === 'financeiro' || action === 'extras') {
-        requestAnimationFrame(() => requestAnimationFrame(openDestination));
-      }
+      if (action === 'home') return navigate('home');
+      if (action === 'calendar') return openStandaloneCalendar();
+      if (action === 'reminders') return openRemindersScreen();
+      if (action === 'settings') return openSettingsScreen();
+      if (action === 'financeiro' || action === 'extras') return navigate(action);
     }
     servicePlannerFooterItems.forEach(item => {
       const button = document.createElement('button');
@@ -7379,6 +7373,22 @@
         event.stopImmediatePropagation();
         runNewFooterAction(item.action);
       });
+      let touchStart = null;
+      button.addEventListener('touchstart', event => {
+        const touch = event.touches && event.touches[0];
+        touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
+      }, { passive: true });
+      button.addEventListener('touchend', event => {
+        const start = touchStart;
+        touchStart = null;
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!start || !touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 18) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        suppressFooterClick = true;
+        setTimeout(() => { suppressFooterClick = false; }, 1200);
+        runNewFooterAction(item.action);
+      }, { passive: false });
       servicePlannerFooterMenu.appendChild(button);
     });
     document.body.appendChild(servicePlannerFooterMenu);
