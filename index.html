@@ -7261,20 +7261,44 @@
       Object.entries(item.attrs).forEach(([name, value]) => button.setAttribute(name, value));
       footerMenu.appendChild(button);
     });
-    // Captura na janela, antes dos handlers do formulário e dos overlays.
-    // Se o navegador reportar o backdrop como alvo, resolve o botão pelas
-    // coordenadas do toque dentro da barra visível.
+    function footerButtonAtPoint(x, y) {
+      if (!footerMenu.classList.contains('is-visible')) return null;
+      return [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
+        const rect = candidate.getBoundingClientRect();
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }) || null;
+    }
+    let footerTouchStart = null;
+    let suppressFooterClick = false;
+    window.addEventListener('touchstart', event => {
+      const touch = event.touches && event.touches[0];
+      if (!touch) { footerTouchStart = null; return; }
+      const button = footerButtonAtPoint(touch.clientX, touch.clientY);
+      footerTouchStart = button ? { x: touch.clientX, y: touch.clientY, button } : null;
+    }, { capture: true, passive: true });
+    window.addEventListener('touchend', event => {
+      const start = footerTouchStart;
+      footerTouchStart = null;
+      const touch = event.changedTouches && event.changedTouches[0];
+      if (!start || !touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 18) return;
+      const button = footerButtonAtPoint(touch.clientX, touch.clientY) || start.button;
+      if (!button) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      suppressFooterClick = true;
+      setTimeout(() => { suppressFooterClick = false; }, 1200);
+      handleFooterMenuButton(button, event);
+    }, { capture: true, passive: false });
+    // Fallback para mouse/teclado e navegadores que emitem click sem touch.
     window.addEventListener('click', event => {
-      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-      let button = target?.closest('.app-footer-menu-button');
-      if (!button && footerMenu.classList.contains('is-visible')) {
-        const x = event.clientX;
-        const y = event.clientY;
-        button = [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
-          const rect = candidate.getBoundingClientRect();
-          return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-        }) || null;
+      if (suppressFooterClick) {
+        suppressFooterClick = false;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
       }
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      const button = target?.closest('.app-footer-menu-button') || footerButtonAtPoint(event.clientX, event.clientY);
       if (button) handleFooterMenuButton(button, event);
     }, true);
     document.body.appendChild(footerMenu);
