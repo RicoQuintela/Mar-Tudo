@@ -7324,12 +7324,12 @@
     }, true);
     document.body.appendChild(footerMenu);
 
-    // Barra nova, independente, exclusiva do ambiente “Marque seu serviço”.
+    // Barra refeita do zero: botões próprios e tratamento local, sem links nem eventos da barra antiga.
     const servicePlannerFooterMenu = document.createElement('nav');
     servicePlannerFooterMenu.className = 'service-planner-footer-menu';
     servicePlannerFooterMenu.setAttribute('aria-label', 'Menu da tela Marque seu serviço');
     const servicePlannerFooterItems = [
-      { label: 'Home', action: 'inicio' },
+      { label: 'Home', action: 'home' },
       { label: 'Marcar serviço', action: 'mark' },
       { label: 'Serviços já marcados', action: 'calendar' },
       { label: 'Lembretes Agendados', action: 'reminders' },
@@ -7337,24 +7337,7 @@
       { label: 'Outros serviços', action: 'extras' },
       { label: 'config.', action: 'settings' }
     ];
-    servicePlannerFooterItems.forEach(item => {
-      const button = document.createElement(item.action === 'mark' ? 'button' : 'a');
-      button.className = 'app-footer-menu-button service-planner-footer-menu-button';
-      button.textContent = item.label;
-      button.setAttribute('aria-label', item.label);
-      button.dataset.serviceMenuAction = item.action;
-      if (item.action === 'mark') button.type = 'button';
-      else {
-        const routeUrl = new URL(location.href);
-        routeUrl.hash = '';
-        routeUrl.searchParams.set('go', item.action);
-        button.href = routeUrl.pathname + routeUrl.search;
-      }
-      servicePlannerFooterMenu.appendChild(button);
-    });
-    document.body.appendChild(servicePlannerFooterMenu);
-
-    function closePlannerForServiceMenu() {
+    function closePlannerForNewFooter() {
       returnToCalendarAfterQuestionnaire = false;
       returnCalendarDate = '';
       returnToListAfterQuestionnaire = false;
@@ -7366,44 +7349,39 @@
       servicePlanner.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('planner-open', 'questionnaire-active');
     }
-    function routeServiceMenuDestination(destination) {
-      const isView = views.some(view => view.dataset.view === destination);
-      const isSpecial = ['inicio', 'home', 'mark', 'marcar-servico', 'calendar', 'reminders', 'settings'].includes(destination);
-      if (!isView && !isSpecial) return;
-      if (servicePlanner.classList.contains('open')) closePlannerForServiceMenu();
-      if (destination === 'inicio' || destination === 'home') return navigate('home');
-      if (destination === 'mark' || destination === 'marcar-servico') return openQuestionnaireOnly();
-      if (destination === 'calendar') return openStandaloneCalendar();
-      if (destination === 'reminders') return openRemindersScreen();
-      if (destination === 'settings') return openSettingsScreen();
-      if (isView) return navigate(destination);
+    function runNewFooterAction(action) {
+      if (action === 'mark') {
+        servicePlanner.querySelector('.planner-sheet')?.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      closePlannerForNewFooter();
+      const openDestination = () => {
+        if (action === 'home') return navigate('home');
+        if (action === 'calendar') return openStandaloneCalendar();
+        if (action === 'reminders') return openRemindersScreen();
+        if (action === 'settings') return openSettingsScreen();
+        if (action === 'financeiro' || action === 'extras') return navigate(action);
+      };
+      requestAnimationFrame(openDestination);
+      if (action === 'home' || action === 'financeiro' || action === 'extras') {
+        requestAnimationFrame(() => requestAnimationFrame(openDestination));
+      }
     }
-    window.addEventListener('hashchange', () => routeServiceMenuDestination(location.hash.slice(1)));
-    servicePlannerFooterMenu.querySelector('[data-service-menu-action="mark"]')?.addEventListener('click', event => {
-      event.preventDefault();
-      servicePlanner.querySelector('.planner-sheet')?.scrollTo({ top: 0, behavior: 'smooth' });
+    servicePlannerFooterItems.forEach(item => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'app-footer-menu-button service-planner-footer-menu-button';
+      button.textContent = item.label;
+      button.setAttribute('aria-label', item.label);
+      button.dataset.serviceMenuAction = item.action;
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        runNewFooterAction(item.action);
+      });
+      servicePlannerFooterMenu.appendChild(button);
     });
-    function servicePlannerLinkAtPoint(x, y) {
-      if (!servicePlannerFooterMenu.classList.contains('is-visible')) return null;
-      const hit = document.elementFromPoint(x, y);
-      const link = hit instanceof Element ? hit.closest('a.service-planner-footer-menu-button') : null;
-      return link && servicePlannerFooterMenu.contains(link) ? link : null;
-    }
-    let servicePlannerLinkTouch = null;
-    window.addEventListener('touchstart', event => {
-      const touch = event.touches && event.touches[0];
-      const link = touch && servicePlannerLinkAtPoint(touch.clientX, touch.clientY);
-      servicePlannerLinkTouch = link && touch ? { link, x: touch.clientX, y: touch.clientY } : null;
-    }, { capture: true, passive: true });
-    window.addEventListener('touchend', event => {
-      const start = servicePlannerLinkTouch;
-      servicePlannerLinkTouch = null;
-      const touch = event.changedTouches && event.changedTouches[0];
-      if (!start || !touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 18) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      window.location.assign(start.link.href);
-    }, { capture: true, passive: false });
+    document.body.appendChild(servicePlannerFooterMenu);
     // Botões de Outros Serviços: posições atuais mantidas, sem arraste.
     const extrasButtonsPositionKey = 'mareTudo.otherServices.buttons.positions.v1';
     function getExtrasButtons() {
@@ -7519,14 +7497,8 @@
     // Botões da capa posicionados exclusivamente pelo CSS fixo.
     updateServiceDateButton();
     app.classList.add('home-screen');
-    const startupUrl = new URL(location.href);
-    const routeFromQuery = startupUrl.searchParams.get('go') || '';
-    if (routeFromQuery) {
-      startupUrl.searchParams.delete('go');
-      history.replaceState(null, '', startupUrl.pathname + startupUrl.search + startupUrl.hash);
-    }
-    const initial = routeFromQuery || location.hash.replace('#', '');
-    if (initial) routeServiceMenuDestination(initial);
+    const initial = location.hash.replace('#', '');
+    if (initial) navigate(initial);
   </script>
 
   <script>
