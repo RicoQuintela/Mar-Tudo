@@ -7360,6 +7360,13 @@
       const overlayOpen = Boolean(document.querySelector('.notes-screen.open, .vacation-screen.open, .reminders-screen.open, .payments-screen.open, .calendar-screen.open, .service-planner.open, .settings-screen.open, .useful-links-screen.open, .important-app-screen.open, .padrinho-screen.open'));
       const baseQuinHomeMode = isHome && Boolean(document.querySelector('.hero.pmerj-cover-hidden'));
       footerMenu.classList.toggle('is-visible', !isHome || overlayOpen || baseQuinHomeMode);
+      // Durante a marcação, o menu precisa estar na mesma camada da tela modal.
+      // Isso evita que a camada do formulário capture o toque destinado ao rodapé.
+      if (servicePlanner.classList.contains('open')) {
+        if (footerMenu.parentElement !== servicePlanner) servicePlanner.appendChild(footerMenu);
+      } else if (footerMenu.parentElement === servicePlanner) {
+        document.body.appendChild(footerMenu);
+      }
       if (activeView?.dataset.view === 'extras') requestAnimationFrame(prepareExtrasButtons);
     }
     const footerVisibilityObserver = new MutationObserver(updateFooterMenuVisibility);
