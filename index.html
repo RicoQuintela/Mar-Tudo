@@ -7282,6 +7282,8 @@
       footerMenu.appendChild(button);
     });
     function footerButtonAtPoint(x, y) {
+      // A barra nova da tela de marcação tem prioridade sobre o menu principal.
+      if (servicePlannerFooterMenu.classList.contains('is-visible')) return null;
       if (!footerMenu.classList.contains('is-visible')) return null;
       return [...footerMenu.querySelectorAll('.app-footer-menu-button')].find(candidate => {
         const rect = candidate.getBoundingClientRect();
