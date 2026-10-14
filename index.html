@@ -5618,6 +5618,7 @@
       }
       reminderOpenedFromService = true;
       openRemindersScreen('form');
+      reminderFormReturnTab = 'mark';
       const type = serviceType.value.trim();
       const startTime = serviceStartTime.value.trim();
       const endTime = serviceEndTime.value.trim();
@@ -5695,9 +5696,19 @@
       }
       if (previousTab) {
         if (previousTab === 'mark') {
-          setActiveFooterTab('mark');
           if (servicePlanner.classList.contains('open')) document.body.classList.add('planner-open');
           else openQuestionnaireOnly();
+          const restoreMarkFooter = () => {
+            setActiveFooterTab('mark');
+            const visibleMenu = servicePlannerFooterMenu.classList.contains('is-visible')
+              ? servicePlannerFooterMenu
+              : footerMenu;
+            const markButton = [...visibleMenu.querySelectorAll('.app-footer-menu-button')]
+              .find(button => footerButtonTabKey(button) === 'mark');
+            if (markButton) markButton.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+          };
+          restoreMarkFooter();
+          requestAnimationFrame(restoreMarkFooter);
         } else if (previousTab === 'calendar') {
           openStandaloneCalendar();
         } else if (previousTab === 'reminders') {
