@@ -1270,8 +1270,9 @@
     #padrinhoCaption { display: block !important; visibility: visible !important; opacity: 1 !important; margin: 38px 0 0; padding: 0 10px; color: #808080 !important; font-size: 13px; font-style: italic !important; font-weight: 700; line-height: 1.4; text-align: justify; }
     .padrinho-caption-highlight { color: #FF3030 !important; font-size: 15px; font-style: italic !important; }
     .padrinho-panel { box-sizing: border-box; display: flex; align-items: flex-start; justify-content: flex-start; width: calc(100% + 20px); min-height: 136px; margin: 38px -10px 0; padding: 6px; border: 2px solid #008CFF; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 8px rgba(0,140,255,.9), 0 0 16px rgba(0,140,255,.58); }
-    .padrinho-panel-empty { align-items: center; justify-content: center; margin-top: 22px; }
+    .padrinho-panel-empty { flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-top: 22px; text-decoration: none; cursor: pointer; }
     .padrinho-panel-empty-text { color: #153E66; font-size: 18px; font-weight: 950; line-height: 1.15; text-align: center; }
+    .padrinho-panel-empty-email { display: block; margin-top: 2px; color: #888888; font-size: 12px; font-weight: 500; line-height: 1.2; text-align: center; text-decoration: none; }
     .padrinho-panel-apef { position: relative; align-items: flex-start; gap: 10px; margin-top: 22px; padding: 10px 12px 12px; }
     .padrinho-apef-brand { display: flex; flex: 0 0 48%; flex-direction: column; align-items: center; gap: 23px; min-width: 0; max-width: 145px; margin-top: 28px; }
     .padrinho-apef-logo { display: block; width: 100%; max-height: 60px; height: auto; object-fit: contain; }
@@ -3083,7 +3084,7 @@
         </div>
         <span class="padrinho-apef-region">RJ / SP</span>
       </div>
-      <div class="padrinho-panel padrinho-panel-empty"><span class="padrinho-panel-empty-text">ANUNCIE AQUI</span></div>
+      <a class="padrinho-panel padrinho-panel-empty" href="mailto:basequintela@gmail.com" aria-label="Anuncie aqui: enviar e-mail para basequintela@gmail.com" title="Enviar e-mail para basequintela@gmail.com"><span class="padrinho-panel-empty-text">ANUNCIE AQUI</span><span class="padrinho-panel-empty-email">basequintela@gmail.com</span></a>
     </section>
   </div>
 
