@@ -5299,6 +5299,7 @@
     const remindersKey = 'mareTudo.reminders';
     let activeReminderId = null;
     let reminderOpenedFromService = false;
+    let returnToCalendarAfterReminderSave = false;
     let reminderWorkerRegistration = null;
     const remotePushEndpoint = 'https://mare-tudo-push.ricoquintela74.workers.dev';
     const nativePushSubscriptionPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
@@ -5671,13 +5672,19 @@
     }
     document.querySelector('#serviceReminderButton').addEventListener('click', openServiceReminderSetup);
     function closeRemindersScreen() {
+      const returnToCalendar = returnToCalendarAfterReminderSave;
+      returnToCalendarAfterReminderSave = false;
       remindersScreen.classList.remove('open');
       remindersScreen.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('planner-open');
+      reminderOpenedFromService = false;
+      if (returnToCalendar) {
+        openStandaloneCalendar();
+        return;
+      }
       const serviceFormStillOpen = servicePlanner.classList.contains('open');
       if (serviceFormStillOpen) document.body.classList.add('planner-open');
       else if (document.querySelector('.view.active')?.dataset.view === 'home') app.classList.add('home-screen');
-      reminderOpenedFromService = false;
     }
     document.querySelector('#remindersBack').addEventListener('click', closeRemindersScreen);
     document.querySelector('#remindersClose').addEventListener('click', closeRemindersScreen);
@@ -5844,6 +5851,7 @@
       void deliverDueReminders();
       remindersForm.hidden = true;
       reminderOpenedFromService = false;
+      if (linkedToCurrentService) returnToCalendarAfterReminderSave = true;
       setActiveFooterTab('reminders');
     });
     void deliverDueReminders();
