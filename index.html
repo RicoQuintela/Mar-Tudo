@@ -5842,8 +5842,9 @@
         })();
       }
       void deliverDueReminders();
-      if (linkedToCurrentService) closeRemindersScreen();
-      else remindersForm.hidden = true;
+      remindersForm.hidden = true;
+      reminderOpenedFromService = false;
+      setActiveFooterTab('reminders');
     });
     void deliverDueReminders();
     setInterval(deliverDueReminders, 30000);
