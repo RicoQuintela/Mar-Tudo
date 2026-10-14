@@ -5300,6 +5300,7 @@
     let activeReminderId = null;
     let reminderOpenedFromService = false;
     let returnToCalendarAfterReminderSave = false;
+    let reminderFormReturnTab = '';
     let reminderWorkerRegistration = null;
     const remotePushEndpoint = 'https://mare-tudo-push.ricoquintela74.workers.dev';
     const nativePushSubscriptionPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
@@ -5581,6 +5582,14 @@
       reminderDate.focus();
     }
     function openRemindersScreen(mode = 'list') {
+      if (mode === 'form') {
+        const activeFooterButton = document.querySelector('.app-footer-menu-button.is-current');
+        reminderFormReturnTab = servicePlanner.classList.contains('open')
+          ? 'mark'
+          : (activeFooterButton ? footerButtonTabKey(activeFooterButton) : '');
+      } else {
+        reminderFormReturnTab = '';
+      }
       setActiveFooterTab('reminders');
       app.classList.remove('home-screen');
       clearReminderForm();
@@ -5673,13 +5682,31 @@
     document.querySelector('#serviceReminderButton').addEventListener('click', openServiceReminderSetup);
     function closeRemindersScreen() {
       const returnToCalendar = returnToCalendarAfterReminderSave;
+      const previousTab = reminderFormReturnTab;
       returnToCalendarAfterReminderSave = false;
+      reminderFormReturnTab = '';
       remindersScreen.classList.remove('open');
       remindersScreen.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('planner-open');
       reminderOpenedFromService = false;
       if (returnToCalendar) {
         openStandaloneCalendar();
+        return;
+      }
+      if (previousTab) {
+        if (previousTab === 'mark') {
+          setActiveFooterTab('mark');
+          if (servicePlanner.classList.contains('open')) document.body.classList.add('planner-open');
+          else openQuestionnaireOnly();
+        } else if (previousTab === 'calendar') {
+          openStandaloneCalendar();
+        } else if (previousTab === 'reminders') {
+          openRemindersScreen('list');
+        } else if (previousTab === 'settings') {
+          openSettingsScreen();
+        } else {
+          navigate(previousTab);
+        }
         return;
       }
       const serviceFormStillOpen = servicePlanner.classList.contains('open');
@@ -5851,6 +5878,7 @@
       void deliverDueReminders();
       remindersForm.hidden = true;
       reminderOpenedFromService = false;
+      reminderFormReturnTab = '';
       returnToCalendarAfterReminderSave = true;
       setActiveFooterTab('reminders');
     });
